@@ -1,0 +1,11 @@
+Run sequence.
+
+/databases/stock_db.sql
+
+/tables/mst_market.sql
+/tables/mst_scale.sql
+/tables/mst_sector17.sql
+/tables/mst_sector33.sql
+/tables/mst_instrument.sql
+/tables/trn_loaded_log.sql
+/tables/trn_stock_data.sql
