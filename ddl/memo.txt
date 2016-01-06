@@ -9,3 +9,6 @@ Run sequence.
 /tables/mst_instrument.sql
 /tables/trn_loaded_log.sql
 /tables/trn_stock_data.sql
+/tables/trn_stock_weekly.sql
+/tables/trn_stock_monthly.sql
+
