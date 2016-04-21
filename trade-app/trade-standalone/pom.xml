@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>trade-standalone</artifactId>
+	<name>Trade Standalone Application</name>
+
+	<dependencies>
+		<!-- Trade Core Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>trade-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<parent>
+		<groupId>com.akmans.trade</groupId>
+		<artifactId>trade-app</artifactId>
+		<version>${project.parent.version}</version>
+	</parent>
+</project>
