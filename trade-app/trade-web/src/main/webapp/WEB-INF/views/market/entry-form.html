@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>市場登録フォーム</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="form" th:remove="tag">
+		<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
+			th:object="${marketForm}" th:action="@{/markets/post}"
+			class="form-horizontal form-dialog">
+			<div th:if="${#fields.hasErrors('*')}"
+				th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
+				<ul>
+					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+				</ul>
+			</div>
+			<div id="messages" style="display : none"></div>
+			<div class="form-group"
+				th:attrappend="class=${#fields.hasErrors('code')}? ' has-error' ">
+				<div class="col-md-3 control-label"
+					th:text="#{view.market.entry-form.code}">コード</div>
+				<div class="col-md-9">
+					<input type="text" id="code" name="code" value=""
+						class="form-control" th:field="*{code}" />
+				</div>
+			</div>
+			<div class="form-group"
+				th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
+				<div class="col-md-3 control-label"
+					th:text="#{view.market.entry-form.name}">名称</div>
+				<div class="col-md-9">
+					<input type="text" id="name" name="name" value=""
+						class="form-control" th:field="*{name}" />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="text-center">
+					<a id="confirm" href="#" class="btn btn-default"
+						th:text="#{view.market.entry-form.confirm}">確認</a> <a id="cancel"
+						href="#" class="btn btn-default"
+						th:text="#{view.market.entry-form.cancel}">取消</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

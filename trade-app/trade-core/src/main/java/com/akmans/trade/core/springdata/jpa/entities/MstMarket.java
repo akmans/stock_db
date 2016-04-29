@@ -8,7 +8,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "mst_market")
 public class MstMarket {
-
 	@Id
 	private Integer code;
 

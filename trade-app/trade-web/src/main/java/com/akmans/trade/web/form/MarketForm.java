@@ -1,11 +1,21 @@
 package com.akmans.trade.web.form;
 
-public class MarketForm {
+import java.io.Serializable;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class MarketForm implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	/** code. */
+	@NotNull(message="{form.marketform.code.notnull}")
+	@Min(value = 1, message="{form.marketform.code.min}")
 	private Integer code;
 
 	/** name. */
+	@Size(min=1, max=30, message="{form.marketform.code.name}")
 	private String name;
 
 	/**

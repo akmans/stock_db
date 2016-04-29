@@ -13,6 +13,10 @@ body {
 	margin: 0px 0px;
 }
 
+.form-dialog {
+	width: 98%;
+}
+
 /* footer */
 footer {
 	clear: both;

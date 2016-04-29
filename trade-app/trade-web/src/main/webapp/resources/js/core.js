@@ -1,47 +1,179 @@
+$(document).ready(function() {
+	// initialize.
+	initialize();
+});
 
-function createForm() {
-	var div = document.getElementById('market-form');
-	var form = document.createElement('form');
-	form.setAttribute('action', '/markets');
-	form.setAttribute('method', 'POST');
+/*
+ * Ajax function to get data for update.
+ */
+function doAjaxGet(url) {
+	// Do ajax process.
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "html",
+		success : function(data, status, xhr) {
+			// Render market-form.
+			$('#dialog-entry-form').html(data);
+			// Show entry form.
+			showEntryForm();
+		},
+		error : function(XMLHttpRequest, status, errorThrown) {
+			// Handle error.
+		}
+	});
+}
 
-	/*----code---*/
-	var code = document.createElement('div');
-	code.appendChild(document.createTextNode('-'));
-	code.setAttribute('class', 'col-xs-2 col-md-1');
-	/*-----------*/
+/*
+ * Ajax function to process deletion.
+ */
+function doAjaxDelete(url) {
+	// Do ajax process.
+	$.ajax({
+		type : "GET",
+		url : url,
+		dataType : "html",
+		success : function(data, status, xhr) {
+			// Close entry form.
+			closeEntryForm();
+			// Destroy dialog.
+			$("#dialog-entry-form").dialog("destroy").remove();
+			$("#dialog").dialog("destroy").remove();
+			// Render container.
+			$('#container').html(data);
+			// Bind event to button
+			initialize();
+			// Close dialog.
+			$("#dialog").dialog("close");
+		},
+		error : function(XMLHttpRequest, status, errorThrown) {
+			// Handle error.
+		}
+	});
+}
 
-	/*----name---*/
-	var input_name = document.createElement('input');
-	input_name.setAttribute('type', 'text');
-	input_name.setAttribute('placeholder', 'Name');
-	input_name.setAttribute('name', 'name');
-	input_name.setAttribute('id', 'name');
-	input_name.setAttribute('class', 'form-control');
-	var name = document.createElement('div');
-	name.appendChild(input_name);
-	name.setAttribute('class', 'col-xs-10 col-md-9');
-	/*-----------*/
+/*
+ * Show entry form.
+ */
+function showEntryForm() {
+	// Show entry form using slide down.
+	$("#dialog-entry-form").dialog("open");
 
-	/*--clearfix-*/
-	var clearfix = document.createElement('div');
-	clearfix.setAttribute('class', 'clearfix visible-xs-block');
-	/*-----------*/
+	// initialize event.
+	initializeEntryForm();
+}
 
-	/*---button--*/
-	var input_button = document.createElement('input');
-	input_button.setAttribute('type', 'submit');
-	input_button.setAttribute('value', '実行');
-	input_button.setAttribute('name', 'commit');
-	input_button.setAttribute('class', 'btn btn-default');
-	var button = document.createElement('div');
-	button.appendChild(input_button);
-	button.setAttribute('class', 'col-xs-8 col-md-2 text-right');
+/*
+ * Close entry form.
+ */
+function closeEntryForm() {
+	// Close entry form using slide up.
+	$("#dialog-entry-form").dialog("close");
+}
 
-	form.appendChild(code);
-	form.appendChild(name);
-	form.appendChild(clearfix);
-	form.appendChild(button);
+/*
+ * Initialize event in the entry form.
+ */
+function initializeEntryForm() {
+	// Bind function to submit.
+	$('#entry-form').submit(function(event) {
+		// Prevent default action.
+		event.preventDefault();
+		// Do ajax process.
+		$.ajax({
+			type : "POST",
+			url : $('#entry-form').attr('action'),
+			data : $('#entry-form').serialize(),
+			dataType : "html",
+			success : function(data, status, xhr) {
+				if (data.indexOf('id="entry-form"') !== -1) {
+					// Render dialog-entry-form.
+					$('#dialog-entry-form').html(data);
+					// initialize event.
+					initializeEntryForm();
+				} else {
+					// Close entry form.
+					closeEntryForm();
+					// Destroy dialog.
+					$("#dialog-entry-form").dialog("destroy").remove();
+					$("#dialog").dialog("destroy").remove();
+					// Render container.
+					$('#container').html(data);
+					// initialize event.
+					initialize();
+				}
+			},
+			error : function(xhr, status, error) {
+				var data = $(xhr.responseText);
+				var messages = $('#container', data);
+				$("#messages").html(messages).show();
+			}
+		})
+	});
 
-	div.appendChild(form);	
+	// Bind function to click.
+	$('a#confirm').bind("click", function(event) {
+		// Prevent default action.
+		event.preventDefault();
+		// Submit entry form.
+		$('#entry-form').submit();
+	});
+
+	// Bind function to click.
+	$('a#cancel').bind("click", function() {
+		// Close entry form.
+		closeEntryForm();
+	});
+}
+
+/*
+ * Initialize event in the content.
+ */
+function initialize() {
+	/*
+	 * Bind event to add button.
+	 */
+	$("a#add").click(function(event) {
+		// Prevent default action.
+		event.preventDefault();
+		var paramUrl = $(this).attr("href");
+		doAjaxGet(paramUrl)
+	});
+
+	/*
+	 * Bind event to edit button.
+	 */
+	$("a.edit").click(function(event) {
+		// Prevent default action.
+		event.preventDefault();
+		var paramUrl = $(this).attr("href");
+		doAjaxGet(paramUrl)
+	});
+
+	/*
+	 * Bind event to delete button.
+	 */
+	$("a.delete").click(function(event) {
+		// Prevent actual form submit and page reload
+		event.preventDefault();
+		var paramUrl = $(this).attr("href");
+		showDialog(paramUrl);
+	});
+
+	/*
+	 * Initialize dialog.
+	 */
+	$("#dialog").dialog({
+		autoOpen : false,
+		modal : true
+	});
+
+	/*
+	 * Initialize dialog.
+	 */
+	$("#dialog-entry-form").dialog({
+		autoOpen : false,
+		modal : true,
+		width : "400px"
+	});
 }

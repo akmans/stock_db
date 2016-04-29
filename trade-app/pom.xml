@@ -14,6 +14,7 @@
 		<jdk.version>1.8</jdk.version>
 		<spring.version>4.2.4.RELEASE</spring.version>
 		<spring-data.version>1.9.2.RELEASE</spring-data.version>
+		<spring.security.version>4.0.4.RELEASE</spring.security.version>
 		<jstl.version>1.2</jstl.version>
 		<junit.version>4.11</junit.version>
 		<logback.version>1.0.13</logback.version>
@@ -23,10 +24,14 @@
 		<hibernate-entitymanager.version>4.3.8.Final</hibernate-entitymanager.version>
 		<thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
 		<thymeleaf-layout-dialect.version>1.2.1</thymeleaf-layout-dialect.version>
+		<thymeleaf-extras-springsecurity4.version>2.1.2.RELEASE</thymeleaf-extras-springsecurity4.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<javax.servlet.jsp-api.version>2.2.1</javax.servlet.jsp-api.version>
+		<javax.inject.version>1</javax.inject.version>
 		<spring.batch.version>3.0.6.RELEASE</spring.batch.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
+		<!-- jackson.version>1.9.7</jackson.version -->
 	</properties>
 
 	<dependencies>
@@ -174,6 +179,19 @@
 			<version>${spring-data.version}</version>
 		</dependency>
 
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
 		<!-- Database (PostgreSQL) -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -219,6 +237,19 @@
 			<version>${thymeleaf-layout-dialect.version}</version>
 		</dependency>
 
+		<!-- Thymeleaf extras for spring security -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+			<version>${thymeleaf-extras-springsecurity4.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
+		</dependency>
+
 		<!-- jstl -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -240,6 +271,12 @@
 			<version>${logback.version}</version>
 		</dependency>
 
+		<!-- jackson -->
+		<!-- <dependency> <groupId>org.codehaus.jackson</groupId> <artifactId>jackson-mapper-asl</artifactId> 
+			<version>${jackson.version}</version> </dependency> <dependency> <groupId>org.codehaus.jackson</groupId> 
+			<artifactId>jackson-core-asl</artifactId> <version>${jackson.version}</version> 
+			</dependency> -->
+
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -253,6 +290,13 @@
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<version>${javax.servlet.jsp-api.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- Javax Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax.inject.version}</version>
 		</dependency>
 
 		<dependency>

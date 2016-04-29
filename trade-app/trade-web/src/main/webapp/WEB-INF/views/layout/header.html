@@ -2,67 +2,76 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
+<meta charset="utf-8" />
 <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
-	media="screen" th:href="@{/resources/css/bootstrap.min.css}" />
-<script src="../../../resources/js/jquery.js"
-	th:src="@{/resources/js/jquery.js}"></script>
-<script src="../../../resources/js/bootstrap.min.js"
-	th:src="@{/resources/js/bootstrap.min.js}"></script>
+	media="screen" />
+<script src="../../../resources/js/jquery.js"></script>
+<script src="../../../resources/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-static" role="navigation"
 		th:fragment="header">
 		<div class="container">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".nav-collapse">
-					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+				<button class="navbar-toggle collapsed" type="button"
+					data-toggle="collapse" data-target="#navbar-main">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#" th:href="@{/}" th:text="#{header.title}">Trade
-					Management System</a>
+				<a class="navbar-brand" href="#" th:href="@{/}"
+					th:text="#{header.title}">Trade Management System</a>
 			</div>
-			<div id="navbar-main" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav pull-right">
-					<li><a href="#" th:text="#{header.nav.accout}">Account</a></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span th:text="#{header.nav.fx}">FX</span><b
-							class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#">???</a></li>
-						</ul></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span th:text="#{header.nav.stock}">Stock</span><b
-							class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#" th:href="@{/markets}"
-								th:text="#{header.nav.market}">Market</a></li>
-							<li><a href="#" th:text="#{header.nav.scale}">Scale</a></li>
-							<li><a href="#" th:text="#{header.nav.sector17}">Sector
-									17</a></li>
-							<li><a href="#" th:text="#{header.nav.sector33}">Sector
-									33</a></li>
-							<li><a href="#" th:text="#{header.nav.instrument}">Instrument</a></li>
-							<li class="divider"></li>
-							<li><a href="#" th:text="#{header.nav.dataimport}">Data
-									Import</a></li>
-						</ul></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span th:text="#{header.nav.system}">System</span><b
-							class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#" th:text="#{header.nav.calendar}">Calendar</a></li>
-							<li class="divider"></li>
-							<li th:unless="${#strings.equals(#ctx.locale, 'en')}"><a
-								href="?language=en" th:text="#{header.nav.english}">English</a></li>
-							<li th:unless="${#strings.equals(#ctx.locale, 'ja')}"><a
-								href="?language=ja" th:text="#{header.nav.japanese}">日本語</a></li>
-							<li class="divider"></li>
-							<li><a href="#" th:text="#{header.nav.userinfo}">User
-									Info</a></li>
-						</ul></li>
-					<li><a href="#" th:text="#{header.nav.logout}">Logout</a></li>
-				</ul>
+			<div th:if="${#authorization.expression('hasRole(''USER'')')}">
+				<div id="navbar-main" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav pull-right">
+						<li><a href="#" th:text="#{header.nav.accout}">Account</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown"><span th:text="#{header.nav.fx}">FX</span><b
+								class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="#">???</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown"><span th:text="#{header.nav.stock}">Stock</span><b
+								class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="#" th:href="@{/markets}"
+									th:text="#{header.nav.market}">Market</a></li>
+								<li><a href="#" th:text="#{header.nav.scale}">Scale</a></li>
+								<li><a href="#" th:text="#{header.nav.sector17}">Sector
+										17</a></li>
+								<li><a href="#" th:text="#{header.nav.sector33}">Sector
+										33</a></li>
+								<li><a href="#" th:text="#{header.nav.instrument}">Instrument</a></li>
+								<li class="divider"></li>
+								<li><a href="#" th:text="#{header.nav.dataimport}">Data
+										Import</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown"><span th:text="#{header.nav.system}">System</span><b
+								class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="#" th:text="#{header.nav.calendar}">Calendar</a></li>
+								<li class="divider"></li>
+								<li th:unless="${#strings.equals(#ctx.locale, 'en')}"><a
+									href="?language=en" th:text="#{header.nav.english}">English</a></li>
+								<li th:unless="${#strings.equals(#ctx.locale, 'ja')}"><a
+									href="?language=ja" th:text="#{header.nav.japanese}">日本語</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown">[<span
+								th:text="${#authentication.name}">User Id</span>]<b
+								class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="#" th:text="#{header.nav.changepassword}">Change
+										Password</a></li>
+								<li class="divider"></li>
+								<li><a href="#" th:href="@{/logout}"
+									th:text="#{header.nav.logout}">Logout</a></li>
+							</ul></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</nav>
