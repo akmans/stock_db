@@ -12,17 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
-import com.akmans.trade.core.springdata.jpa.config.DataSourceConfig;
-import com.akmans.trade.core.springdata.jpa.config.JpaConfig;
-import com.akmans.trade.core.springdata.jpa.config.RepositoryConfig;
+import com.akmans.trade.core.config.TradeCoreConfig;
 
 @Configuration
 @EnableBatchProcessing
 //@EnableAutoConfiguration
 @Import({
-	DataSourceConfig.class,
-	JpaConfig.class,
-	RepositoryConfig.class,
+	TradeCoreConfig.class,
 	HelloWorldJobConfig.class
 	})
 public class StandaloneConfig {

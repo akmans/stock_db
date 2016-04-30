@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "mst_market")
-public class MstMarket {
+public class MstMarket extends AbstractEntity {
 	@Id
 	private Integer code;
 
@@ -34,6 +34,8 @@ public class MstMarket {
     public String toString() {
         return this.getClass().getAnnotation(Table.class).name()
         		+ " [code=" + code
-        		+ ", name=" + name + "]";
+        		+ ", name=" + name
+        		+ ", createdDate=" + getCreatedDate()
+        		+ ", updatedDate=" + getUpdatedDate() + "]";
     }
 }

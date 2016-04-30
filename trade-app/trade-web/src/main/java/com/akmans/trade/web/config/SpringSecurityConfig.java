@@ -1,4 +1,4 @@
-package com.akmans.trade.web.config.security;
+package com.akmans.trade.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +28,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/resources/**").permitAll()
 				.anyRequest().hasRole("USER")
 				.and()
-//			.exceptionHandling()
-//				.accessDeniedPage("/login?authorization_error=true")
-//				.and()
 			.csrf()
 				.disable()
 			.logout()
@@ -38,8 +35,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutUrl("/logout")
 				.and()
 			.formLogin()
-				.usernameParameter("j_username")
-				.passwordParameter("j_password")
+				.usernameParameter("username")
+				.passwordParameter("password")
 				.loginProcessingUrl("/authenticate")
 				.failureUrl("/login?error")
 				.loginPage("/login")

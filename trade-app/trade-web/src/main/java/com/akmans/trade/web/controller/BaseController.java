@@ -1,6 +1,5 @@
 package com.akmans.trade.web.controller;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.LoggerFactory;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstSector33Dao;
-import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
-
 @Controller
 public class BaseController {
 
@@ -25,16 +21,9 @@ public class BaseController {
 	@Autowired
 	private MessageSource messageSource;
 
-	@Autowired
-	private MstSector33Dao mstSector33Dao;
-
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(ModelMap model) {
 		// Print all records
-		List<MstSector33> sector33s = (List<MstSector33>) mstSector33Dao.findAll();
-		logger.debug("[sector33s] size : {}", sector33s.size());
-
-		model.addAttribute("sector33", sector33s);
 		model.addAttribute("message", "Welcome");
 		model.addAttribute("counter", ++counter);
 		logger.debug("[welcome] counter : {}", counter);

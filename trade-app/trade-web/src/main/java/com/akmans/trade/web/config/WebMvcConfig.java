@@ -11,29 +11,24 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.support.SessionAttributeStore;
-//import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-//import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-//import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
-import com.akmans.trade.core.springdata.jpa.config.DataSourceConfig;
-import com.akmans.trade.core.springdata.jpa.config.JpaConfig;
-import com.akmans.trade.core.springdata.jpa.config.RepositoryConfig;
+import com.akmans.trade.core.config.TradeCoreConfig;
 import com.akmans.trade.web.config.csrf2conversationsupport.CSRFHandlerInterceptor;
 import com.akmans.trade.web.config.csrf2conversationsupport.CustomRequestDataValueProcessor;
-import com.akmans.trade.web.config.security.SpringSecurityConfig;
+import com.akmans.trade.web.config.SpringSecurityConfig;
 import com.akmans.trade.web.config.csrf2conversationsupport.ConversationalSessionAttributeStore;
 
 @EnableWebMvc
 @Configuration
-@Import({ DataSourceConfig.class, JpaConfig.class, RepositoryConfig.class, ThymeleafConfig.class,
+@Import({ TradeCoreConfig.class, ThymeleafConfig.class,
 		SpringSecurityConfig.class })
 @ComponentScan(basePackages = { "com.akmans.trade.web.controller" })
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
@@ -84,17 +79,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		return localeResolver;
 	}
 
-	// @Bean(name = "multipartResolver")
-	// public CommonsMultipartResolver getMultipartResolver() {
-	// return new CommonsMultipartResolver();
-	// }
-
 	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE1);
-		// reload messages every 10 seconds
-		messageSource.setCacheSeconds(10);
+		messageSource.setBasenames(MESSAGE_SOURCE1, MESSAGE_SOURCE2);
+		// reload messages every 3600 seconds
+		messageSource.setCacheSeconds(3600);
 		return messageSource;
 	}
 
@@ -102,8 +92,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	public ReloadableResourceBundleMessageSource validationMessageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setBasename(MESSAGE_SOURCE2);
-		// reload messages every 10 seconds
-		messageSource.setCacheSeconds(10);
+		// reload messages every 3600 seconds
+		messageSource.setCacheSeconds(3600);
 		return messageSource;
 	}
 

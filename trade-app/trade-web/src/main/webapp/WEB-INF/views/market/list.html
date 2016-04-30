@@ -33,21 +33,29 @@
 		<h3 th:text="#{view.market.list.title}">市場一覧</h3>
 		<div class="clearfix"></div>
 		<div class="row header">
-			<div class="col-xs-2 col-md-1" th:text="#{view.market.list.code}">コード</div>
-			<div class="col-xs-8 col-md-8" th:text="#{view.market.list.name}">名称</div>
+			<div class="col-xs-3 col-md-1" th:text="#{view.market.list.code}">コード</div>
+			<div class="col-xs-9 col-md-4" th:text="#{view.market.list.name}">名称</div>
 			<!-- Add the extra clearfix for only the required viewport -->
 			<div class="clearfix visible-xs-block"></div>
-			<div class="col-md-3 text-right">
+			<div class="col-xs-6 col-md-2" th:text="#{view.market.list.updatedby}">更新者</div>
+			<div class="col-xs-6 col-md-2" th:text="#{view.market.list.updateddate}">更新日</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
 				<a id="add" href="#" th:href="@{/markets/new}"
 					th:text="#{view.market.list.button.add}" class="btn btn-default">新規</a>
 			</div>
 		</div>
 		<div class="row" th:each="item : ${market}">
 			<div class="col-xs-3 col-md-1" th:text="${item.code}">ID001</div>
-			<div class="col-xs-9 col-md-8" th:text="${item.name}">Name 001</div>
+			<div class="col-xs-9 col-md-4" th:text="${item.name}">Name 001</div>
 			<!-- Add the extra clearfix for only the required viewport -->
 			<div class="clearfix visible-xs-block"></div>
-			<div class="col-md-3 text-right">
+			<div class="col-xs-6 col-md-2" th:text="${item.updatedBy}">tester</div>
+			<div class="col-xs-6 col-md-2" th:text="${item.updatedDate}">2016-04-01 17:18:19</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
 				<a href="#" th:href="@{/markets/{code}/edit(code=${item.code})}"
 					th:text="#{view.market.list.button.edit}"
 					class="btn btn-default edit">編集</a> <a href="#"
@@ -58,10 +66,14 @@
 		</div>
 		<div class="row" th:remove="all">
 			<div class="col-xs-3 col-md-1" th:text="${item.code}">ID002</div>
-			<div class="col-xs-9 col-md-8" th:text="${item.name}">Name 002</div>
+			<div class="col-xs-9 col-md-4" th:text="${item.name}">Name 002</div>
 			<!-- Add the extra clearfix for only the required viewport -->
 			<div class="clearfix visible-xs-block"></div>
-			<div class="col-md-3 text-right">
+			<div class="col-xs-6 col-md-2" th:text="${item.updatedBy}">tester</div>
+			<div class="col-xs-6 col-md-2" th:text="${item.updatedDate}">2016-04-01 17:18:19</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
 				<a href="#" th:text="#{view.market.list.button.edit}"
 					class="btn btn-default">編集</a> <a href="#"
 					th:text="#{view.market.list.button.delete}" class="btn btn-default">削除</a>
