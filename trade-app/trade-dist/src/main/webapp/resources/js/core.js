@@ -79,10 +79,12 @@ function initializeEntryForm() {
 	$('#entry-form').submit(function(event) {
 		// Prevent default action.
 		event.preventDefault();
+		var pageNum = $('#currentPage').val();
+		var pageSize = $('#pageSize').val();
 		// Do ajax process.
 		$.ajax({
 			type : "POST",
-			url : $('#entry-form').attr('action'),
+			url : $('#entry-form').attr('action') + "?page=" + pageNum + "&size=" + pageSize,
 			data : $('#entry-form').serialize(),
 			dataType : "html",
 			success : function(data, status, xhr) {

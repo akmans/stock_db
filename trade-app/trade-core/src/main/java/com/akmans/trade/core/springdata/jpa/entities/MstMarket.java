@@ -35,7 +35,6 @@ public class MstMarket extends AbstractEntity {
         return this.getClass().getAnnotation(Table.class).name()
         		+ " [code=" + code
         		+ ", name=" + name
-        		+ ", createdDate=" + getCreatedDate()
-        		+ ", updatedDate=" + getUpdatedDate() + "]";
+        		+ super.toString() + "]";
     }
 }

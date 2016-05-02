@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+
 import java.time.ZonedDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -64,5 +65,13 @@ public abstract class AbstractEntity {
 
 	public String getUpdatedBy() {
 		return this.updatedBy;
+	}
+
+	@Override
+    public String toString() {
+        return " created_by=" + createdBy
+        		+ ", created_date=" + createdDate
+        		+ ", updated_by=" + updatedBy
+        		+ ", updated_date=" + updatedDate;
 	}
 }

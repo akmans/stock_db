@@ -1,5 +1,6 @@
 package com.akmans.trade.web.config;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.MessageSource;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.support.SessionAttributeStore;
@@ -28,19 +30,14 @@ import com.akmans.trade.web.config.csrf2conversationsupport.ConversationalSessio
 
 @EnableWebMvc
 @Configuration
-@Import({ TradeCoreConfig.class, ThymeleafConfig.class,
-		SpringSecurityConfig.class })
-@ComponentScan(basePackages = { "com.akmans.trade.web.controller" })
+@Import({ TradeCoreConfig.class, /*DataSourceConfig.class, JpaConfig.class, RepositoryConfig.class, */ThymeleafConfig.class, SpringSecurityConfig.class })
+@ComponentScan(basePackages = { "com.akmans.trade.web.controller"/*, "com.akmans.trade.core.service.impl"*/ })
+@EnableSpringDataWebSupport
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
 	private static final String MESSAGE_SOURCE1 = "/WEB-INF/i18n/messages";
 	private static final String MESSAGE_SOURCE2 = "classpath:/META-INF/messages/ValidationMessages";
 	private static final int KEEP_ALIVE_CONVERSATIONS = 10;
-
-	// @Override
-	// public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	// registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-	// }
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {

@@ -6,7 +6,7 @@
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Trade Application</name>
-	<url>http://maven.apache.org</url>
+	<url>http://abc.com</url>
 	<!-- <dependencyManagement> <dependencies> <dependency> <groupId>io.spring.platform</groupId> 
 		<artifactId>platform-bom</artifactId> <version>1.1.2.RELEASE</version> <type>pom</type> 
 		<scope>import</scope> </dependency> </dependencies> </dependencyManagement> -->
@@ -25,6 +25,7 @@
 		<thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
 		<thymeleaf-layout-dialect.version>1.2.1</thymeleaf-layout-dialect.version>
 		<thymeleaf-extras-springsecurity4.version>2.1.2.RELEASE</thymeleaf-extras-springsecurity4.version>
+		<thymeleaf-extras-java8time.version>2.1.0.RELEASE</thymeleaf-extras-java8time.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<usertype.extended.version>3.2.0.GA</usertype.extended.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
@@ -59,9 +60,12 @@
 		</dependency>
 
 		<!-- Expression Language (depends on spring-core) Define this if you use 
-			Spring Expression APIs (org.springframework.expression.*) <dependency> <groupId>org.springframework</groupId> 
-			<artifactId>spring-expression</artifactId> <version>${spring.version}</version> 
-			</dependency> -->
+			Spring Expression APIs (org.springframework.expression.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 
 		<!-- Bean Factory and JavaBeans utilities (depends on spring-core) Define 
 			this if you use Spring Bean APIs (org.springframework.beans.*) -->
@@ -257,6 +261,13 @@
 			<version>${thymeleaf-extras-springsecurity4.version}</version>
 		</dependency>
 
+		<!-- Thymeleaf extras for Java 8 Time -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+			<version>${thymeleaf-extras-java8time.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
@@ -323,5 +334,33 @@
 		<module>trade-core</module>
 		<module>trade-web</module>
 		<module>trade-standalone</module>
+		<module>trade-dist</module>
 	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.wildfly.plugins</groupId>
+					<artifactId>wildfly-maven-plugin</artifactId>
+					<version>1.1.0.Alpha8</version>
+					<configuration>
+						<skip>true</skip>
+						<force>true</force>
+						<hostname>localhost</hostname>
+						<username>test</username>
+						<password>password</password>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

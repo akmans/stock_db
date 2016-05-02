@@ -24,7 +24,6 @@ public class RepositoryConfig {
         return new UsernameAuditorAware();
     }
 
-//	@Profile(Profiles.APPLICATION)
     @Bean
     DateTimeService currentTimeDateTimeService() {
         return new CurrentTimeDateTimeService();

@@ -7,8 +7,12 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,64 +22,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstMarketDao;
+import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MarketService;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.web.form.MarketForm;
+import com.akmans.trade.web.utils.PageWrapper;
+import com.akmans.trade.web.utils.ViewConstants;
 
 @Controller
 @RequestMapping("/markets")
 @SessionAttributes("marketForm")
 public class MarketController {
 
-	private static final String VIEW_LIST_PATH = "market/list";
-	private static final String VIEW_LIST_CONTENT_FRAGEMENT = "market/list :: content";
-	private static final String VIEW_ENTRY_FORM_FRAGEMENT = "market/entry-form :: form";
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MarketController.class);
 
 	@Autowired
 	private MessageSource messageSource;
 
 	@Autowired
-	private MstMarketDao mstMarketDao;
+	private MarketService marketService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String init(ModelMap model/*, HttpServletResponse response*/) /*throws Exception*/ {
-		// Get all records
-		List<MstMarket> markets = (List<MstMarket>) mstMarketDao.findAllByOrderByCode();
+	public String init(ModelMap model, Pageable pageable) {
+		logger.debug("pageable = {}" , pageable);
+		Locale locale = LocaleContextHolder.getLocale();
+		logger.debug("Locale = {}" , locale);
+		Page<MstMarket> page = marketService.findAll(pageable);
+		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
 
-		model.addAttribute("market", markets);
-//		response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad or missing CSRF value");
+		model.addAttribute("page", markets);
 
 		// render path
-		return VIEW_LIST_PATH;
+		return ViewConstants.VIEW_MARKET_LIST;
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	public String initAdd(ModelMap model, MarketForm marketForm) {
-		// Initialize market form.
-		marketForm = new MarketForm();
+		// Set operation mode.
+		marketForm.setOperationMode(OperationMode.NEW);
 
 		// render path
-		return VIEW_ENTRY_FORM_FRAGEMENT;
+		return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
 	}
 
 	@RequestMapping(value = "/{code}/edit", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String initEdit(ModelMap model, @PathVariable Integer code, MarketForm marketForm) {
+	public String initEdit(ModelMap model, @PathVariable Integer code, MarketForm marketForm) throws TradeException {
+		// Set operation mode.
+		marketForm.setOperationMode(OperationMode.EDIT);
 		// Get records
-		Optional<MstMarket> option = mstMarketDao.findOne(code);
-		if (option.isPresent()) {
-			MstMarket market = option.get();
-			marketForm.setCode(market.getCode());
-			marketForm.setName(market.getName());
-		}
+		MstMarket market = marketService.findOne(code);
+		BeanUtils.copyProperties(market, marketForm);
 
 		// render path
-		return VIEW_ENTRY_FORM_FRAGEMENT;
+		return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	public String confirm(Locale locale, ModelMap model, @Valid final MarketForm marketForm, BindingResult bindingResult) {
-		logger.debug("code=" + marketForm.getCode() + ";;name=" + marketForm.getName());
+	public String confirm(Locale locale, ModelMap model, @Valid final MarketForm marketForm, BindingResult bindingResult, Pageable pageable) throws TradeException {
+		logger.debug("The marketForm = {}", marketForm);
 		String message = null;
 		if (bindingResult.hasErrors()) {
 			List<ObjectError> errors = bindingResult.getAllErrors();
@@ -86,22 +91,21 @@ public class MarketController {
 			model.addAttribute("cssStyle", "alert-danger");
 
 			// render path
-			return VIEW_ENTRY_FORM_FRAGEMENT;
+			return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
 		} else {
-			Optional<MstMarket> option = mstMarketDao.findOne(marketForm.getCode());
 			MstMarket market = null;
-			if (option.isPresent()) {
-				market = option.get();
+			if (marketForm.getOperationMode() == OperationMode.EDIT) {
+				market = marketService.findOne(marketForm.getCode());
 				logger.debug("Updated.");
 			} else {
 				market = new MstMarket();
 				logger.debug("Inserted.");
 			}
-			market.setCode(marketForm.getCode());
-			market.setName(marketForm.getName());
-			mstMarketDao.save(market);
 
-			if (option.isPresent()) {
+			BeanUtils.copyProperties(marketForm, market);
+			marketService.save(market, marketForm.getOperationMode());
+
+			if (marketForm.getOperationMode() == OperationMode.EDIT) {
 				message = messageSource.getMessage("controller.market.update.finish", null, locale);
 			} else {
 				message = messageSource.getMessage("controller.market.insert.finish", null, locale);
@@ -109,34 +113,27 @@ public class MarketController {
 			model.addAttribute("cssStyle", "alert-success");
 		}
 		// Get all records
-		List<MstMarket> markets = (List<MstMarket>) mstMarketDao.findAllByOrderByCode();
-		model.addAttribute("market", markets);
+		Page<MstMarket> page = marketService.findAll(pageable);
+		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
+		model.addAttribute("page", markets);
 		model.addAttribute("message", message);
 
 		// render path
-		return VIEW_LIST_CONTENT_FRAGEMENT;
+		return ViewConstants.VIEW_MARKET_LIST_CONTENT_FRAGEMENT;
 	}
 
 	@RequestMapping(value = "/{code}/delete", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String delete(Locale locale, ModelMap model, @PathVariable Integer code) {
-		Optional<MstMarket> option = mstMarketDao.findOne(code);
-		String message = null;
-		if (option.isPresent()) {
-			mstMarketDao.delete(option.get());
-			logger.debug("Deleted successfully!");
-			message = messageSource.getMessage("controller.market.delete.finish", null, locale);
-		} else {
-			logger.debug("Data not exist!");
-		}
-
+	public String delete(Locale locale, ModelMap model, @PathVariable Integer code, Pageable pageable) throws TradeException {
+		marketService.delete(code);
 		// Get all records
-		List<MstMarket> markets = (List<MstMarket>) mstMarketDao.findAllByOrderByCode();
-		model.addAttribute("market", markets);
+		Page<MstMarket> page = marketService.findAll(pageable);
+		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
+		model.addAttribute("page", markets);
 
-		model.addAttribute("message", message);
+		model.addAttribute("message", messageSource.getMessage("controller.market.delete.finish", null, locale));
 		model.addAttribute("cssStyle", "alert-success");
 
 		// render path
-		return VIEW_LIST_CONTENT_FRAGEMENT;
+		return ViewConstants.VIEW_MARKET_LIST_CONTENT_FRAGEMENT;
 	}
 }

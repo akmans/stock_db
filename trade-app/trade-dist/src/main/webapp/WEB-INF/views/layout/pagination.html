@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>Pagination</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="pagination" th:remove="tag">
+		<!-- Hidden Info -->
+		<div style="display: none">
+			<input type="hidden" id="currentPage" name="currentPage"
+				th:value="${page.number}" />
+			<input type="hidden" id="pageSize" name="pageSize"
+				th:value="${page.size}" />
+		</div>
+		<!-- Pagination Bar -->
+		<ul class="pagination">
+			<li th:class="${page.firstPage}? 'disabled' : ''"><span
+				th:if='${page.firstPage}' th:text="#{pagination.nav.first}">←
+					First</span> <a th:if='${not page.firstPage}'
+				th:href='@{${page.url}(page=0,size=${page.size})}'
+				th:text="#{pagination.nav.first}">← First</a></li>
+			<li th:class="${page.hasPreviousPage}? '' : 'disabled'"><span
+				th:if='${not page.hasPreviousPage}'
+				th:text="#{pagination.nav.previous}">«</span> <a
+				th:if='${page.hasPreviousPage}'
+				th:href='@{${page.url}(page=${page.number - 1},size=${page.size})}'
+				title='Go to previous page' th:text="#{pagination.nav.previous}"
+				th:attr="title=#{pagination.nav.previous.title}">«</a></li>
+			<li th:each='item : ${page.items}'
+				th:class="${item.current}? 'active' : ''"><span
+				th:if='${item.current}' th:text='${item.number + 1}'>1</span> <a
+				th:if='${not item.current}'
+				th:href='@{${page.url}(page=${item.number},size=${page.size})}'><span
+					th:text='${item.number + 1}'>1</span></a></li>
+			<li th:class="${page.hasNextPage}? '' : 'disabled'"><span
+				th:if='${not page.hasNextPage}' th:text="#{pagination.nav.next}">»</span>
+				<a th:if='${page.hasNextPage}'
+				th:href='@{${page.url}(page=${page.number + 1},size=${page.size})}'
+				title='Go to next page' th:text="#{pagination.nav.next}"
+				th:attr="title=#{pagination.nav.next.title}">»</a></li>
+			<li th:class="${page.lastPage}? 'disabled' : ''"><span
+				th:if='${page.lastPage}' th:text="#{pagination.nav.last}">Last
+					→</span> <a th:if='${not page.lastPage}'
+				th:href='@{${page.url}(page=${page.totalPages - 1},size=${page.size})}'
+				th:text="#{pagination.nav.last}">Last →</a></li>
+		</ul>
+	</div>
+</body>
+</html>
