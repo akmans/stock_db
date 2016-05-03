@@ -29,8 +29,7 @@ function doAjaxGet(url) {
  */
 function showEntryForm() {
 	// Show entry form dialog.
-	$("#dialog-entry-form").dialog({ title: $("#title").text() });
-	$("#dialog-entry-form").dialog("open");
+	$('#dialogModal').modal('show');
 
 	// initialize event.
 	initializeEntryForm();
@@ -41,7 +40,9 @@ function showEntryForm() {
  */
 function closeEntryForm() {
 	// Close entry form using slide up.
-	$("#dialog-entry-form").dialog("close");
+	$('#dialogModal').modal('hide');
+	$('body').removeClass('modal-open');
+	$('.modal-backdrop').remove();
 }
 
 /*
@@ -69,9 +70,6 @@ function initializeEntryForm() {
 				} else {
 					// Close entry form.
 					closeEntryForm();
-					// Destroy dialog.
-					$("#dialog-entry-form").dialog("destroy").remove();
-					$("#dialog").dialog("destroy").remove();
 					// Render container.
 					$('#container').html(data);
 					// initialize event.
@@ -92,12 +90,6 @@ function initializeEntryForm() {
 		event.preventDefault();
 		// Submit entry form.
 		$('#entry-form').submit();
-	});
-
-	// Bind function to click.
-	$('a#cancel').bind("click", function() {
-		// Close entry form.
-		closeEntryForm();
 	});
 }
 
@@ -133,14 +125,5 @@ function initialize() {
 		event.preventDefault();
 		var paramUrl = $(this).attr("href");
 		doAjaxGet(paramUrl);
-	});
-
-	/*
-	 * Initialize dialog.
-	 */
-	$("#dialog-entry-form").dialog({
-		autoOpen : false,
-		modal : true,
-		width : "400px"
 	});
 }
