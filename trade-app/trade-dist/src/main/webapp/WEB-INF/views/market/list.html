@@ -83,29 +83,7 @@
 					class="btn btn-default">削除</a>
 			</div>
 		</div>
-		<div id="dialog-entry-form" title="Market Entry Form"
-			th:attr="title=#{view.market.list.dialog-entry-form.title}"></div>
-		<div id="dialog" title="Confirmation Required"
-			th:attr="title=#{view.market.list.dialog.title}"
-			th:text="#{view.market.list.dialog.message}">Are you sure about
-			this?</div>
-		<script type="text/javascript" th:inline="javascript">
-			/*<![CDATA[*/
-			function showDialog(paramUrl) {
-				$("#dialog").dialog({
-					buttons : {
-						[[#{view.market.list.dialog.confirm}]] : function() {
-							doAjaxDelete(paramUrl);
-						},
-						[[#{view.market.list.dialog.cancel}]] : function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-				$("#dialog").dialog("open");
-			}
-			/*]]>*/
-		</script>
+		<div id="dialog-entry-form"></div>
 	</div>
 </body>
 </html>

@@ -23,6 +23,15 @@
 </head>
 <body>
 	<div th:fragment="form" th:remove="tag">
+		<div id="title" th:switch="${marketForm.operationMode}"
+			style="display: none">
+			<p th:case="${T(com.akmans.trade.core.enums.OperationMode).NEW}"
+				th:text="#{view.market.entry-form.new.title }">New</p>
+			<p th:case="${T(com.akmans.trade.core.enums.OperationMode).EDIT}"
+				th:text="#{view.market.entry-form.update.title }">Update</p>
+			<p th:case="${T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+				th:text="#{view.market.entry-form.delete.title }">Delete</p>
+		</div>
 		<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
 			th:object="${marketForm}" th:action="@{/markets/post}"
 			class="form-horizontal form-dialog">
@@ -32,23 +41,33 @@
 					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
 				</ul>
 			</div>
-			<div id="messages" style="display : none"></div>
+			<div id="messages" style="display: none"></div>
 			<div class="form-group"
 				th:attrappend="class=${#fields.hasErrors('code')}? ' has-error' ">
 				<div class="col-md-3 control-label"
 					th:text="#{view.market.entry-form.code}">コード</div>
-				<div class="col-md-9">
+				<div class="col-md-9"
+					th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).NEW}">
 					<input type="text" id="code" name="code" value=""
-						class="form-control" th:field="*{code}" />
+						class="form-control" th:field="*{code}" placeholder="Code"
+						th:attr="placeHolder=#{view.market.entry-form.code}" />
 				</div>
+				<div class="col-md-9 form-control-static"
+					th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).NEW}"
+					th:text="*{code}"></div>
 			</div>
 			<div class="form-group"
 				th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
 				<div class="col-md-3 control-label"
 					th:text="#{view.market.entry-form.name}">名称</div>
-				<div class="col-md-9">
+				<div class="col-md-9 form-control-static"
+					th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+					th:text="*{name}"></div>
+				<div class="col-md-9"
+					th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE}">
 					<input type="text" id="name" name="name" value=""
-						class="form-control" th:field="*{name}" />
+						class="form-control" th:field="*{name}" placeholder="Name"
+						th:attr="placeHolder=#{view.market.entry-form.name}" />
 				</div>
 			</div>
 			<div class="form-group">

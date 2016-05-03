@@ -43,21 +43,35 @@ public class MarketServiceImpl implements MarketService {
 		}
 	}
 
-	public void save(MstMarket market, OperationMode mode) throws TradeException {
+	public void operation(MstMarket market, OperationMode mode) throws TradeException {
 		logger.debug("the market is {}", market);
 		logger.debug("the mode is {}", mode);
-		if(mode == OperationMode.EDIT) {
+		switch (mode) {
+		case NEW: {
+			if (mstMarketDao.findOne(market.getCode()).isPresent()) {
+				throw new TradeException(
+						CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", market.getCode()));
+			}
+			mstMarketDao.save(market);
+			break;
+		}
+		case EDIT: {
 			MstMarket origin = findOne(market.getCode());
 			if (!origin.getUpdatedDate().equals(market.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
+				throw new TradeException(
+						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
 			}
-		} else if (mode == OperationMode.NEW && mstMarketDao.findOne(market.getCode()).isPresent()) {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", market.getCode()));
+			mstMarketDao.save(market);
+			break;
 		}
-		mstMarketDao.save(market);
-	}
-
-	public void delete(Integer code) throws TradeException {
-		mstMarketDao.delete(findOne(code));
+		case DELETE: {
+			MstMarket origin = findOne(market.getCode());
+			if (!origin.getUpdatedDate().equals(market.getUpdatedDate())) {
+				throw new TradeException(
+						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
+			}
+			mstMarketDao.delete(market);
+		}
+		}
 	}
 }

@@ -25,38 +25,11 @@ function doAjaxGet(url) {
 }
 
 /*
- * Ajax function to process deletion.
- */
-function doAjaxDelete(url) {
-	// Do ajax process.
-	$.ajax({
-		type : "GET",
-		url : url,
-		dataType : "html",
-		success : function(data, status, xhr) {
-			// Close entry form.
-			closeEntryForm();
-			// Destroy dialog.
-			$("#dialog-entry-form").dialog("destroy").remove();
-			$("#dialog").dialog("destroy").remove();
-			// Render container.
-			$('#container').html(data);
-			// Bind event to button
-			initialize();
-			// Close dialog.
-			$("#dialog").dialog("close");
-		},
-		error : function(XMLHttpRequest, status, errorThrown) {
-			// Handle error.
-		}
-	});
-}
-
-/*
  * Show entry form.
  */
 function showEntryForm() {
-	// Show entry form using slide down.
+	// Show entry form dialog.
+	$("#dialog-entry-form").dialog({ title: $("#title").text() });
 	$("#dialog-entry-form").dialog("open");
 
 	// initialize event.
@@ -139,7 +112,7 @@ function initialize() {
 		// Prevent default action.
 		event.preventDefault();
 		var paramUrl = $(this).attr("href");
-		doAjaxGet(paramUrl)
+		doAjaxGet(paramUrl);
 	});
 
 	/*
@@ -149,7 +122,7 @@ function initialize() {
 		// Prevent default action.
 		event.preventDefault();
 		var paramUrl = $(this).attr("href");
-		doAjaxGet(paramUrl)
+		doAjaxGet(paramUrl);
 	});
 
 	/*
@@ -159,15 +132,7 @@ function initialize() {
 		// Prevent actual form submit and page reload
 		event.preventDefault();
 		var paramUrl = $(this).attr("href");
-		showDialog(paramUrl);
-	});
-
-	/*
-	 * Initialize dialog.
-	 */
-	$("#dialog").dialog({
-		autoOpen : false,
-		modal : true
+		doAjaxGet(paramUrl);
 	});
 
 	/*

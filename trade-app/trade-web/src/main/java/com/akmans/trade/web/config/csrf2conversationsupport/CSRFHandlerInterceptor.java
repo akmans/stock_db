@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.akmans.trade.web.utils.PathConstants;
+
 /**
  * A Spring MVC <code>HandlerInterceptor</code> which is responsible to enforce
  * CSRF token validity on incoming posts requests. The interceptor should be
@@ -23,13 +25,12 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class CSRFHandlerInterceptor extends HandlerInterceptorAdapter {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(CSRFHandlerInterceptor.class);
-	private static final String ACCESS_DENIED_PATH = "/403";
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		logger.debug("Firing CSRFHandler intercept.");
-		if (!request.getMethod().equalsIgnoreCase("POST") || request.getRequestURI().contains(ACCESS_DENIED_PATH)) {
+		if (!request.getMethod().equalsIgnoreCase("POST") || request.getRequestURI().contains(PathConstants.PATH_ACCESS_DENIED)) {
 			logger.debug("<TOKEN> No check!" + request.getRequestURI());
 			// Not a POST - allow the request
 			return true;
@@ -43,7 +44,7 @@ public class CSRFHandlerInterceptor extends HandlerInterceptorAdapter {
 			} else {
 				logger.debug("<TOKEN> Check failed!");
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				request.getRequestDispatcher(ACCESS_DENIED_PATH).forward(request, response);
+				request.getRequestDispatcher(PathConstants.PATH_ACCESS_DENIED).forward(request, response);
 				return false;
 			}
 		}

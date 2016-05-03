@@ -1,6 +1,5 @@
 package com.akmans.trade.web.config;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.MessageSource;
@@ -25,24 +24,25 @@ import org.springframework.web.servlet.support.RequestDataValueProcessor;
 import com.akmans.trade.core.config.TradeCoreConfig;
 import com.akmans.trade.web.config.csrf2conversationsupport.CSRFHandlerInterceptor;
 import com.akmans.trade.web.config.csrf2conversationsupport.CustomRequestDataValueProcessor;
+import com.akmans.trade.web.utils.PathConstants;
+import com.akmans.trade.web.utils.ViewConstants;
 import com.akmans.trade.web.config.SpringSecurityConfig;
 import com.akmans.trade.web.config.csrf2conversationsupport.ConversationalSessionAttributeStore;
 
 @EnableWebMvc
 @Configuration
-@Import({ TradeCoreConfig.class, /*DataSourceConfig.class, JpaConfig.class, RepositoryConfig.class, */ThymeleafConfig.class, SpringSecurityConfig.class })
-@ComponentScan(basePackages = { "com.akmans.trade.web.controller"/*, "com.akmans.trade.core.service.impl"*/ })
+@Import({ TradeCoreConfig.class, ThymeleafConfig.class, SpringSecurityConfig.class })
+@ComponentScan(basePackages = { "com.akmans.trade.web.controller" })
 @EnableSpringDataWebSupport
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-	private static final String MESSAGE_SOURCE1 = "/WEB-INF/i18n/messages";
-	private static final String MESSAGE_SOURCE2 = "classpath:/META-INF/messages/ValidationMessages";
+	private static final String MESSAGE_SOURCE1 = "classpath:/META-INF/web/i18n/messages";
 	private static final int KEEP_ALIVE_CONVERSATIONS = 10;
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/403").setViewName("error/403");
-		registry.addViewController("/login").setViewName("user/login");
+		registry.addViewController(PathConstants.PATH_ACCESS_DENIED).setViewName(ViewConstants.VIEW_ACCESS_DENIED);
+		registry.addViewController(PathConstants.PATH_LOGIN).setViewName(ViewConstants.VIEW_LOGIN);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasenames(MESSAGE_SOURCE1, MESSAGE_SOURCE2);
+		messageSource.setBasename(MESSAGE_SOURCE1);
 		// reload messages every 3600 seconds
 		messageSource.setCacheSeconds(3600);
 		return messageSource;
@@ -88,7 +88,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean(name = "validationMessageSource")
 	public ReloadableResourceBundleMessageSource validationMessageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE2);
+		messageSource.setBasename(MESSAGE_SOURCE1);
 		// reload messages every 3600 seconds
 		messageSource.setCacheSeconds(3600);
 		return messageSource;

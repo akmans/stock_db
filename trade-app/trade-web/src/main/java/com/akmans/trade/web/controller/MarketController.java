@@ -2,7 +2,6 @@ package com.akmans.trade.web.controller;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -28,10 +27,11 @@ import com.akmans.trade.core.service.MarketService;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.web.form.MarketForm;
 import com.akmans.trade.web.utils.PageWrapper;
+import com.akmans.trade.web.utils.PathConstants;
 import com.akmans.trade.web.utils.ViewConstants;
 
 @Controller
-@RequestMapping("/markets")
+@RequestMapping(PathConstants.PATH_MARKETS)
 @SessionAttributes("marketForm")
 public class MarketController {
 
@@ -45,11 +45,11 @@ public class MarketController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String init(ModelMap model, Pageable pageable) {
-		logger.debug("pageable = {}" , pageable);
+		logger.debug("pageable = {}", pageable);
 		Locale locale = LocaleContextHolder.getLocale();
-		logger.debug("Locale = {}" , locale);
+		logger.debug("Locale = {}", locale);
 		Page<MstMarket> page = marketService.findAll(pageable);
-		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
+		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, PathConstants.PATH_MARKETS);
 
 		model.addAttribute("page", markets);
 
@@ -78,13 +78,27 @@ public class MarketController {
 		return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
 	}
 
+	@RequestMapping(value = "/{code}/delete", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
+	public String delete(Locale locale, ModelMap model, @PathVariable Integer code, MarketForm marketForm)
+			throws TradeException {
+		// Set operation mode.
+		marketForm.setOperationMode(OperationMode.DELETE);
+		// Get records
+		MstMarket market = marketService.findOne(code);
+		BeanUtils.copyProperties(market, marketForm);
+
+		// render path
+		return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
+	}
+
 	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	public String confirm(Locale locale, ModelMap model, @Valid final MarketForm marketForm, BindingResult bindingResult, Pageable pageable) throws TradeException {
+	public String confirm(Locale locale, ModelMap model, @Valid final MarketForm marketForm,
+			BindingResult bindingResult, Pageable pageable) throws TradeException {
 		logger.debug("The marketForm = {}", marketForm);
 		String message = null;
 		if (bindingResult.hasErrors()) {
 			List<ObjectError> errors = bindingResult.getAllErrors();
-			for(ObjectError error : errors) {
+			for (ObjectError error : errors) {
 				logger.debug("ERRORS" + error.getDefaultMessage());
 			}
 			// errors
@@ -93,45 +107,24 @@ public class MarketController {
 			// render path
 			return ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT;
 		} else {
-			MstMarket market = null;
-			if (marketForm.getOperationMode() == OperationMode.EDIT) {
-				market = marketService.findOne(marketForm.getCode());
-				logger.debug("Updated.");
-			} else {
-				market = new MstMarket();
-				logger.debug("Inserted.");
-			}
-
+			MstMarket market = new MstMarket();
 			BeanUtils.copyProperties(marketForm, market);
-			marketService.save(market, marketForm.getOperationMode());
+			marketService.operation(market, marketForm.getOperationMode());
 
 			if (marketForm.getOperationMode() == OperationMode.EDIT) {
 				message = messageSource.getMessage("controller.market.update.finish", null, locale);
-			} else {
+			} else if (marketForm.getOperationMode() == OperationMode.NEW) {
 				message = messageSource.getMessage("controller.market.insert.finish", null, locale);
+			} else if (marketForm.getOperationMode() == OperationMode.DELETE) {
+				message = messageSource.getMessage("controller.market.delete.finish", null, locale);
 			}
 			model.addAttribute("cssStyle", "alert-success");
 		}
 		// Get all records
 		Page<MstMarket> page = marketService.findAll(pageable);
-		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
+		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, PathConstants.PATH_MARKETS);
 		model.addAttribute("page", markets);
 		model.addAttribute("message", message);
-
-		// render path
-		return ViewConstants.VIEW_MARKET_LIST_CONTENT_FRAGEMENT;
-	}
-
-	@RequestMapping(value = "/{code}/delete", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String delete(Locale locale, ModelMap model, @PathVariable Integer code, Pageable pageable) throws TradeException {
-		marketService.delete(code);
-		// Get all records
-		Page<MstMarket> page = marketService.findAll(pageable);
-		PageWrapper<MstMarket> markets = new PageWrapper<MstMarket>(page, "/markets");
-		model.addAttribute("page", markets);
-
-		model.addAttribute("message", messageSource.getMessage("controller.market.delete.finish", null, locale));
-		model.addAttribute("cssStyle", "alert-success");
 
 		// render path
 		return ViewConstants.VIEW_MARKET_LIST_CONTENT_FRAGEMENT;

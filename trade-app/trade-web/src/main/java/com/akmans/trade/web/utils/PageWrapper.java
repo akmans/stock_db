@@ -25,7 +25,7 @@ public class PageWrapper<T> {
 		this.url = url;
 		items = new ArrayList<PageItem>();
 
-		currentNumber = page.getNumber(); // + 1; // start from 1 to match page.page
+		currentNumber = page.getNumber();
 
 		int start, size;
 		if (page.getTotalPages() <= MAX_PAGE_ITEM_DISPLAY) {

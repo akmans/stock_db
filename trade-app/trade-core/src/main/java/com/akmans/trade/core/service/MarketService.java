@@ -12,7 +12,5 @@ public interface MarketService {
 
 	public MstMarket findOne(Integer code) throws TradeException;
 
-	public void save(MstMarket martket, OperationMode mode) throws TradeException;
-
-	public void delete(Integer code) throws TradeException;
+	public void operation(MstMarket martket, OperationMode mode) throws TradeException;
 }
