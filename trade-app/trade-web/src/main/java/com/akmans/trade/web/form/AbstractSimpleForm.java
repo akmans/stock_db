@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import com.akmans.trade.core.enums.OperationMode;
 
-public class BaseForm {
+public abstract class AbstractSimpleForm {
 	private ZonedDateTime createdDate;
 
 	private ZonedDateTime updatedDate;

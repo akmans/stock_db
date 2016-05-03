@@ -6,7 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class MarketForm extends BaseForm implements Serializable {
+public class MarketForm extends AbstractSimpleForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** code. */

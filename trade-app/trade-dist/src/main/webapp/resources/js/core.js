@@ -79,7 +79,7 @@ function initializeEntryForm() {
 			error : function(xhr, status, error) {
 				var data = $(xhr.responseText);
 				var messages = $('#container', data);
-				$("#messages").html(messages).show();
+				$("#form-messages").html(messages).show();
 			}
 		})
 	});
