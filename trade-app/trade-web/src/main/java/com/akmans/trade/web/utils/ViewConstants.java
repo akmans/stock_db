@@ -9,5 +9,11 @@ public class ViewConstants {
 
 	public final static String VIEW_MARKET_LIST_CONTENT_FRAGEMENT = "market/list :: content";
 
-	public final static String VIEW_ENTRY_FORM_FORM_FRAGEMENT = "market/entry-form :: form";
+	public final static String VIEW_MARKET_FORM_FRAGEMENT = "market/entry-form :: form";
+
+	public final static String VIEW_SCALE_LIST = "scale/list";
+
+	public final static String VIEW_SCALE_LIST_CONTENT_FRAGEMENT = "scale/list :: content";
+
+	public final static String VIEW_SCALE_FORM_FRAGEMENT = "scale/entry-form :: form";
 }

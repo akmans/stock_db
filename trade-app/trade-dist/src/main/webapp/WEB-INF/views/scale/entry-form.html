@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>規模登録フォーム</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="form" th:remove="tag">
+		<div class="modal-header" th:switch="${scaleForm.operationMode}">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">×</button>
+			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).NEW}"
+				th:text="#{view.scale.entry-form.new.title }">New</h4>
+			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).EDIT}"
+				th:text="#{view.scale.entry-form.update.title }">Update</h4>
+			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+				th:text="#{view.scale.entry-form.delete.title }">Delete</h4>
+		</div>
+		<div class="modal-body">
+			<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
+				th:object="${scaleForm}" th:action="@{/scales/post}"
+				class="form-horizontal form-dialog">
+				<div th:if="${#fields.hasErrors('*')}"
+					th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
+					<ul>
+						<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+					</ul>
+				</div>
+				<div id="form-messages">
+					<div th:unless="${#strings.isEmpty(message)}"
+						th:class="${'alert ' + #strings.defaultString(cssStyle, '')}"
+						th:text="${message}">Form Messages</div>
+				</div>
+				<div class="form-group"
+					th:attrappend="class=${#fields.hasErrors('code')}? ' has-error' ">
+					<div class="col-md-3 control-label"
+						th:text="#{view.scale.entry-form.code}">コード</div>
+					<div class="col-md-9"
+						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).NEW}">
+						<input type="text" id="code" name="code" value=""
+							class="form-control" th:field="*{code}" placeholder="Code"
+							th:attr="placeHolder=#{view.scale.entry-form.code}" />
+					</div>
+					<div class="col-md-9 form-control-static"
+						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).NEW}"
+						th:text="*{code}">123</div>
+				</div>
+				<div class="form-group"
+					th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
+					<div class="col-md-3 control-label"
+						th:text="#{view.scale.entry-form.name}">名称</div>
+					<div class="col-md-9 form-control-static"
+						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+						th:text="*{name}">Name</div>
+					<div class="col-md-9"
+						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE}">
+						<input type="text" id="name" name="name" value=""
+							class="form-control" th:field="*{name}" placeholder="Name"
+							th:attr="placeHolder=#{view.scale.entry-form.name}" />
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a id="confirm" class="btn btn-primary"
+				th:text="#{view.scale.entry-form.confirm}">Save changes</a> <a
+				id="cancel" class="btn btn-default" data-dismiss="modal"
+				th:text="#{view.scale.entry-form.cancel}">Close</a>
+		</div>
+	</div>
+</body>
+</html>

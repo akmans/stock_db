@@ -27,7 +27,7 @@ public class MarketController extends AbstractSimpleController<MarketForm, MstMa
 	private MarketService marketService;
 
 	public MarketController() {
-		super(PathConstants.PATH_MARKETS, ViewConstants.VIEW_MARKET_LIST, ViewConstants.VIEW_ENTRY_FORM_FORM_FRAGEMENT,
+		super(PathConstants.PATH_MARKETS, ViewConstants.VIEW_MARKET_LIST, ViewConstants.VIEW_MARKET_FORM_FRAGEMENT,
 				ViewConstants.VIEW_MARKET_LIST_CONTENT_FRAGEMENT);
 	}
 

@@ -1,11 +1,9 @@
 package com.akmans.trade.core.service.impl;
 
-import java.util.Locale;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +26,6 @@ public class MarketServiceImpl implements MarketService {
 	private MstMarketDao mstMarketDao;
 
 	public Page<MstMarket> findAll(Pageable pageable) {
-		Locale locale = LocaleContextHolder.getLocale();
-		logger.debug("Locale in MarketServiceImpl = {}", locale);
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
 		return mstMarketDao.findAll(pg);
 	}
