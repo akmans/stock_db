@@ -6,5 +6,9 @@ CREATE TABLE mst_sector17
 (
   code integer NOT NULL,
   name character varying(200),
-  CONSTRAINT sector17_pkey PRIMARY KEY (code )
+  created_date timestamp with time zone,
+  updated_date timestamp with time zone,
+  created_by character varying(20),
+  updated_by character varying(20),
+ CONSTRAINT sector17_pkey PRIMARY KEY (code )
 );

@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "mst_sector33")
-public class MstSector33 {
+public class MstSector33 extends AbstractEntity {
 
 	@Id
 	private Integer code;
@@ -35,6 +35,7 @@ public class MstSector33 {
     public String toString() {
         return this.getClass().getAnnotation(Table.class).name()
         		+ " [code=" + code
-        		+ ", name=" + name + "]";
+        		+ ", name=" + name
+        		+ super.toString() + "]";
     }
 }

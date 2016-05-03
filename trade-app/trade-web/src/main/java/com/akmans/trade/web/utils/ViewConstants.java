@@ -16,4 +16,16 @@ public class ViewConstants {
 	public final static String VIEW_SCALE_LIST_CONTENT_FRAGEMENT = "scale/list :: content";
 
 	public final static String VIEW_SCALE_FORM_FRAGEMENT = "scale/entry-form :: form";
+
+	public final static String VIEW_SECTOR17_LIST = "sector17/list";
+
+	public final static String VIEW_SECTOR17_LIST_CONTENT_FRAGEMENT = "sector17/list :: content";
+
+	public final static String VIEW_SECTOR17_FORM_FRAGEMENT = "sector17/entry-form :: form";
+
+	public final static String VIEW_SECTOR33_LIST = "sector33/list";
+
+	public final static String VIEW_SECTOR33_LIST_CONTENT_FRAGEMENT = "sector33/list :: content";
+
+	public final static String VIEW_SECTOR33_FORM_FRAGEMENT = "sector33/entry-form :: form";
 }
