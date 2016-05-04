@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstSector17Dao;
+import com.akmans.trade.core.springdata.jpa.dao.MstSector17Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
@@ -15,7 +15,7 @@ public class MstSector17Sample {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 		// Get dao object
-		MstSector17Dao dao = context.getBean(MstSector17Dao.class);
+		MstSector17Repository dao = context.getBean(MstSector17Repository.class);
  
         // Print all records
         List<MstSector17> sector17s = (List<MstSector17>) dao.findAll();

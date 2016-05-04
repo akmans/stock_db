@@ -15,19 +15,19 @@ import com.akmans.trade.core.springdata.auditing.UsernameAuditorAware;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef = "auditorProvider")
-@EnableJpaRepositories(basePackages = "com.akmans.trade.core.springdata.jpa.dao")
+@EnableJpaRepositories(basePackages = "com.akmans.trade.core.springdata.jpa.dao", namedQueriesLocation = "classpath:/META-INF/core/jpa/jpa-named-queries.properties")
 @EnableTransactionManagement
 public class RepositoryConfig {
 
 	@Bean
-    AuditorAware<String> auditorProvider() {
-        return new UsernameAuditorAware();
-    }
+	AuditorAware<String> auditorProvider() {
+		return new UsernameAuditorAware();
+	}
 
-    @Bean
-    DateTimeService currentTimeDateTimeService() {
-        return new CurrentTimeDateTimeService();
-    }
+	@Bean
+	DateTimeService currentTimeDateTimeService() {
+		return new CurrentTimeDateTimeService();
+	}
 
 	@Bean
 	DateTimeProvider dateTimeProvider(DateTimeService dateTimeService) {

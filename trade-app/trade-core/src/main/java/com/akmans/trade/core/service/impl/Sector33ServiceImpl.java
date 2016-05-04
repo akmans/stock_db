@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.Sector33Service;
-import com.akmans.trade.core.springdata.jpa.dao.MstSector33Dao;
+import com.akmans.trade.core.springdata.jpa.dao.MstSector33Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 
@@ -23,15 +23,15 @@ public class Sector33ServiceImpl implements Sector33Service {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
 	@Autowired
-	private MstSector33Dao mstSector33Dao;
+	private MstSector33Repository mstSector33Repository;
 
 	public Page<MstSector33> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstSector33Dao.findAll(pg);
+		return mstSector33Repository.findAll(pg);
 	}
 
 	public MstSector33 findOne(Integer code) throws TradeException {
-		Optional<MstSector33> sector33 = mstSector33Dao.findOne(code);
+		Optional<MstSector33> sector33 = mstSector33Repository.findOne(code);
 		if (sector33.isPresent()) {
 			return sector33.get();
 		} else {
@@ -44,11 +44,11 @@ public class Sector33ServiceImpl implements Sector33Service {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			if (mstSector33Dao.findOne(sector33.getCode()).isPresent()) {
+			if (mstSector33Repository.findOne(sector33.getCode()).isPresent()) {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector33.record.alreadyexist", sector33.getCode()));
 			}
-			mstSector33Dao.save(sector33);
+			mstSector33Repository.save(sector33);
 			break;
 		}
 		case EDIT: {
@@ -57,7 +57,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
 			}
-			mstSector33Dao.save(sector33);
+			mstSector33Repository.save(sector33);
 			break;
 		}
 		case DELETE: {
@@ -66,7 +66,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
 			}
-			mstSector33Dao.delete(sector33);
+			mstSector33Repository.delete(sector33);
 		}
 		}
 	}

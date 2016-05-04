@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstScaleDao;
+import com.akmans.trade.core.springdata.jpa.dao.MstScaleRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
@@ -15,7 +15,7 @@ public class MstScaleSample {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 		// Get dao object
-		MstScaleDao dao = context.getBean(MstScaleDao.class);
+		MstScaleRepository dao = context.getBean(MstScaleRepository.class);
  
         // Print all records
         List<MstScale> scales = (List<MstScale>) dao.findAll();

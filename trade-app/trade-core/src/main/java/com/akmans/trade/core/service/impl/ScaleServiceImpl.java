@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.ScaleService;
-import com.akmans.trade.core.springdata.jpa.dao.MstScaleDao;
+import com.akmans.trade.core.springdata.jpa.dao.MstScaleRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 
@@ -23,15 +23,15 @@ public class ScaleServiceImpl implements ScaleService {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
 	@Autowired
-	private MstScaleDao mstScaleDao;
+	private MstScaleRepository mstScaleRepository;
 
 	public Page<MstScale> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstScaleDao.findAll(pg);
+		return mstScaleRepository.findAll(pg);
 	}
 
 	public MstScale findOne(Integer code) throws TradeException {
-		Optional<MstScale> scale = mstScaleDao.findOne(code);
+		Optional<MstScale> scale = mstScaleRepository.findOne(code);
 		if (scale.isPresent()) {
 			return scale.get();
 		} else {
@@ -44,11 +44,11 @@ public class ScaleServiceImpl implements ScaleService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			if (mstScaleDao.findOne(scale.getCode()).isPresent()) {
+			if (mstScaleRepository.findOne(scale.getCode()).isPresent()) {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", scale.getCode()));
 			}
-			mstScaleDao.save(scale);
+			mstScaleRepository.save(scale);
 			break;
 		}
 		case EDIT: {
@@ -57,7 +57,7 @@ public class ScaleServiceImpl implements ScaleService {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", scale.getCode()));
 			}
-			mstScaleDao.save(scale);
+			mstScaleRepository.save(scale);
 			break;
 		}
 		case DELETE: {
@@ -66,7 +66,7 @@ public class ScaleServiceImpl implements ScaleService {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", scale.getCode()));
 			}
-			mstScaleDao.delete(scale);
+			mstScaleRepository.delete(scale);
 		}
 		}
 	}

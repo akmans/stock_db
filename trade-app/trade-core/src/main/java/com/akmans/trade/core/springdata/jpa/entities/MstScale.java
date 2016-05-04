@@ -1,8 +1,13 @@
 package com.akmans.trade.core.springdata.jpa.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +19,9 @@ public class MstScale extends AbstractEntity {
 
 	@Column(name = "name", length = 100)
     private String name;
+
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,mappedBy="code")
+	private List<MstInstrument> instruments;
 
 	public void setCode(Integer code) {
 		this.code = code;
@@ -29,6 +37,14 @@ public class MstScale extends AbstractEntity {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public void setInstruments(List<MstInstrument> instruments) {
+		this.instruments = instruments;
+	}
+
+	public List<MstInstrument> getInstruments() {
+		return this.instruments;
 	}
 
 	@Override

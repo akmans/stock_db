@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstMarketDao;
+import com.akmans.trade.core.springdata.jpa.dao.MstMarketRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
@@ -15,7 +15,7 @@ public class MstMarketSample {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 		// Get dao object
-		MstMarketDao dao = context.getBean(MstMarketDao.class);
+		MstMarketRepository dao = context.getBean(MstMarketRepository.class);
  
         // Print all records
         List<MstMarket> markets = (List<MstMarket>) dao.findAll();

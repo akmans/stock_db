@@ -13,4 +13,6 @@ public class PathConstants {
 	public final static String PATH_SECTOR17S = "/sector17s";
 
 	public final static String PATH_SECTOR33S = "/sector33s";
+
+	public final static String PATH_INSTRUMENTS = "/instruments";
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MarketService;
-import com.akmans.trade.core.springdata.jpa.dao.MstMarketDao;
+import com.akmans.trade.core.springdata.jpa.dao.MstMarketRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 
@@ -23,15 +23,15 @@ public class MarketServiceImpl implements MarketService {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MarketServiceImpl.class);
 
 	@Autowired
-	private MstMarketDao mstMarketDao;
+	private MstMarketRepository mstMarketRepository;
 
 	public Page<MstMarket> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstMarketDao.findAll(pg);
+		return mstMarketRepository.findAll(pg);
 	}
 
 	public MstMarket findOne(Integer code) throws TradeException {
-		Optional<MstMarket> market = mstMarketDao.findOne(code);
+		Optional<MstMarket> market = mstMarketRepository.findOne(code);
 		if (market.isPresent()) {
 			return market.get();
 		} else {
@@ -44,11 +44,11 @@ public class MarketServiceImpl implements MarketService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			if (mstMarketDao.findOne(market.getCode()).isPresent()) {
+			if (mstMarketRepository.findOne(market.getCode()).isPresent()) {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", market.getCode()));
 			}
-			mstMarketDao.save(market);
+			mstMarketRepository.save(market);
 			break;
 		}
 		case EDIT: {
@@ -57,7 +57,7 @@ public class MarketServiceImpl implements MarketService {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
 			}
-			mstMarketDao.save(market);
+			mstMarketRepository.save(market);
 			break;
 		}
 		case DELETE: {
@@ -66,7 +66,7 @@ public class MarketServiceImpl implements MarketService {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
 			}
-			mstMarketDao.delete(market);
+			mstMarketRepository.delete(market);
 		}
 		}
 	}

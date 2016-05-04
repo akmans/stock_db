@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.Sector17Service;
-import com.akmans.trade.core.springdata.jpa.dao.MstSector17Dao;
+import com.akmans.trade.core.springdata.jpa.dao.MstSector17Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 
@@ -23,15 +23,15 @@ public class Sector17ServiceImpl implements Sector17Service {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
 	@Autowired
-	private MstSector17Dao mstSector17Dao;
+	private MstSector17Repository mstSector17Repository;
 
 	public Page<MstSector17> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstSector17Dao.findAll(pg);
+		return mstSector17Repository.findAll(pg);
 	}
 
 	public MstSector17 findOne(Integer code) throws TradeException {
-		Optional<MstSector17> sector17 = mstSector17Dao.findOne(code);
+		Optional<MstSector17> sector17 = mstSector17Repository.findOne(code);
 		if (sector17.isPresent()) {
 			return sector17.get();
 		} else {
@@ -44,11 +44,11 @@ public class Sector17ServiceImpl implements Sector17Service {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			if (mstSector17Dao.findOne(sector17.getCode()).isPresent()) {
+			if (mstSector17Repository.findOne(sector17.getCode()).isPresent()) {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector17.record.alreadyexist", sector17.getCode()));
 			}
-			mstSector17Dao.save(sector17);
+			mstSector17Repository.save(sector17);
 			break;
 		}
 		case EDIT: {
@@ -57,7 +57,7 @@ public class Sector17ServiceImpl implements Sector17Service {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector17.record.inconsistent", sector17.getCode()));
 			}
-			mstSector17Dao.save(sector17);
+			mstSector17Repository.save(sector17);
 			break;
 		}
 		case DELETE: {
@@ -66,7 +66,7 @@ public class Sector17ServiceImpl implements Sector17Service {
 				throw new TradeException(
 						CoreMessageUtils.getMessage("core.service.sector17.record.inconsistent", sector17.getCode()));
 			}
-			mstSector17Dao.delete(sector17);
+			mstSector17Repository.delete(sector17);
 		}
 		}
 	}

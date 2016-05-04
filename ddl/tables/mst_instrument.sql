@@ -10,6 +10,10 @@ CREATE TABLE mst_instrument
   sector17_code integer,
   scale_code integer,
   market_code integer,
+  created_date timestamp with time zone,
+  updated_date timestamp with time zone,
+  created_by character varying(20),
+  updated_by character varying(20),
   CONSTRAINT instrument_pkey PRIMARY KEY (code ),
   CONSTRAINT market_fkey FOREIGN KEY (market_code)
       REFERENCES mst_market (code) MATCH SIMPLE
