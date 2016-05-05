@@ -68,12 +68,18 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 	}
 
 	@RequestMapping(value = "/{code}/edit", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	String initEdit(ModelMap model, @PathVariable Integer code, T commandForm) throws TradeException {
-		// Set operation mode.
-		commandForm.setOperationMode(OperationMode.EDIT);
-		// Get records
-		E entity = findOne(code);
-		BeanUtils.copyProperties(entity, commandForm);
+	String initEdit(ModelMap model, @PathVariable Integer code, T commandForm) {
+		try {
+			// Set operation mode.
+			commandForm.setOperationMode(OperationMode.EDIT);
+			// Get records
+			E entity = findOne(code);
+			BeanUtils.copyProperties(entity, commandForm);
+		} catch (TradeException te) {
+			// errors
+			model.addAttribute("cssStyle", "alert-danger");
+			model.addAttribute("message", te.getMessage());
+		}
 
 		// render path
 		return viewEntryFormFragement;

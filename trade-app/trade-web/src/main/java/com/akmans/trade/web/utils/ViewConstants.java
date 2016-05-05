@@ -34,4 +34,16 @@ public class ViewConstants {
 	public final static String VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT = "instrument/list :: content";
 
 	public final static String VIEW_INSTRUMENT_FORM_FRAGEMENT = "instrument/entry-form :: form";
+
+	public final static String VIEW_SPECIAL_ITEM_LIST = "specialitem/list";
+
+	public final static String VIEW_SPECIAL_ITEM_LIST_CONTENT_FRAGEMENT = "specialitem/list :: content";
+
+	public final static String VIEW_SPECIAL_ITEM_FORM_FRAGEMENT = "specialitem/entry-form :: form";
+
+	public final static String VIEW_SPECIAL_DETAIL_LIST = "specialdetail/list";
+
+	public final static String VIEW_SPECIAL_DETAIL_LIST_CONTENT_FRAGEMENT = "specialdetail/list :: content";
+
+	public final static String VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT = "specialdetail/entry-form :: form";
 }

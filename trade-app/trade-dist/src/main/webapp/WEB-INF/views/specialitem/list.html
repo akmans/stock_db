@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title th:text="#{view.specialitem.list.title}">専用支出一覧</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<!--/* Content of this page will be decorated by the elements of layout.html (layout) */-->
+	<div layout:fragment="content" th:fragment="content" th:remove="tag">
+		<div id="messages"
+			th:class="${'alert ' + #strings.defaultString(cssStyle, '')}"
+			th:unless="${#strings.isEmpty(message)}">
+			<div th:text="${message}">メッセージはここに表示されます。</div>
+		</div>
+		<h3 th:text="#{view.specialitem.list.title}">専用支出一覧</h3>
+		<div id="pagination_top" th:include="layout/pagination :: pagination">Pagination</div>
+		<div class="clearfix"></div>
+		<div class="row header">
+			<div class="col-xs-3 col-md-1" th:text="#{view.specialitem.list.code}">コード</div>
+			<div class="col-xs-9 col-md-4" th:text="#{view.specialitem.list.name}">名称</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-6 col-md-2"
+				th:text="#{view.specialitem.list.updatedby}">更新者</div>
+			<div class="col-xs-6 col-md-2"
+				th:text="#{view.specialitem.list.updateddate}">更新日</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
+				<a id="add" href="#" th:href="@{/specialitems/new}"
+					th:text="#{view.specialitem.list.button.add}" class="btn btn-default">新規</a>
+			</div>
+		</div>
+		<div class="row" th:each="item : ${page.content}">
+			<div class="col-xs-3 col-md-1" th:text="${item.code}">ID001</div>
+			<div class="col-xs-9 col-md-4" th:text="${item.name}">Name 001</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-6 col-md-2" th:text="${item.updatedBy}">tester</div>
+			<div class="col-xs-6 col-md-2"
+				th:text="${#temporals.format(item.updatedDate, 'yyyy-MM-dd HH:mm')}">2016-04-01
+				17:18:19</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
+				<a href="#" th:href="@{/specialitems/{code}/edit(code=${item.code})}"
+					th:text="#{view.specialitem.list.button.edit}"
+					class="btn btn-default edit">編集</a> <a href="#"
+					th:href="@{/specialitems/{code}/delete(code=${item.code})}"
+					th:text="#{view.specialitem.list.button.delete}"
+					class="btn btn-default delete">削除</a>
+			</div>
+		</div>
+		<div class="row" th:remove="all">
+			<div class="col-xs-3 col-md-1">ID002</div>
+			<div class="col-xs-9 col-md-4">Name 002</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-6 col-md-2">tester</div>
+			<div class="col-xs-6 col-md-2">2016-04-01 17:18:19</div>
+			<!-- Add the extra clearfix for only the required viewport -->
+			<div class="clearfix visible-xs-block"></div>
+			<div class="col-xs-12 col-md-3 text-right">
+				<a href="#" class="btn btn-default">編集</a> <a href="#"
+					class="btn btn-default">削除</a>
+			</div>
+		</div>
+		<div class="modal fade" id="dialogModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content" id="dialog-entry-form"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

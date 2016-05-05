@@ -8,6 +8,6 @@ import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 
 public interface MstInstrumentDao extends BaseRepository<MstInstrument, Integer> {
 
-	// Query by code
+	// Query with pagination.
 	List<Object[]> findPage(Pageable pageRequest);
 }
