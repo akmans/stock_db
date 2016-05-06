@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.TrnStockDataDao;
+import com.akmans.trade.core.springdata.jpa.repositories.TrnStockDataDao;
 import com.akmans.trade.core.springdata.jpa.entities.TrnStockData;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 

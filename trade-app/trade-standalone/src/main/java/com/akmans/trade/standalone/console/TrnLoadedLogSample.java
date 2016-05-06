@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.TrnLoadedLogDao;
+import com.akmans.trade.core.springdata.jpa.repositories.TrnLoadedLogDao;
 import com.akmans.trade.core.springdata.jpa.entities.TrnLoadedLog;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 

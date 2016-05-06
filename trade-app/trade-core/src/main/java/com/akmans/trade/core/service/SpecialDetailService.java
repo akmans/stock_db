@@ -10,7 +10,7 @@ import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialDetail;
 public interface SpecialDetailService {
 	public Page<TrnSpecialDetail> findAll(Pageable pageRequest);
 
-	public Page<TrnSpecialDetail> findPage(Pageable pageRequest);
+	public Page<TrnSpecialDetail> findPage(String name, Integer itemCode, Pageable pageRequest);
 
 	public TrnSpecialDetail findOne(Long code) throws TradeException;
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.ScaleService;
-import com.akmans.trade.core.springdata.jpa.dao.MstScaleRepository;
+import com.akmans.trade.core.springdata.jpa.repositories.MstScaleRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 

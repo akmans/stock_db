@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,12 +14,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.SpecialDetailService;
-import com.akmans.trade.core.springdata.jpa.dao.TrnSpecialDetailRepository;
+import com.akmans.trade.core.springdata.jpa.repositories.TrnSpecialDetailRepository;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialDetail;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialItem;
 import com.akmans.trade.core.utils.CoreMessageUtils;
@@ -27,12 +31,33 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
 	@Autowired
+	private LocalContainerEntityManagerFactoryBean emf;
+
+	@Autowired
 	private TrnSpecialDetailRepository trnSpecialDetailRepository;
 
-	public Page<TrnSpecialDetail> findPage(Pageable pageable) {
+	public Page<TrnSpecialDetail> findPage(String name, Integer itemCode, Pageable pageable) {
+		String jpql = "select specialDetail, specialItem from TrnSpecialDetail as specialDetail "
+				+ "left outer join specialDetail.specialItem as specialItem where 1 = 1 ";
+		if (name != null && name.length() > 0) {
+			jpql = jpql + "and specialDetail.name like :name ";
+		}
+		if (itemCode != null) {
+			jpql = jpql + "and specialItem.code = :itemCode ";
+		}
+		Query query = emf.getObject().createEntityManager().createQuery(jpql);
+		if (name != null && name.length() > 0) {
+			query.setParameter("name", "%" + name + "%");
+		}
+		if (itemCode != null) {
+			query.setParameter("itemCode", itemCode);
+		}
+		query.setFirstResult(pageable.getOffset());
+		query.setMaxResults(pageable.getPageSize());
+		List<Object[]> list = query.getResultList();
 		long count = trnSpecialDetailRepository.count();
-		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		List<Object[]> list = trnSpecialDetailRepository.findPage(pg);
+//		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
+//		List<Object[]> list = trnSpecialDetailRepository.findPage(name, itemCode, pg);
 		ArrayList<TrnSpecialDetail> content = new ArrayList<TrnSpecialDetail>();
 		for(Object[] item : list) {
 			TrnSpecialDetail specialDetail = (TrnSpecialDetail)item[0];

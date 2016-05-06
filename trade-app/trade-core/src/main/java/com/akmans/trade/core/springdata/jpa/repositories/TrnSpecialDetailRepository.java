@@ -1,4 +1,4 @@
-package com.akmans.trade.core.springdata.jpa.dao;
+package com.akmans.trade.core.springdata.jpa.repositories;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialDetail;
 
 public interface TrnSpecialDetailRepository extends BaseRepository<TrnSpecialDetail, Long> {
 	// Query with pagination.
-	List<Object[]> findPage(Pageable pageRequest);
+	List<Object[]> findPage(String name, Integer itemCode, Pageable pageRequest);
 
 	// Query one eagerly.
 	List<Object[]> findOneEager(Long code);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.Sector17Service;
-import com.akmans.trade.core.springdata.jpa.dao.MstSector17Repository;
+import com.akmans.trade.core.springdata.jpa.repositories.MstSector17Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 

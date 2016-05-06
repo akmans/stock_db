@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
-import com.akmans.trade.core.springdata.jpa.dao.MstInstrumentDao;
+import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentDao;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
 public class MstInstrumentSample {

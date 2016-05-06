@@ -15,7 +15,7 @@ import com.akmans.trade.core.springdata.auditing.UsernameAuditorAware;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef = "auditorProvider")
-@EnableJpaRepositories(basePackages = "com.akmans.trade.core.springdata.jpa.dao", namedQueriesLocation = "classpath:/META-INF/core/jpa/jpa-named-queries.properties")
+@EnableJpaRepositories(basePackages = "com.akmans.trade.core.springdata.jpa.repositories", namedQueriesLocation = "classpath:/META-INF/core/jpa/jpa-named-queries.properties")
 @EnableTransactionManagement
 public class RepositoryConfig {
 

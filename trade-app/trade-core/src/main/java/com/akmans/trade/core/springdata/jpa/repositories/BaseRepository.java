@@ -1,4 +1,4 @@
-package com.akmans.trade.core.springdata.jpa.dao;
+package com.akmans.trade.core.springdata.jpa.repositories;
 
 import java.io.Serializable;
 import java.util.List;

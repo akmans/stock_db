@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.dao.MstSector17Repository;
+import com.akmans.trade.core.springdata.jpa.repositories.MstSector17Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 

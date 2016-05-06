@@ -54,7 +54,7 @@
 					th:attrappend="class=${#fields.hasErrors('code')}? ' has-error' ">
 					<div class="col-md-3 control-label"
 						th:text="#{view.specialdetail.entry-form.code}">コード</div>
-					<div class="col-md-9"
+					<div class="col-md-9 form-control-static"
 						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).NEW}">
 						***AUTO***GENERATED***</div>
 					<div class="col-md-9 form-control-static"
@@ -88,7 +88,7 @@
 						th:text="#{view.specialdetail.entry-form.name}">名称</div>
 					<div class="col-md-9 form-control-static"
 						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE}"
-						th:text="*{name}"></div>
+						th:text="*{name}">Name</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE}">
 						<input type="text" id="name" name="name" value=""

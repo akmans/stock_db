@@ -1,5 +1,7 @@
 package com.akmans.trade.web.controller;
 
+import java.util.List;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class SpecialDetailQueryController {
 	@Autowired
 	private SpecialDetailService specialDetailService;
 
+	@Autowired
+	private SpecialItemService specialItemService;
+
 /*	public SpecialItemController() {
 		super(PathConstants.PATH_SPECIAL_ITEMS, ViewConstants.VIEW_SPECIAL_ITEM_LIST, ViewConstants.VIEW_SPECIAL_ITEM_FORM_FRAGEMENT,
 				ViewConstants.VIEW_SPECIAL_ITEM_LIST_CONTENT_FRAGEMENT);
@@ -52,9 +57,11 @@ public class SpecialDetailQueryController {
 	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = RequestMethod.GET)
 	public String init(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
 		logger.debug("pageable = {}", pageable);
-		Page<TrnSpecialDetail> page = doSearch(pageable);
+		Page<TrnSpecialDetail> page = doSearch(specialDetailQueryForm, pageable);
 		PageWrapper<TrnSpecialDetail> wrapper = new PageWrapper<TrnSpecialDetail>(page, PathConstants.PATH_SPECIAL_DETAILS);
 		model.addAttribute("page", wrapper);
+		List<TrnSpecialItem> itemList = specialItemService.findAll();
+		model.addAttribute("itemList", itemList);
 
 		// render path
 		return ViewConstants.VIEW_SPECIAL_DETAIL_LIST;
@@ -63,16 +70,18 @@ public class SpecialDetailQueryController {
 	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = RequestMethod.POST)
 	public String search(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
 		logger.debug("pageable = {}", pageable);
-		Page<TrnSpecialDetail> page = doSearch(pageable);
+		Page<TrnSpecialDetail> page = doSearch(specialDetailQueryForm, pageable);
 		PageWrapper<TrnSpecialDetail> wrapper = new PageWrapper<TrnSpecialDetail>(page, PathConstants.PATH_SPECIAL_DETAILS);
 		model.addAttribute("page", wrapper);
+		List<TrnSpecialItem> itemList = specialItemService.findAll();
+		model.addAttribute("itemList", itemList);
 
 		// render path
 		return ViewConstants.VIEW_SPECIAL_DETAIL_LIST;
 	}
 	
-	private Page<TrnSpecialDetail> doSearch(Pageable pageable) {
+	private Page<TrnSpecialDetail> doSearch(SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
 		logger.debug("The pageable is {}", pageable);
-		return specialDetailService.findPage(pageable);
+		return specialDetailService.findPage("テスト", null, pageable);
 	}
 }

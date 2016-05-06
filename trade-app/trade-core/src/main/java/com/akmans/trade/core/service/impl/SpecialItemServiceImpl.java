@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.SpecialItemService;
-import com.akmans.trade.core.springdata.jpa.dao.TrnSpecialItemRepository;
+import com.akmans.trade.core.springdata.jpa.repositories.TrnSpecialItemRepository;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialItem;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 

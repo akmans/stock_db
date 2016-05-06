@@ -2,39 +2,14 @@ package com.akmans.trade.web.form;
 
 import java.io.Serializable;
 
-//import javax.validation.constraints.Min;
-//import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 public class SpecialDetailQueryForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	/** code. */
-//	@NotNull(message="{form.specialdetailform.code.notnull}")
-//	@Min(value = 1, message="{form.specialdetailform.code.min}")
-	private Integer code;
-
 	/** name. */
-	@Size(min=1, max=30, message="{form.specialdetailform.code.name}")
 	private String name;
 
-	/**
-	 * code getter.<BR>
-	 * 
-	 * @return code
-	 */
-	public Integer getCode() {
-		return this.code;
-	}
-
-	/**
-	 * code setter.<BR>
-	 * 
-	 * @param code
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
-	}
+	/** itemCode */
+	private Integer itemCode;
 
 	/**
 	 * name getter.<BR>
@@ -54,10 +29,27 @@ public class SpecialDetailQueryForm implements Serializable {
 		this.name = name;
 	}
 
+	/**
+	 * itemCode getter.<BR>
+	 * 
+	 * @return itemCode
+	 */
+	public Integer getItemCode() {
+		return this.itemCode;
+	}
+
+	/**
+	 * itemCode setter.<BR>
+	 * 
+	 * @param itemCode
+	 */
+	public void setItemCode(Integer itemCode) {
+		this.itemCode = itemCode;
+	}
+
 	@Override
     public String toString() {
-        return "[code=" + code
-        		+ ", name=" + name
-        		+ super.toString() + "]";
+        return "[name=" + name
+        		+ ", itemCode=" + itemCode + "]";
     }
 }

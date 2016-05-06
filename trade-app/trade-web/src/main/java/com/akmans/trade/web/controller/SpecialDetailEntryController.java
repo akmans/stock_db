@@ -115,6 +115,8 @@ public class SpecialDetailEntryController {
 			}
 			// errors
 			model.addAttribute("cssStyle", "alert-danger");
+			List<TrnSpecialItem> itemList = specialItemService.findAll();
+			model.addAttribute("itemList", itemList);
 			// render path
 			return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
 		} else {
@@ -155,6 +157,7 @@ public class SpecialDetailEntryController {
 	
 	private Page<TrnSpecialDetail> doSearch(Pageable pageable) {
 		logger.debug("The pageable is {}", pageable);
-		return specialDetailService.findPage(pageable);
+		// TODO
+		return specialDetailService.findPage(null, 4, pageable);
 	}
 }
