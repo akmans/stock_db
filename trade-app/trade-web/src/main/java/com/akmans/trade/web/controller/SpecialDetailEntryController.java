@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.akmans.trade.core.dto.SpecialDetailQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.SpecialDetailService;
@@ -67,7 +68,7 @@ public class SpecialDetailEntryController {
 		model.addAttribute("itemList", itemList);
 
 		// render path
-		return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
+		return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
 	}
 
 	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS + "/{code}/delete", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
@@ -88,7 +89,7 @@ public class SpecialDetailEntryController {
 //		model.addAttribute("itemList", itemList);
 
 		// render path
-		return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
+		return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
 	}
 
 
@@ -100,7 +101,7 @@ public class SpecialDetailEntryController {
 		model.addAttribute("itemList", itemList);
 
 		// render path
-		return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
+		return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
 	}
 
 	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS + "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
@@ -118,7 +119,7 @@ public class SpecialDetailEntryController {
 			List<TrnSpecialItem> itemList = specialItemService.findAll();
 			model.addAttribute("itemList", itemList);
 			// render path
-			return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
+//			return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
 		} else {
 			try {
 				// do confirm operation.
@@ -143,21 +144,25 @@ public class SpecialDetailEntryController {
 				model.addAttribute("cssStyle", "alert-danger");
 				model.addAttribute("message", te.getMessage());
 				// render path
-				return ViewConstants.VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT;
+//				return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
 			}
 		}
 		// Get all records
-		Page<TrnSpecialDetail> page = doSearch(pageable);
-		PageWrapper<TrnSpecialDetail> wrapper = new PageWrapper<TrnSpecialDetail>(page, PathConstants.PATH_SPECIAL_DETAILS);
-		model.addAttribute("page", wrapper);
+//		Page<TrnSpecialDetail> page = doSearch(pageable);
+//		PageWrapper<TrnSpecialDetail> wrapper = new PageWrapper<TrnSpecialDetail>(page, PathConstants.PATH_SPECIAL_DETAILS);
+//		model.addAttribute("page", wrapper);
 
 		// render path
-		return ViewConstants.VIEW_SPECIAL_DETAIL_LIST_CONTENT_FRAGEMENT;
+		return ViewConstants.VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT;
+//		return ViewConstants.VIEW_SPECIAL_DETAIL_LIST_RESULT_AREA_FRAGEMENT;
 	}
 	
 	private Page<TrnSpecialDetail> doSearch(Pageable pageable) {
+		SpecialDetailQueryDto criteria = new SpecialDetailQueryDto();
+		BeanUtils.copyProperties(new SpecialDetailQueryForm(), criteria);
+		criteria.setPageable(pageable);
 		logger.debug("The pageable is {}", pageable);
 		// TODO
-		return specialDetailService.findPage(null, 4, pageable);
+		return specialDetailService.findPage(criteria);
 	}
 }

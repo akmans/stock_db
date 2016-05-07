@@ -71,9 +71,10 @@ function initializeEntryForm() {
 					// Close entry form.
 					closeEntryForm();
 					// Render container.
-					$('#container').html(data);
+//					$('#result-area').html(data);
+					$('#query-form').submit();
 					// initialize event.
-					initialize();
+//					initialize();
 				}
 			},
 			error : function(xhr, status, error) {

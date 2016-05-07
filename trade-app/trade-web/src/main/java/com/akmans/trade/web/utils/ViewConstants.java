@@ -43,7 +43,7 @@ public class ViewConstants {
 
 	public final static String VIEW_SPECIAL_DETAIL_LIST = "specialdetail/list";
 
-	public final static String VIEW_SPECIAL_DETAIL_LIST_CONTENT_FRAGEMENT = "specialdetail/list :: content";
+	public final static String VIEW_SPECIAL_DETAIL_LIST_RESULT_AREA_FRAGEMENT = "specialdetail/list :: result-area";
 
-	public final static String VIEW_SPECIAL_DETAIL_FORM_FRAGEMENT = "specialdetail/entry-form :: form";
+	public final static String VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT = "specialdetail/entry-form :: form";
 }

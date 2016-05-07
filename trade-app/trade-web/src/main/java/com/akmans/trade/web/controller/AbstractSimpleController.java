@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.core.enums.OperationStatus;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.springdata.jpa.entities.AbstractEntity;
 import com.akmans.trade.web.form.AbstractSimpleForm;
@@ -62,6 +63,8 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 	String initAdd(ModelMap model, T commandForm) {
 		// Set operation mode.
 		commandForm.setOperationMode(OperationMode.NEW);
+		// Set operation status.
+		commandForm.setOperationStatus(OperationStatus.ENTRY);
 
 		// render path
 		return viewEntryFormFragement;
@@ -72,6 +75,8 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 		try {
 			// Set operation mode.
 			commandForm.setOperationMode(OperationMode.EDIT);
+			// Set operation status.
+			commandForm.setOperationStatus(OperationStatus.ENTRY);
 			// Get records
 			E entity = findOne(code);
 			BeanUtils.copyProperties(entity, commandForm);
@@ -90,6 +95,8 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 		try {
 			// Set operation mode.
 			commandForm.setOperationMode(OperationMode.DELETE);
+			// Set operation status.
+			commandForm.setOperationStatus(OperationStatus.ENTRY);
 			// Get records
 			E entity = findOne(code);
 			BeanUtils.copyProperties(entity, commandForm);
@@ -104,8 +111,8 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	String confirm(Locale locale, ModelMap model, @Valid final T commandForm, BindingResult bindingResult,
-			Pageable pageable) {
+	String confirm(Locale locale, ModelMap model, @Valid final T commandForm, BindingResult bindingResult/*,
+			Pageable pageable*/) {
 		logger.debug("The commandForm = {}", commandForm);
 		String message = null;
 		if (bindingResult.hasErrors()) {
@@ -116,7 +123,7 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 			// errors
 			model.addAttribute("cssStyle", "alert-danger");
 			// render path
-			return viewEntryFormFragement;
+//			return viewEntryFormFragement;
 		} else {
 			try {
 				// do confirm operation.
@@ -129,6 +136,8 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 				} else if (commandForm.getOperationMode() == OperationMode.DELETE) {
 					message = messageSource.getMessage("controller.simple.delete.finish", null, locale);
 				}
+				// Set operation status.
+				commandForm.setOperationStatus(OperationStatus.COMPLETE);
 				model.addAttribute("cssStyle", "alert-success");
 				model.addAttribute("message", message);
 			} catch (TradeException te) {
@@ -136,16 +145,17 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 				model.addAttribute("cssStyle", "alert-danger");
 				model.addAttribute("message", te.getMessage());
 				// render path
-				return viewEntryFormFragement;
+//				return viewEntryFormFragement;
 			}
 		}
 		// Get all records
-		Page<E> page = doSearch(pageable);
-		PageWrapper<E> wrapper = new PageWrapper<E>(page, pathList);
-		model.addAttribute("page", wrapper);
+//		Page<E> page = doSearch(pageable);
+//		PageWrapper<E> wrapper = new PageWrapper<E>(page, pathList);
+//		model.addAttribute("page", wrapper);
 
 		// render path
-		return viewListContentFragement;
+		return viewEntryFormFragement;
+//		return viewListContentFragement;
 	}
 
 	public abstract void confirmOperation(T commandForm) throws TradeException;

@@ -25,43 +25,44 @@
 	<div th:fragment="form" th:remove="tag">
 		<h3 th:text="#{view.specialdetail.query-form.title}">専用支出明細検索</h3>
 		<form id="query-form" action="REPLACED_BY_SCRIPT" method="post"
-			th:object="${specialDetailQueryForm}"
-			th:action="@{/specialdetails/search}"
-			class="form-horizontal form-dialog">
+			th:object="${specialDetailQueryForm}" th:action="@{/specialdetails}"
+			class="form-horizontal" accept-charset="UTF-8">
 			<div th:if="${#fields.hasErrors('*')}"
 				th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
 				<ul>
 					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
 				</ul>
 			</div>
-			<div class="form-group"
-				th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
-				<div class="col-md-3 control-label"
-					th:text="#{view.specialdetail.query-form.name}">名称</div>
-				<div class="col-md-9">
-					<input type="text" id="name" name="name" value=""
-						class="form-control" th:field="*{name}" placeholder="Name"
-						th:attr="placeHolder=#{view.specialdetail.query-form.name}" />
+			<div class="form-group bound">
+				<div class="col-md-4 grid"
+					th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
+					<div class="col-md-3 text-left control-label header"
+						th:text="#{view.specialdetail.query-form.name}">名称</div>
+					<div class="col-md-9 normal">
+						<input type="text" id="name" name="name" value=""
+							class="form-control" th:field="*{name}" placeholder="Name"
+							th:attr="placeHolder=#{view.specialdetail.query-form.name}" />
+					</div>
 				</div>
-			</div>
-			<div class="form-group"
-				th:attrappend="class=${#fields.hasErrors('itemCode')}? ' has-error' ">
-				<div class="col-md-3 control-label"
-					th:text="#{view.specialdetail.query-form.itemcode}">支出項目</div>
-				<div class="col-md-9">
-					<select th:field="*{itemCode}" th:remove="all-but-first"
-						class="form-control">
-						<option th:each="specialItem : ${itemList}"
-							th:value="${specialItem.code}" th:text="${specialItem.name}">Credit
-							card</option>
-						<option>Another payment method</option>
-						<option>Another payment method</option>
-					</select>
+				<div class="col-md-7 grid"
+					th:attrappend="class=${#fields.hasErrors('itemCode')}? ' has-error' ">
+					<div class="col-md-3 control-label header text-left"
+						th:text="#{view.specialdetail.query-form.itemcode}">支出項目</div>
+					<div class="col-md-9 normal">
+						<select th:field="*{itemCode}" class="form-control">
+							<option value=""></option>
+							<option th:each="specialItem : ${itemList}"
+								th:value="${specialItem.code}" th:text="${specialItem.name}">Credit
+								card</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
+					</div>
 				</div>
-			</div>
-			<div class="form-group text-right">
-				<input type="submit" id="confirm" class="btn btn-primary"
-					th:value="#{view.specialdetail.query-form.search}" />
+				<div class="col-md-1 grid">
+					<input type="submit" id="confirm" class="btn btn-primary"
+						th:value="#{view.specialdetail.query-form.search}" />
+				</div>
 			</div>
 		</form>
 	</div>

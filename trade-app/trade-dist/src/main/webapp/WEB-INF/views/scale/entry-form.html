@@ -23,20 +23,20 @@
 </head>
 <body>
 	<div th:fragment="form" th:remove="tag">
-		<div class="modal-header" th:switch="${scaleForm.operationMode}">
-			<button type="button" class="close" data-dismiss="modal"
-				aria-hidden="true">×</button>
-			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).NEW}"
-				th:text="#{view.scale.entry-form.new.title }">New</h4>
-			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).EDIT}"
-				th:text="#{view.scale.entry-form.update.title }">Update</h4>
-			<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).DELETE}"
-				th:text="#{view.scale.entry-form.delete.title }">Delete</h4>
-		</div>
-		<div class="modal-body">
-			<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
-				th:object="${scaleForm}" th:action="@{/scales/post}"
-				class="form-horizontal form-dialog">
+		<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
+			th:object="${scaleForm}" th:action="@{/scales/post}"
+			class="form-horizontal form-dialog">
+			<div class="modal-header" th:switch="${scaleForm.operationMode}">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).NEW}"
+					th:text="#{view.scale.entry-form.new.title }">New</h4>
+				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).EDIT}"
+					th:text="#{view.scale.entry-form.update.title }">Update</h4>
+				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+					th:text="#{view.scale.entry-form.delete.title }">Delete</h4>
+			</div>
+			<div class="modal-body">
 				<div th:if="${#fields.hasErrors('*')}"
 					th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
 					<ul>
@@ -53,13 +53,13 @@
 					<div class="col-md-3 control-label"
 						th:text="#{view.scale.entry-form.code}">コード</div>
 					<div class="col-md-9"
-						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).NEW}">
+						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).NEW and operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}">
 						<input type="text" id="code" name="code" value=""
 							class="form-control" th:field="*{code}" placeholder="Code"
 							th:attr="placeHolder=#{view.scale.entry-form.code}" />
 					</div>
 					<div class="col-md-9 form-control-static"
-						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).NEW}"
+						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).NEW or operationStatus != T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
 						th:text="*{code}">123</div>
 				</div>
 				<div class="form-group"
@@ -67,23 +67,28 @@
 					<div class="col-md-3 control-label"
 						th:text="#{view.scale.entry-form.name}">名称</div>
 					<div class="col-md-9 form-control-static"
-						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE}"
+						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus != T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
 						th:text="*{name}">Name</div>
 					<div class="col-md-9"
-						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE}">
+						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}">
 						<input type="text" id="name" name="name" value=""
 							class="form-control" th:field="*{name}" placeholder="Name"
 							th:attr="placeHolder=#{view.scale.entry-form.name}" />
 					</div>
 				</div>
-			</form>
-		</div>
-		<div class="modal-footer">
-			<a id="confirm" class="btn btn-primary"
-				th:text="#{view.scale.entry-form.confirm}">Save changes</a> <a
-				id="cancel" class="btn btn-default" data-dismiss="modal"
-				th:text="#{view.scale.entry-form.cancel}">Close</a>
-		</div>
+			</div>
+			<div class="modal-footer">
+				<a id="confirm" class="btn btn-primary"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
+					th:text="#{view.scale.entry-form.confirm}">Save changes</a> <a
+					id="cancel" class="btn btn-default"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
+					data-dismiss="modal" th:text="#{view.scale.entry-form.cancel}">Close</a>
+				<a id="complete" class="btn btn-primary"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
+					data-dismiss="modal" th:text="#{view.scale.entry-form.complete}">Close</a>
+			</div>
+		</form>
 	</div>
 </body>
 </html>

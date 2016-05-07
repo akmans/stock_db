@@ -6,11 +6,43 @@ body {
 	background-color: #e8e8e8;
 }
 
+.container .normal {
+	padding-top: 7px;
+}
+
+.container .form-horizontal {
+	/*    background-color:#121212;*/
+	margin: 0px 0px;
+}
+
+.container .form-group {
+	line-height: 3.0em;
+}
+
 .container .row {
 	border-bottom: 1px solid #e8e8e8;
 	padding: 5px 0px;
 	line-height: 3.0em;
 	margin: 0px 0px;
+}
+
+.container .row_last {
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.container .bound {
+	/*    background-color:#cccccc; */
+	border-top: 1px solid #e8e8e8;
+	border-left: 1px solid #e8e8e8;
+	border-right: 1px solid #e8e8e8;
+	border-bottom: 1px solid #e8e8e8;
+	margin: 0px 0px;
+}
+
+.container .grid {
+	border: 0px;
+	margin: 0px 0px;
+	padding: 0px 0px;
 }
 
 .form-dialog {

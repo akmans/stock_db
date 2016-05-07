@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.akmans.trade.core.dto.SpecialDetailQueryDto;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.SpecialDetailService;
 import com.akmans.trade.core.service.SpecialItemService;
@@ -54,7 +55,7 @@ public class SpecialDetailQueryController {
 	}
 */
 
-	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = RequestMethod.GET)
+/*	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = RequestMethod.GET)
 	public String init(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
 		logger.debug("pageable = {}", pageable);
 		Page<TrnSpecialDetail> page = doSearch(specialDetailQueryForm, pageable);
@@ -66,10 +67,12 @@ public class SpecialDetailQueryController {
 		// render path
 		return ViewConstants.VIEW_SPECIAL_DETAIL_LIST;
 	}
-
-	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = RequestMethod.POST)
+*/
+	@RequestMapping(value = PathConstants.PATH_SPECIAL_DETAILS, method = {RequestMethod.POST, RequestMethod.GET})
 	public String search(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
 		logger.debug("pageable = {}", pageable);
+		logger.debug("specialDetailQueryForm = {}", specialDetailQueryForm);
+//		specialDetailQueryForm.setName("あああ");
 		Page<TrnSpecialDetail> page = doSearch(specialDetailQueryForm, pageable);
 		PageWrapper<TrnSpecialDetail> wrapper = new PageWrapper<TrnSpecialDetail>(page, PathConstants.PATH_SPECIAL_DETAILS);
 		model.addAttribute("page", wrapper);
@@ -81,7 +84,10 @@ public class SpecialDetailQueryController {
 	}
 	
 	private Page<TrnSpecialDetail> doSearch(SpecialDetailQueryForm specialDetailQueryForm, Pageable pageable) {
+		SpecialDetailQueryDto criteria = new SpecialDetailQueryDto();
+		BeanUtils.copyProperties(specialDetailQueryForm, criteria);
+		criteria.setPageable(pageable);
 		logger.debug("The pageable is {}", pageable);
-		return specialDetailService.findPage("テスト", null, pageable);
+		return specialDetailService.findPage(criteria);
 	}
 }
