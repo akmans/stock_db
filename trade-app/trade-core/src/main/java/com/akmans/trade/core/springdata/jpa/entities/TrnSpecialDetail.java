@@ -1,5 +1,7 @@
 package com.akmans.trade.core.springdata.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +18,9 @@ public class TrnSpecialDetail extends AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
+
+	@Column(name = "regist_date")
+    private Date registDate;
 
 	@Column(name = "name", length = 100)
     private String name;
@@ -36,6 +41,14 @@ public class TrnSpecialDetail extends AbstractEntity {
 
 	public Long getCode() {
 		return this.code;
+	}
+
+	public void setRegistDate(Date registDate) {
+		this.registDate = registDate;
+	}
+
+	public Date getRegistDate() {
+		return this.registDate;
 	}
 
 	public void setName(String name) {

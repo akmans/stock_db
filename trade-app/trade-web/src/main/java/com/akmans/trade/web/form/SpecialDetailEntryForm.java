@@ -1,6 +1,7 @@
 package com.akmans.trade.web.form;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 //import javax.validation.constraints.Min;
@@ -15,11 +16,14 @@ public class SpecialDetailEntryForm extends AbstractSimpleForm implements Serial
 //	@Min(value = 1, message="{form.specialdetailform.code.min}")
 	private Long code;
 
+	@NotNull(message="{form.specialdetailform.registdate.notnull}")
+    private Date registDate;
+
 	/** name. */
 	@Size(min=1, max=30, message="{form.specialdetailform.code.name}")
 	private String name;
 
-	@Size(min=1, max=100, message="{form.specialdetailform.code.detail}")
+	@Size(min=1, max=300, message="{form.specialdetailform.code.detail}")
 	private String detail;
 
 	@NotNull(message="{form.specialdetailform.amount.notnull}")
@@ -46,6 +50,24 @@ public class SpecialDetailEntryForm extends AbstractSimpleForm implements Serial
 	 */
 	public void setCode(Long code) {
 		this.code = code;
+	}
+
+	/**
+	 * registDate getter.<BR>
+	 * 
+	 * @return registDate
+	 */
+	public Date getRegistDate() {
+		return this.registDate;
+	}
+
+	/**
+	 * registDate setter.<BR>
+	 * 
+	 * @param registDate
+	 */
+	public void setRegistDate(Date registDate) {
+		this.registDate = registDate;
 	}
 
 	/**

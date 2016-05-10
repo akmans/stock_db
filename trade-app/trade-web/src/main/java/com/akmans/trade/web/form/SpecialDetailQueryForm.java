@@ -2,7 +2,7 @@ package com.akmans.trade.web.form;
 
 import java.io.Serializable;
 
-public class SpecialDetailQueryForm implements Serializable {
+public class SpecialDetailQueryForm extends AbstractQueryForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** name. */

@@ -5,6 +5,7 @@
 CREATE TABLE trn_special_detail
 (
   code serial NOT NULL,
+  regist_date date NOT NULL,
   name character varying(100) NOT NULL,
   detail character varying(300),
   amount bigint NOT NULL,

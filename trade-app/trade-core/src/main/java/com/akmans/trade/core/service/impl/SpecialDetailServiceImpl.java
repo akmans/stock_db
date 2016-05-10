@@ -39,28 +39,41 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 	private TrnSpecialDetailRepository trnSpecialDetailRepository;
 
 //	@Transactional
-	public Page<TrnSpecialDetail> findPage(SpecialDetailQueryDto criteria) {
+	public Page<TrnSpecialDetail> findPage(SpecialDetailQueryDto dto) {
 		String jpql = "select specialDetail, specialItem from TrnSpecialDetail as specialDetail "
-				+ "left outer join specialDetail.specialItem as specialItem where 1 = 1 ";
-		if (criteria.getName() != null && criteria.getName().length() > 0) {
-			jpql = jpql + "and specialDetail.name like :name ";
+				+ "left outer join specialDetail.specialItem as specialItem ";
+		String cntJpql = "select count(specialDetail.code) from TrnSpecialDetail as specialDetail "
+				+ "left outer join specialDetail.specialItem as specialItem ";
+		String criteria = "where 1 = 1 ";
+		if (dto.getName() != null && dto.getName().length() > 0) {
+			criteria = criteria + "and specialDetail.name like :name ";
 		}
-		if (criteria.getItemCode() != null) {
-			jpql = jpql + "and specialItem.code = :itemCode ";
+		if (dto.getItemCode() != null) {
+			criteria = criteria + "and specialItem.code = :itemCode ";
 		}
+		String orderByCriteria = "order by specialDetail.registDate desc, specialItem.code ";
 		EntityManager em = emf.getObject().createEntityManager();
-		Query query = em.createQuery(jpql);
-		if (criteria.getName() != null && criteria.getName().length() > 0) {
-			query.setParameter("name", "%" + criteria.getName() + "%");
+		Query query = em.createQuery(cntJpql + criteria);
+		if (dto.getName() != null && dto.getName().length() > 0) {
+			query.setParameter("name", "%" + dto.getName() + "%");
 		}
-		if (criteria.getItemCode() != null) {
-			query.setParameter("itemCode", criteria.getItemCode());
+		if (dto.getItemCode() != null) {
+			query.setParameter("itemCode", dto.getItemCode());
 		}
-		query.setFirstResult(criteria.getPageable().getOffset());
-		query.setMaxResults(criteria.getPageable().getPageSize());
+		List<Object> cnt = query.getResultList();
+		long count = (long)cnt.get(0);
+		query = em.createQuery(jpql + criteria + orderByCriteria);
+		if (dto.getName() != null && dto.getName().length() > 0) {
+			query.setParameter("name", "%" + dto.getName() + "%");
+		}
+		if (dto.getItemCode() != null) {
+			query.setParameter("itemCode", dto.getItemCode());
+		}
+		query.setFirstResult(dto.getPageable().getOffset());
+		query.setMaxResults(dto.getPageable().getPageSize());
 		List<Object[]> list = query.getResultList();
 		em.close();
-		long count = trnSpecialDetailRepository.count();
+//		long count = trnSpecialDetailRepository.count();
 //		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
 //		List<Object[]> list = trnSpecialDetailRepository.findPage(name, itemCode, pg);
 		ArrayList<TrnSpecialDetail> content = new ArrayList<TrnSpecialDetail>();
@@ -69,8 +82,8 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 			specialDetail.setSpecialItem((TrnSpecialItem)item[1]);
 			content.add(specialDetail);
 		}
-		return count > 0 ? new PageImpl<TrnSpecialDetail>(content, criteria.getPageable(), count)
-				: new PageImpl<TrnSpecialDetail>(new ArrayList<TrnSpecialDetail>(), criteria.getPageable(), 0);
+		return count > 0 ? new PageImpl<TrnSpecialDetail>(content, dto.getPageable(), count)
+				: new PageImpl<TrnSpecialDetail>(new ArrayList<TrnSpecialDetail>(), dto.getPageable(), 0);
 	}
 
 	public Page<TrnSpecialDetail> findAll(Pageable pageable) {
