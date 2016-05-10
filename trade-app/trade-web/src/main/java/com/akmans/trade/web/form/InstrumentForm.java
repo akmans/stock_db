@@ -10,12 +10,12 @@ public class InstrumentForm extends AbstractSimpleForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** code. */
-	@NotNull(message="{form.instrumentform.code.notnull}")
-	@Min(value = 1, message="{form.instrumentform.code.min}")
+	@NotNull(message = "{form.instrumentform.code.notnull}")
+	@Min(value = 1, message = "{form.instrumentform.code.min}")
 	private Integer code;
 
 	/** name. */
-	@Size(min=1, max=30, message="{form.instrumentform.code.name}")
+	@Size(min = 1, max = 30, message = "{form.instrumentform.code.name}")
 	private String name;
 
 	/**
@@ -55,9 +55,7 @@ public class InstrumentForm extends AbstractSimpleForm implements Serializable {
 	}
 
 	@Override
-    public String toString() {
-        return "[code=" + code
-        		+ ", name=" + name
-        		+ super.toString() + "]";
-    }
+	public String toString() {
+		return "[code=" + code + ", name=" + name + super.toString() + "]";
+	}
 }

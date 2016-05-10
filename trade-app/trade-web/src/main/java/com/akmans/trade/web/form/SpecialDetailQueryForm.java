@@ -48,8 +48,7 @@ public class SpecialDetailQueryForm extends AbstractQueryForm implements Seriali
 	}
 
 	@Override
-    public String toString() {
-        return "[name=" + name
-        		+ ", itemCode=" + itemCode + "]";
-    }
+	public String toString() {
+		return "[name=" + name + ", itemCode=" + itemCode + "]";
+	}
 }

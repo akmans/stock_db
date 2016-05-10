@@ -67,11 +67,8 @@ public abstract class AbstractSimpleForm {
 	}
 
 	@Override
-    public String toString() {
-        return " created_by=" + createdBy
-        		+ ", created_date=" + createdDate
-        		+ ", updated_by=" + updatedBy
-        		+ ", updated_date=" + updatedDate
-        		+ ", operationMode=" + operationMode;
+	public String toString() {
+		return " created_by=" + createdBy + ", created_date=" + createdDate + ", updated_by=" + updatedBy
+				+ ", updated_date=" + updatedDate + ", operationMode=" + operationMode;
 	}
 }

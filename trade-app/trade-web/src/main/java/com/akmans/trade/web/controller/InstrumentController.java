@@ -27,8 +27,8 @@ public class InstrumentController extends AbstractSimpleController<InstrumentFor
 	private InstrumentService instrumentService;
 
 	public InstrumentController() {
-		super(PathConstants.PATH_INSTRUMENTS, ViewConstants.VIEW_INSTRUMENT_LIST, ViewConstants.VIEW_INSTRUMENT_FORM_FRAGEMENT,
-				ViewConstants.VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT);
+		super(PathConstants.PATH_INSTRUMENTS, ViewConstants.VIEW_INSTRUMENT_LIST,
+				ViewConstants.VIEW_INSTRUMENT_FORM_FRAGEMENT, ViewConstants.VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT);
 	}
 
 	public Page<MstInstrument> doSearch(Pageable pageable) {

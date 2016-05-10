@@ -10,12 +10,12 @@ public class MarketForm extends AbstractSimpleForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** code. */
-	@NotNull(message="{form.marketform.code.notnull}")
-	@Min(value = 1, message="{form.marketform.code.min}")
+	@NotNull(message = "{form.marketform.code.notnull}")
+	@Min(value = 1, message = "{form.marketform.code.min}")
 	private Integer code;
 
 	/** name. */
-	@Size(min=1, max=30, message="{form.marketform.code.name}")
+	@Size(min = 1, max = 30, message = "{form.marketform.code.name}")
 	private String name;
 
 	/**
@@ -55,9 +55,7 @@ public class MarketForm extends AbstractSimpleForm implements Serializable {
 	}
 
 	@Override
-    public String toString() {
-        return "[code=" + code
-        		+ ", name=" + name
-        		+ super.toString() + "]";
-    }
+	public String toString() {
+		return "[code=" + code + ", name=" + name + super.toString() + "]";
+	}
 }

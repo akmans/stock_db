@@ -15,7 +15,7 @@ public class ThymeleafConfig {
 
 	private static final String VIEWS = "/WEB-INF/views/";
 
-	@Bean 
+	@Bean
 	public ServletContextTemplateResolver templateResolver() {
 		ServletContextTemplateResolver resolver = new ServletContextTemplateResolver();
 		resolver.setPrefix(VIEWS);
@@ -26,7 +26,7 @@ public class ThymeleafConfig {
 		return resolver;
 	}
 
-	@Bean 
+	@Bean
 	public SpringTemplateEngine templateEngine() {
 		SpringTemplateEngine engine = new SpringTemplateEngine();
 		engine.setTemplateResolver(templateResolver());
@@ -36,7 +36,7 @@ public class ThymeleafConfig {
 		return engine;
 	}
 
-	@Bean 
+	@Bean
 	public ThymeleafViewResolver thymeleafViewResolver() {
 		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
 		resolver.setTemplateEngine(templateEngine());

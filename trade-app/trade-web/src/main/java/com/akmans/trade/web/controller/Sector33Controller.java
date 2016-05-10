@@ -27,8 +27,8 @@ public class Sector33Controller extends AbstractSimpleController<Sector33Form, M
 	private Sector33Service sector33Service;
 
 	public Sector33Controller() {
-		super(PathConstants.PATH_SECTOR33S, ViewConstants.VIEW_SECTOR33_LIST, ViewConstants.VIEW_SECTOR33_FORM_FRAGEMENT,
-				ViewConstants.VIEW_SECTOR33_LIST_CONTENT_FRAGEMENT);
+		super(PathConstants.PATH_SECTOR33S, ViewConstants.VIEW_SECTOR33_LIST,
+				ViewConstants.VIEW_SECTOR33_FORM_FRAGEMENT, ViewConstants.VIEW_SECTOR33_LIST_CONTENT_FRAGEMENT);
 	}
 
 	public Page<MstSector33> doSearch(Pageable pageable) {

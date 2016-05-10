@@ -38,14 +38,11 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 
 	private String viewEntryFormFragement;
 
-	private String viewListContentFragement;
-
 	public AbstractSimpleController(String pathList, String viewList, String viewEntryFormFragement,
 			String viewListContentFragement) {
 		this.pathList = pathList;
 		this.viewList = viewList;
 		this.viewEntryFormFragement = viewEntryFormFragement;
-		this.viewListContentFragement = viewListContentFragement;
 	};
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -111,8 +108,7 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	String confirm(Locale locale, ModelMap model, @Valid final T commandForm, BindingResult bindingResult/*,
-			Pageable pageable*/) {
+	String confirm(Locale locale, ModelMap model, @Valid final T commandForm, BindingResult bindingResult) {
 		logger.debug("The commandForm = {}", commandForm);
 		String message = null;
 		if (bindingResult.hasErrors()) {
@@ -122,8 +118,6 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 			}
 			// errors
 			model.addAttribute("cssStyle", "alert-danger");
-			// render path
-//			return viewEntryFormFragement;
 		} else {
 			try {
 				// do confirm operation.
@@ -144,18 +138,11 @@ public abstract class AbstractSimpleController<T extends AbstractSimpleForm, E e
 				// errors
 				model.addAttribute("cssStyle", "alert-danger");
 				model.addAttribute("message", te.getMessage());
-				// render path
-//				return viewEntryFormFragement;
 			}
 		}
-		// Get all records
-//		Page<E> page = doSearch(pageable);
-//		PageWrapper<E> wrapper = new PageWrapper<E>(page, pathList);
-//		model.addAttribute("page", wrapper);
 
 		// render path
 		return viewEntryFormFragement;
-//		return viewListContentFragement;
 	}
 
 	public abstract void confirmOperation(T commandForm) throws TradeException;

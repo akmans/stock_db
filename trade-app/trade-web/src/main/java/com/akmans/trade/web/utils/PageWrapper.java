@@ -45,7 +45,7 @@ public class PageWrapper<T> {
 		}
 
 		for (int i = 0; i < size; i++) {
-			items.add(new PageItem(start + i - 1, (start + i -1) == currentNumber));
+			items.add(new PageItem(start + i - 1, (start + i - 1) == currentNumber));
 		}
 	}
 

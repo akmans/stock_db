@@ -49,18 +49,14 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-/*			if (trnSpecialItemRepository.findOne(specialItem.getCode()).isPresent()) {
-				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.specialItem.specialitem.alreadyexist", specialItem.getCode()));
-			}*/
 			trnSpecialItemRepository.save(specialItem);
 			break;
 		}
 		case EDIT: {
 			TrnSpecialItem origin = findOne(specialItem.getCode());
 			if (!origin.getUpdatedDate().equals(specialItem.getUpdatedDate())) {
-				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent", specialItem.getCode()));
+				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent",
+						specialItem.getCode()));
 			}
 			trnSpecialItemRepository.save(specialItem);
 			break;
@@ -68,8 +64,8 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 		case DELETE: {
 			TrnSpecialItem origin = findOne(specialItem.getCode());
 			if (!origin.getUpdatedDate().equals(specialItem.getUpdatedDate())) {
-				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent", specialItem.getCode()));
+				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent",
+						specialItem.getCode()));
 			}
 			trnSpecialItemRepository.delete(specialItem);
 		}

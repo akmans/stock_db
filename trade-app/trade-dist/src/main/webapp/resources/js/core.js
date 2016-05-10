@@ -58,7 +58,7 @@ function initializeEntryForm() {
 		// Do ajax process.
 		$.ajax({
 			type : "POST",
-			url : $('#entry-form').attr('action'), //+ "?page=" + pageNum + "&size=" + pageSize,
+			url : $('#entry-form').attr('action'),
 			data : $('#entry-form').serialize(),
 			dataType : "html",
 			success : function(data, status, xhr) {
@@ -70,11 +70,6 @@ function initializeEntryForm() {
 				} else {
 					// Close entry form.
 					closeEntryForm();
-					// Render container.
-//					$('#result-area').html(data);
-//					$('#query-form').submit();
-					// initialize event.
-//					initialize();
 				}
 			},
 			error : function(xhr, status, error) {
@@ -131,20 +126,11 @@ function initialize() {
 	/*
 	 * Bind event to pagination link.
 	 */
-//	$("ul.pagination a").click(function(event) {
-		// Prevent actual form submit and page reload
-//		event.preventDefault();
-//		var cid = $('[name="_cid"]').val();
-//		var url = $("ul.pagination a").attr("href") + "&_cid=" + cid;
-//		alert(paramUrl);
-//		doAjaxGet(paramUrl);
-//		$("ul.pagination a").attr("href", $("ul.pagination a").attr("href") + "&_cid=" + $('[name="_cid"]').val()); 
-//	});
-	$("ul.pagination a").each(function () {
-		if ( $('[name="_cid"]').length ){
+	$("ul.pagination a").each(function() {
+		if ($('[name="_cid"]').length) {
 			var cid = $('[name="_cid"]').val();
-		    var url = $(this).attr('href');
-		    $(this).attr('href', url + "&_cid=" + cid);    
+			var url = $(this).attr('href');
+			$(this).attr('href', url + "&_cid=" + cid);
 		}
 	});
 }

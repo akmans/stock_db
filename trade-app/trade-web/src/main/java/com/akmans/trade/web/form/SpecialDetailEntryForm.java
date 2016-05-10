@@ -12,24 +12,24 @@ public class SpecialDetailEntryForm extends AbstractSimpleForm implements Serial
 	private static final long serialVersionUID = 1L;
 
 	/** code. */
-//	@NotNull(message="{form.specialdetailform.code.notnull}")
-//	@Min(value = 1, message="{form.specialdetailform.code.min}")
+	// @NotNull(message="{form.specialdetailform.code.notnull}")
+	// @Min(value = 1, message="{form.specialdetailform.code.min}")
 	private Long code;
 
-	@NotNull(message="{form.specialdetailform.registdate.notnull}")
-    private Date registDate;
+	@NotNull(message = "{form.specialdetailform.registdate.notnull}")
+	private Date registDate;
 
 	/** name. */
-	@Size(min=1, max=30, message="{form.specialdetailform.code.name}")
+	@Size(min = 1, max = 30, message = "{form.specialdetailform.code.name}")
 	private String name;
 
-	@Size(min=1, max=300, message="{form.specialdetailform.code.detail}")
+	@Size(min = 1, max = 300, message = "{form.specialdetailform.code.detail}")
 	private String detail;
 
-	@NotNull(message="{form.specialdetailform.amount.notnull}")
-    private Long amount;
+	@NotNull(message = "{form.specialdetailform.amount.notnull}")
+	private Long amount;
 
-	@NotNull(message="{form.specialdetailform.itemcode.notnull}")
+	@NotNull(message = "{form.specialdetailform.itemcode.notnull}")
 	private Integer itemCode;
 
 	private String itemName;
@@ -131,13 +131,8 @@ public class SpecialDetailEntryForm extends AbstractSimpleForm implements Serial
 	}
 
 	@Override
-    public String toString() {
-        return "[code=" + code
-        		+ ", name=" + name
-        		+ ", itemCode=" + itemCode
-        		+ ", itemName=" + itemName
-        		+ ", detail=" + detail
-        		+ ", amount=" + amount
-        		+ super.toString() + "]";
-    }
+	public String toString() {
+		return "[code=" + code + ", name=" + name + ", itemCode=" + itemCode + ", itemName=" + itemName + ", detail="
+				+ detail + ", amount=" + amount + super.toString() + "]";
+	}
 }

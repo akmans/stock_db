@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.akmans.trade.core.dto.SpecialDetailQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
@@ -38,7 +37,6 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 	@Autowired
 	private TrnSpecialDetailRepository trnSpecialDetailRepository;
 
-//	@Transactional
 	public Page<TrnSpecialDetail> findPage(SpecialDetailQueryDto dto) {
 		String jpql = "select specialDetail, specialItem from TrnSpecialDetail as specialDetail "
 				+ "left outer join specialDetail.specialItem as specialItem ";
@@ -61,7 +59,7 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 			query.setParameter("itemCode", dto.getItemCode());
 		}
 		List<Object> cnt = query.getResultList();
-		long count = (long)cnt.get(0);
+		long count = (long) cnt.get(0);
 		query = em.createQuery(jpql + criteria + orderByCriteria);
 		if (dto.getName() != null && dto.getName().length() > 0) {
 			query.setParameter("name", "%" + dto.getName() + "%");
@@ -73,13 +71,10 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 		query.setMaxResults(dto.getPageable().getPageSize());
 		List<Object[]> list = query.getResultList();
 		em.close();
-//		long count = trnSpecialDetailRepository.count();
-//		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-//		List<Object[]> list = trnSpecialDetailRepository.findPage(name, itemCode, pg);
 		ArrayList<TrnSpecialDetail> content = new ArrayList<TrnSpecialDetail>();
-		for(Object[] item : list) {
-			TrnSpecialDetail specialDetail = (TrnSpecialDetail)item[0];
-			specialDetail.setSpecialItem((TrnSpecialItem)item[1]);
+		for (Object[] item : list) {
+			TrnSpecialDetail specialDetail = (TrnSpecialDetail) item[0];
+			specialDetail.setSpecialItem((TrnSpecialItem) item[1]);
 			content.add(specialDetail);
 		}
 		return count > 0 ? new PageImpl<TrnSpecialDetail>(content, dto.getPageable(), count)
@@ -105,10 +100,6 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-/*			if (trnSpecialDetailRepository.findOne(specialDetail.getCode()).isPresent()) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialDetail.record.alreadyexist",
-						specialDetail.getCode()));
-			}*/
 			trnSpecialDetailRepository.save(specialDetail);
 			break;
 		}
@@ -135,9 +126,9 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 	public TrnSpecialDetail findOneEager(Long code) throws TradeException {
 		List<Object[]> list = trnSpecialDetailRepository.findOneEager(code);
 		TrnSpecialDetail specialDetail = new TrnSpecialDetail();
-		for(Object[] item : list) {
-			specialDetail = (TrnSpecialDetail)item[0];
-			specialDetail.setSpecialItem((TrnSpecialItem)item[1]);
+		for (Object[] item : list) {
+			specialDetail = (TrnSpecialDetail) item[0];
+			specialDetail.setSpecialItem((TrnSpecialItem) item[1]);
 		}
 		return specialDetail;
 	}

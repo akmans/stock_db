@@ -27,8 +27,8 @@ public class SpecialItemController extends AbstractSimpleController<SpecialItemF
 	private SpecialItemService specialItemService;
 
 	public SpecialItemController() {
-		super(PathConstants.PATH_SPECIAL_ITEMS, ViewConstants.VIEW_SPECIAL_ITEM_LIST, ViewConstants.VIEW_SPECIAL_ITEM_FORM_FRAGEMENT,
-				ViewConstants.VIEW_SPECIAL_ITEM_LIST_CONTENT_FRAGEMENT);
+		super(PathConstants.PATH_SPECIAL_ITEMS, ViewConstants.VIEW_SPECIAL_ITEM_LIST,
+				ViewConstants.VIEW_SPECIAL_ITEM_FORM_FRAGEMENT, ViewConstants.VIEW_SPECIAL_ITEM_LIST_CONTENT_FRAGEMENT);
 	}
 
 	public Page<TrnSpecialItem> doSearch(Pageable pageable) {
