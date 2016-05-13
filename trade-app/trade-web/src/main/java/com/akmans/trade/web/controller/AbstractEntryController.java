@@ -29,7 +29,7 @@ import com.akmans.trade.web.form.AbstractSimpleForm;
 
 public abstract class AbstractEntryController<T extends AbstractSimpleForm, E extends AbstractEntity> {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(SpecialDetailQueryController.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(AbstractEntryController.class);
 
 	@Autowired
 	private MessageSource messageSource;
@@ -52,7 +52,11 @@ public abstract class AbstractEntryController<T extends AbstractSimpleForm, E ex
 			}
 
 			public String getAsText() {
-				return new SimpleDateFormat("yyyy-MM-dd").format((Date) getValue());
+				Date input = (Date) getValue();
+				if (input == null) {
+					return null;
+				}
+				return new SimpleDateFormat("yyyy-MM-dd").format(input);
 			}
 
 		});

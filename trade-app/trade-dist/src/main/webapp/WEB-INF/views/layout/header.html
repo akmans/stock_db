@@ -62,7 +62,8 @@
 							data-toggle="dropdown"><span th:text="#{header.nav.system}">System</span><b
 								class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="#" th:text="#{header.nav.calendar}">Calendar</a></li>
+								<li><a href="#" th:href="@{/calendars}"
+									th:text="#{header.nav.calendar}">Calendar</a></li>
 								<li class="divider"></li>
 								<li th:unless="${#strings.equals(#ctx.locale, 'en')}"><a
 									href="?language=en" th:text="#{header.nav.english}">English</a></li>

@@ -5,6 +5,10 @@ public class ViewConstants {
 
 	public final static String VIEW_LOGIN = "user/login";
 
+	public final static String VIEW_CALENDAR_LIST = "calendar/list";
+
+	public final static String VIEW_CALENDAR_ENTRY_FORM_FRAGEMENT = "calendar/entry-form :: form";
+
 	public final static String VIEW_MARKET_LIST = "market/list";
 
 	public final static String VIEW_MARKET_LIST_CONTENT_FRAGEMENT = "market/list :: content";

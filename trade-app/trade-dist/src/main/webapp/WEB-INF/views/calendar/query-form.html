@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>カレンダー検索フォーム</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="form" th:remove="tag">
+		<h3 th:text="#{view.calendar.query-form.title}">カレンダー検索</h3>
+		<form id="query-form" action="REPLACED_BY_SCRIPT" method="post"
+			th:object="${calendarQueryForm}" th:action="@{/calendars}"
+			class="form-horizontal" accept-charset="UTF-8">
+			<div th:if="${#fields.hasErrors('*')}"
+				th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
+				<ul>
+					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+				</ul>
+			</div>
+			<div class="form-group bound">
+				<div class="col-md-4 grid"
+					th:attrappend="class=${#fields.hasErrors('calendar')}? ' has-error' ">
+					<div class="col-md-4 text-left control-label header"
+						th:text="#{view.calendar.query-form.calendar}">カレンダー</div>
+					<div class="col-md-8 normal">
+						<select th:field="*{calendar}" class="form-control">
+							<option value=""></option>
+							<option
+								th:each="elem: ${T(com.akmans.trade.core.enums.Calendar).values()}"
+								th:value="${elem.value}" th:text="${elem.label}">Credit
+								card</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-7 grid"
+					th:attrappend="class=${#fields.hasErrors('holiday')}? ' has-error' ">
+					<div class="col-md-3 control-label header text-left"
+						th:text="#{view.calendar.query-form.holiday}">祝日</div>
+					<div class="col-md-9 normal">
+						<select th:field="*{holiday}" class="form-control">
+							<option value=""></option>
+							<option
+								th:each="elem: ${T(com.akmans.trade.core.enums.JapanHoliday).values()}"
+								th:value="${elem.value}" th:text="${elem.label}">Credit
+								card</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-1 grid">
+					<input type="submit" id="confirm" class="btn btn-primary"
+						th:value="#{view.calendar.query-form.search}" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

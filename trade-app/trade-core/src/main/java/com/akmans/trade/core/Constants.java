@@ -8,4 +8,6 @@ public class Constants {
 	public static final String DATE_PATTERN = "[0-9]{4}年[0-9]{2}月[0-9]{2}日";
 
 	public static final String DATE_FORMAT = "YYYY年MM月DD日";
+
+	public static final String UI_DATE_FORMAT = "yyyy-MM-dd";
 }

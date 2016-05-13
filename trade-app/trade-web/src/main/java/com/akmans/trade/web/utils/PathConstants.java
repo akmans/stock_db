@@ -6,6 +6,8 @@ public class PathConstants {
 
 	public final static String PATH_LOGIN = "/login";
 
+	public final static String PATH_CALENDARS = "/calendars";
+
 	public final static String PATH_MARKETS = "/markets";
 
 	public final static String PATH_SCALES = "/scales";

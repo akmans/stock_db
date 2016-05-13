@@ -11,7 +11,7 @@
 <meta name="description" content="Trade Application" th:remove="all" />
 <meta name="author" content="akmans" th:remove="all" />
 
-<title>専用支出登録フォーム</title>
+<title>カレンダー登録フォーム</title>
 
 <link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
 	media="screen" th:remove="all" />
@@ -24,19 +24,18 @@
 <body>
 	<div th:fragment="form" th:remove="tag">
 		<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
-			th:object="${specialDetailEntryForm}"
-			th:action="@{/specialdetails/post}"
+			th:object="${calendarEntryForm}" th:action="@{/calendars/post}"
 			class="form-horizontal form-dialog">
 			<div class="modal-header"
-				th:switch="${specialDetailEntryForm.operationMode}">
+				th:switch="${calendarEntryForm.operationMode}">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-hidden="true">×</button>
 				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).NEW}"
-					th:text="#{view.specialdetail.entry-form.new.title }">New</h4>
+					th:text="#{view.calendar.entry-form.new.title }">New</h4>
 				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).EDIT}"
-					th:text="#{view.specialdetail.entry-form.update.title }">Update</h4>
+					th:text="#{view.calendar.entry-form.update.title }">Update</h4>
 				<h4 th:case="${T(com.akmans.trade.core.enums.OperationMode).DELETE}"
-					th:text="#{view.specialdetail.entry-form.delete.title }">Delete</h4>
+					th:text="#{view.calendar.entry-form.delete.title }">Delete</h4>
 			</div>
 			<div class="modal-body">
 				<div th:if="${#fields.hasErrors('*')}"
@@ -51,20 +50,19 @@
 						th:text="${message}">Form Messages</div>
 				</div>
 				<div class="form-group"
-					th:attrappend="class=${#fields.hasErrors('registDate')}? ' has-error' ">
+					th:attrappend="class=${#fields.hasErrors('registAt')}? ' has-error' ">
 					<div class="col-md-3 control-label"
-						th:text="#{view.specialdetail.entry-form.registdate}">日付</div>
+						th:text="#{view.calendar.entry-form.registat}">日付</div>
 					<div class="col-md-9 form-control-static"
 						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
-						th:text="*{#calendars.format(registDate, 'yyyy-MM-dd')}">2016-05-01</div>
+						th:text="*{disRegistAt}">2016-05-01</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type='text' id="registDate" name="registDate"
-							class="form-control"
-							th:value="*{#calendars.format(#objects.nullSafe(registDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+						<input type='text' id="registAt" name="registAt"
+							class="form-control" th:value="*{disRegistAt}" />
 						<script type="text/javascript">
 							$(function() {
-								$('#registDate').datetimepicker({
+								$('#registAt').datetimepicker({
 									format : 'YYYY-MM-DD'
 								});
 							});
@@ -72,20 +70,21 @@
 					</div>
 				</div>
 				<div class="form-group"
-					th:attrappend="class=${#fields.hasErrors('itemCode')}? ' has-error' ">
+					th:attrappend="class=${#fields.hasErrors('calendar')}? ' has-error' ">
 					<div class="col-md-3 control-label"
-						th:text="#{view.specialdetail.entry-form.itemcode}">支出項目</div>
+						th:text="#{view.calendar.entry-form.calendar}">カレンダー</div>
 					<div class="col-md-9 form-control-static"
 						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<span th:text="*{itemName}">Name</span> <input type="hidden"
-							id="itemCode" name="itemCode" value="" th:value="*{itemCode}" />
+						<span th:text="*{calendarLabel}">Name</span> <input type="hidden"
+							id="calendar" name="calendar" value="" th:value="*{calendar}" />
 					</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<select th:field="*{itemCode}" class="form-control">
+						<select th:field="*{calendar}" class="form-control">
 							<option value=""></option>
-							<option th:each="specialItem : ${itemList}"
-								th:value="${specialItem.code}" th:text="${specialItem.name}">Credit
+							<option
+								th:each="elem: ${T(com.akmans.trade.core.enums.Calendar).values()}"
+								th:value="${elem.value}" th:text="${elem.label}">Credit
 								card</option>
 							<option value="1" th:remove="all">Another payment method</option>
 							<option value="2" th:remove="all">Another payment method</option>
@@ -93,60 +92,52 @@
 					</div>
 				</div>
 				<div class="form-group"
-					th:attrappend="class=${#fields.hasErrors('name')}? ' has-error' ">
+					th:attrappend="class=${#fields.hasErrors('holiday')}? ' has-error' ">
 					<div class="col-md-3 control-label"
-						th:text="#{view.specialdetail.entry-form.name}">名称</div>
+						th:text="#{view.calendar.entry-form.holiday}">祝日</div>
 					<div class="col-md-9 form-control-static"
-						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
-						th:text="*{name}">Name</div>
+						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
+						<span th:text="*{holidayLabel}">Name</span> <input type="hidden"
+							id="holiday" name="holiday" value="" th:value="*{holiday}" />
+					</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type="text" id="name" name="name" value=""
-							class="form-control" th:field="*{name}" placeholder="Name"
-							th:attr="placeHolder=#{view.specialdetail.entry-form.name}" />
+						<select th:field="*{holiday}" class="form-control">
+							<option value=""></option>
+							<option
+								th:each="elem: ${T(com.akmans.trade.core.enums.JapanHoliday).values()}"
+								th:value="${elem.value}" th:text="${elem.label}">Credit
+								card</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
 					</div>
 				</div>
 				<div class="form-group"
-					th:attrappend="class=${#fields.hasErrors('amount')}? ' has-error' ">
+					th:attrappend="class=${#fields.hasErrors('description')}? ' has-error' ">
 					<div class="col-md-3 control-label"
-						th:text="#{view.specialdetail.entry-form.amount}">数量</div>
+						th:text="#{view.calendar.entry-form.description}">詳細</div>
 					<div class="col-md-9 form-control-static"
 						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
-						th:text="*{amount}">12345</div>
+						th:text="*{description}">詳細内容</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type="text" id="amount" name="amount" value=""
-							class="form-control" th:field="*{amount}" placeholder="Amount"
-							th:attr="placeHolder=#{view.specialdetail.entry-form.amount}" />
-					</div>
-				</div>
-				<div class="form-group"
-					th:attrappend="class=${#fields.hasErrors('detail')}? ' has-error' ">
-					<div class="col-md-3 control-label"
-						th:text="#{view.specialdetail.entry-form.detail}">詳細</div>
-					<div class="col-md-9 form-control-static"
-						th:if="*{operationMode == T(com.akmans.trade.core.enums.OperationMode).DELETE or operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
-						th:text="*{detail}">詳細内容</div>
-					<div class="col-md-9"
-						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<textarea id="detail" name="detail" class="form-control"
-							th:field="*{detail}" placeholder="Detail"
-							th:attr="placeHolder=#{view.specialdetail.entry-form.detail}">abcdef</textarea>
+						<textarea id="description" name="description" class="form-control"
+							th:field="*{description}" placeholder="Detail"
+							th:attr="placeHolder=#{view.calendar.entry-form.description}">abcdef</textarea>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<a id="confirm" class="btn btn-primary"
 					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
-					th:text="#{view.specialdetail.entry-form.confirm}">Save changes</a>
-				<a id="cancel" class="btn btn-default"
+					th:text="#{view.calendar.entry-form.confirm}">Save changes</a> <a
+					id="cancel" class="btn btn-default"
 					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
-					data-dismiss="modal"
-					th:text="#{view.specialdetail.entry-form.cancel}">Close</a> <a
-					id="complete" class="btn btn-primary"
+					data-dismiss="modal" th:text="#{view.calendar.entry-form.cancel}">Close</a>
+				<a id="complete" class="btn btn-primary"
 					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
-					data-dismiss="modal"
-					th:text="#{view.specialdetail.entry-form.complete}">Close</a>
+					data-dismiss="modal" th:text="#{view.calendar.entry-form.complete}">Close</a>
 			</div>
 		</form>
 	</div>
