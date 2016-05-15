@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
-import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentDao;
+import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentRepository;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
 public class MstInstrumentSample {
@@ -15,7 +15,7 @@ public class MstInstrumentSample {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 		// Get dao object
-		MstInstrumentDao dao = context.getBean(MstInstrumentDao.class);
+		MstInstrumentRepository dao = context.getBean(MstInstrumentRepository.class);
  
         // Print all records
         List<MstInstrument> instruments = (List<MstInstrument>) dao.findAll();

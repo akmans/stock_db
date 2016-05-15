@@ -1,0 +1,46 @@
+package com.akmans.trade.standalone.console;
+
+import java.util.UUID;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.akmans.trade.standalone.config.StandaloneConfig;
+import com.akmans.trade.standalone.springbatch.processors.JapanStockProcessor;
+
+public class ImportJapanStockApp {
+
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportJapanStockApp.class);
+
+	public static void main(String[] args) {
+
+		// Initialize application context
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.register(StandaloneConfig.class);
+		context.refresh();
+
+		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
+		Job job = (Job) context.getBean("importJapanStockJob");
+		logger.info("Job Restartable ? : " + job.isRestartable());
+
+		try {
+			JobParameters params = new JobParametersBuilder().addString("applicationDate", "2007-07-24")
+					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
+			JobExecution execution = jobLauncher.run(job, params);
+			logger.info("Exit Status : " + execution.getStatus());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		context.close();
+
+		System.out.println("Done");
+
+	}
+}

@@ -4,27 +4,27 @@ import java.util.List;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.akmans.trade.core.springdata.jpa.repositories.TrnStockDataDao;
-import com.akmans.trade.core.springdata.jpa.entities.TrnStockData;
+import com.akmans.trade.core.springdata.jpa.repositories.TrnJapanStockWeeklyRepository;
+import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStockWeekly;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
-public class TrnStockDataSample {
+public class TrnJapanStockWeeklySample {
 	public static void main(String[] args) {
 		// Initialize application context
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(StandaloneConfig.class);
 		context.refresh();
 		// Get dao object
-		TrnStockDataDao dao = context.getBean(TrnStockDataDao.class);
+		TrnJapanStockWeeklyRepository dao = context.getBean(TrnJapanStockWeeklyRepository.class);
  
         // Print all records
-        List<TrnStockData> data = (List<TrnStockData>) dao.findAll();
-        for (TrnStockData item : data) {
+        List<TrnJapanStockWeekly> data = (List<TrnJapanStockWeekly>) dao.findAll();
+        for (TrnJapanStockWeekly item : data) {
             System.out.println(item);
         }
   
         // And finally count records
-        System.out.println("Count stock data records: " + dao.findAll().size());
+        System.out.println("Count stock weekly data records: " + dao.findAll().size());
  
         context.close();
 	}

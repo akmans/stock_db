@@ -21,7 +21,9 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
+import com.akmans.trade.core.Application;
 import com.akmans.trade.core.config.TradeCoreConfig;
+import com.akmans.trade.core.enums.RunningMode;
 import com.akmans.trade.web.config.csrf2conversationsupport.CSRFHandlerInterceptor;
 import com.akmans.trade.web.config.csrf2conversationsupport.CustomRequestDataValueProcessor;
 import com.akmans.trade.web.utils.PathConstants;
@@ -112,5 +114,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	public RequestDataValueProcessor csrfRequestDataValueProcessor() {
 		CustomRequestDataValueProcessor processor = new CustomRequestDataValueProcessor();
 		return processor;
+	}
+
+	@Bean
+	public Application application() {
+		Application application = new Application();
+		application.setRunningMode(RunningMode.WEB);
+		return application;
 	}
 }

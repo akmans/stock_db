@@ -12,14 +12,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
+import com.akmans.trade.core.Application;
 import com.akmans.trade.core.config.TradeCoreConfig;
+import com.akmans.trade.core.enums.RunningMode;
 
 @Configuration
 @EnableBatchProcessing
 //@EnableAutoConfiguration
 @Import({
 	TradeCoreConfig.class,
-	HelloWorldJobConfig.class
+//	HelloWorldJobConfig.class,
+	ImportJapanStockJobConfig.class
 	})
 public class StandaloneConfig {
 	@Autowired
@@ -42,5 +45,12 @@ public class StandaloneConfig {
 		SimpleJobLauncher jobLauncher= new SimpleJobLauncher();
 		jobLauncher.setJobRepository(jobRepository());
 		return jobLauncher;
+	}
+
+	@Bean
+	public Application application() {
+		Application application = new Application();
+		application.setRunningMode(RunningMode.STANDALONE);
+		return application;
 	}
 }

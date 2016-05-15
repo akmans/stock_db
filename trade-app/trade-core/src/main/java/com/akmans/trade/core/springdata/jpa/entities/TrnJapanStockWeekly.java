@@ -5,14 +5,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.akmans.trade.core.springdata.jpa.keys.StockDataKey;
+import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 
 @Entity
-@Table(name = "trn_stock_weekly")
-public class TrnStockDataWeekly {
+@Table(name = "trn_japan_stock_weekly")
+public class TrnJapanStockWeekly extends AbstractEntity {
 
 	@EmbeddedId
-	private StockDataKey stockDataKey;
+	private JapanStockKey japanStockKey;
 
 	@Column(name = "opening_price")
 	private Integer openingPrice;
@@ -29,12 +29,15 @@ public class TrnStockDataWeekly {
 	@Column(name = "turnover")
 	private Integer turnover;
 
-	public void setStockDataKey(StockDataKey stockDataKey) {
-		this.stockDataKey = stockDataKey;
+	@Column(name = "trading_value")
+	private Long tradingValue;
+
+	public void setJapanStockKey(JapanStockKey japanStockKey) {
+		this.japanStockKey = japanStockKey;
 	}
 
-	public StockDataKey getStockDataKey() {
-		return this.stockDataKey;
+	public JapanStockKey getJapanStockKey() {
+		return this.japanStockKey;
 	}
 
 	public void setOpeningPrice(Integer openingPrice) {
@@ -77,16 +80,19 @@ public class TrnStockDataWeekly {
 		return this.turnover;
 	}
 
+	public void setTradingValue(Long tradingValue) {
+		this.tradingValue = tradingValue;
+	}
+
+	public Long getTradingValue() {
+		return this.tradingValue;
+	}
+
 	@Override
-    public String toString() {
-        return this.getClass().getAnnotation(Table.class).name()
-        		+ " [code=" + stockDataKey.getCode()
-        		+ ", regist_date=" + stockDataKey.getRegistDate()
-        		+ ", opening_price=" + openingPrice
-        		+ ", high_price=" + highPrice
-        		+ ", low_price=" + lowPrice
-        		+ ", finish_price=" + finishPrice
-        		+ ", turnover=" + turnover
-        		+ "]";
-    }
+	public String toString() {
+		return this.getClass().getAnnotation(Table.class).name() + " [code=" + japanStockKey.getCode()
+				+ ", regist_date=" + japanStockKey.getRegistDate() + ", opening_price=" + openingPrice + ", high_price="
+				+ highPrice + ", low_price=" + lowPrice + ", finish_price=" + finishPrice + ", turnover=" + turnover
+				+ ", trading_value=" + tradingValue + super.toString() + "]";
+	}
 }

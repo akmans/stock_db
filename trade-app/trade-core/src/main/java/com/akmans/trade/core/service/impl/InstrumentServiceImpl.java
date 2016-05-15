@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
-import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentDao;
+import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
@@ -30,12 +30,12 @@ public class InstrumentServiceImpl implements InstrumentService {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
 	@Autowired
-	private MstInstrumentDao mstInstrumentDao;
+	private MstInstrumentRepository mstInstrumentRepository;
 
 	public Page<MstInstrument> findPage(Pageable pageable) {
-		long count = mstInstrumentDao.count();
+		long count = mstInstrumentRepository.count();
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		List<Object[]> list = mstInstrumentDao.findPage(pg);
+		List<Object[]> list = mstInstrumentRepository.findPage(pg);
 		ArrayList<MstInstrument> content = new ArrayList<MstInstrument>();
 		for(Object[] item : list) {
 			MstInstrument instrument = (MstInstrument)item[0];
@@ -51,11 +51,11 @@ public class InstrumentServiceImpl implements InstrumentService {
 
 	public Page<MstInstrument> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstInstrumentDao.findAll(pg);
+		return mstInstrumentRepository.findAll(pg);
 	}
 
 	public MstInstrument findOne(Integer code) throws TradeException {
-		Optional<MstInstrument> instrument = mstInstrumentDao.findOne(code);
+		Optional<MstInstrument> instrument = mstInstrumentRepository.findOne(code);
 		if (instrument.isPresent()) {
 			return instrument.get();
 		} else {
@@ -68,11 +68,11 @@ public class InstrumentServiceImpl implements InstrumentService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			if (mstInstrumentDao.findOne(instrument.getCode()).isPresent()) {
+			if (mstInstrumentRepository.findOne(instrument.getCode()).isPresent()) {
 				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.alreadyexist",
 						instrument.getCode()));
 			}
-			mstInstrumentDao.save(instrument);
+			mstInstrumentRepository.save(instrument);
 			break;
 		}
 		case EDIT: {
@@ -81,7 +81,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.inconsistent",
 						instrument.getCode()));
 			}
-			mstInstrumentDao.save(instrument);
+			mstInstrumentRepository.save(instrument);
 			break;
 		}
 		case DELETE: {
@@ -90,7 +90,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.inconsistent",
 						instrument.getCode()));
 			}
-			mstInstrumentDao.delete(instrument);
+			mstInstrumentRepository.delete(instrument);
 		}
 		}
 	}
