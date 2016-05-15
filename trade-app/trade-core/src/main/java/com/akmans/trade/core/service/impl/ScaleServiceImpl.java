@@ -1,5 +1,6 @@
 package com.akmans.trade.core.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class ScaleServiceImpl implements ScaleService {
 
 	@Autowired
 	private MstScaleRepository mstScaleRepository;
+
+	public List<MstScale> findAll() {
+		return mstScaleRepository.findAllByOrderByCodeAsc();
+	}
 
 	public Page<MstScale> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");

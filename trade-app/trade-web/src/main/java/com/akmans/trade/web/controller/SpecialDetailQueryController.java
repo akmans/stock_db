@@ -40,11 +40,15 @@ public class SpecialDetailQueryController extends AbstractQueryController<Specia
 	}
 
 	@Override
-	public Page<TrnSpecialDetail> doSearch(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm,
-			Pageable pageable) throws TradeException {
+	public void initComponent(ModelMap model) {
 		// Get item list.
 		List<TrnSpecialItem> itemList = specialItemService.findAll();
 		model.addAttribute("itemList", itemList);
+	}
+
+	@Override
+	public Page<TrnSpecialDetail> doSearch(ModelMap model, SpecialDetailQueryForm specialDetailQueryForm,
+			Pageable pageable) throws TradeException {
 		// Do searching.
 		SpecialDetailQueryDto criteria = new SpecialDetailQueryDto();
 		BeanUtils.copyProperties(specialDetailQueryForm, criteria);

@@ -50,7 +50,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-7 grid"
+				<div class="col-md-8 grid"
 					th:attrappend="class=${#fields.hasErrors('holiday')}? ' has-error' ">
 					<div class="col-md-3 control-label header text-left"
 						th:text="#{view.calendar.query-form.holiday}">祝日</div>
@@ -66,7 +66,9 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-1 grid">
+			</div>
+			<div class="form-group">
+				<div class="col-md-12 text-right">
 					<input type="submit" id="confirm" class="btn btn-primary"
 						th:value="#{view.calendar.query-form.search}" />
 				</div>

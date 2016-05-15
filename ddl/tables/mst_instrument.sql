@@ -10,6 +10,7 @@ CREATE TABLE mst_instrument
   sector17_code integer,
   scale_code integer,
   market_code integer,
+  onboard character(1) NOT NULL,
   created_date timestamp with time zone,
   updated_date timestamp with time zone,
   created_by character varying(20),

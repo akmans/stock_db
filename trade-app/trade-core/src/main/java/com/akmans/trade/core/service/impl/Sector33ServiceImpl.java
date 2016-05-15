@@ -1,5 +1,6 @@
 package com.akmans.trade.core.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class Sector33ServiceImpl implements Sector33Service {
 
 	@Autowired
 	private MstSector33Repository mstSector33Repository;
+
+	public List<MstSector33> findAll() {
+		return mstSector33Repository.findAll();
+	}
 
 	public Page<MstSector33> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");

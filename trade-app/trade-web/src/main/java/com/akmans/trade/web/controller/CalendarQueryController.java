@@ -33,6 +33,11 @@ public class CalendarQueryController extends AbstractQueryController<CalendarQue
 	}
 
 	@Override
+	public void initComponent(ModelMap model) {
+		// Nothing.
+	}
+
+	@Override
 	public Page<MstCalendar> doSearch(ModelMap model, CalendarQueryForm calendarQueryForm,
 			Pageable pageable) throws TradeException {
 		// Do searching.

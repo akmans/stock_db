@@ -1,5 +1,6 @@
 package com.akmans.trade.core.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,10 @@ public class MarketServiceImpl implements MarketService {
 
 	@Autowired
 	private MstMarketRepository mstMarketRepository;
+
+	public List<MstMarket> findAll() {
+		return mstMarketRepository.findAllByOrderByCodeAsc();
+	}
 
 	public Page<MstMarket> findAll(Pageable pageable) {
 		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");

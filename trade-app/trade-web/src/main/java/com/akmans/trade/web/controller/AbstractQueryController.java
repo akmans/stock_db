@@ -37,6 +37,7 @@ public abstract class AbstractQueryController<T extends AbstractQueryForm, E ext
 		logger.debug("pageable = {}", pageable);
 		logger.debug("commandForm = {}", commandForm);
 		try {
+			initComponent(model);
 			Page<E> page = doSearch(model, commandForm, pageable);
 			PageWrapper<E> wrapper = new PageWrapper<E>(page, pathList);
 			model.addAttribute("page", wrapper);
@@ -56,6 +57,8 @@ public abstract class AbstractQueryController<T extends AbstractQueryForm, E ext
 		// render path
 		return viewList;
 	}
+
+	public abstract void initComponent(ModelMap model) throws TradeException;
 
 	public abstract Page<E> doSearch(ModelMap model, T commandForm, Pageable pageable) throws TradeException;
 }
