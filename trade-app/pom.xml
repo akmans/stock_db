@@ -32,6 +32,7 @@
 		<javax.servlet.jsp-api.version>2.2.1</javax.servlet.jsp-api.version>
 		<javax.inject.version>1</javax.inject.version>
 		<spring.batch.version>3.0.6.RELEASE</spring.batch.version>
+		<excel-parser.version>1.0</excel-parser.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<!-- jackson.version>1.9.7</jackson.version -->
 	</properties>
@@ -277,12 +278,8 @@
 			<version>${hibernate-validator.version}</version>
 		</dependency>
 
-		<!-- jstl
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>${jstl.version}</version>
-		</dependency> -->
+		<!-- jstl <dependency> <groupId>javax.servlet</groupId> <artifactId>jstl</artifactId> 
+			<version>${jstl.version}</version> </dependency> -->
 
 		<!-- SLF4J -->
 		<dependency>
@@ -317,6 +314,12 @@
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<version>${javax.servlet.jsp-api.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.javafunk</groupId>
+			<artifactId>excel-parser</artifactId>
+			<version>${excel-parser.version}</version>
 		</dependency>
 
 		<!-- Javax Inject -->

@@ -12,9 +12,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
-public class ImportJapanStockApp {
+public class ImportJapanInstrumentApp {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportJapanStockApp.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportJapanInstrumentApp.class);
 
 	public static void main(String[] args) {
 
@@ -24,12 +24,12 @@ public class ImportJapanStockApp {
 		context.refresh();
 
 		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-		Job job = (Job) context.getBean("importJapanStockJob");
+		Job job = (Job) context.getBean("importJapanInstrumentJob");
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("applicationDate", "2007-07-24")
-					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("uuid", UUID.randomUUID().toString())
+					.toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 

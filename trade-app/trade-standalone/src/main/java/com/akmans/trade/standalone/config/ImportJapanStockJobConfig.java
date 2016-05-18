@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,36 +13,24 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.xml.StaxEventItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
-import com.akmans.trade.standalone.console.ImportJapanStockApp;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
-import com.akmans.trade.standalone.mapper.ReportFieldSetMapper;
-import com.akmans.trade.standalone.model.Report;
-import com.akmans.trade.standalone.processor.CustomItemProcessor;
-import com.akmans.trade.standalone.springbatch.processors.JapanStockProcessor;
-import com.akmans.trade.standalone.springbatch.writers.DummyWriter;
+import com.akmans.trade.standalone.springbatch.processors.JapanStockConvertProcessor;
+import com.akmans.trade.standalone.springbatch.processors.JapanStockValidateProcessor;
 import com.akmans.trade.standalone.springbatch.writers.JapanStockWriter;
 
 public class ImportJapanStockJobConfig {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportJapanStockJobConfig.class);
 
-//	@JobScope
-//	@Value("#{jobParameters['applicationDate']}")
-//	private String applicationDate;
-
 	@Bean
 	@StepScope
-	public FlatFileItemReader<CsvJapanStockDto> reader(@Value("#{jobParameters['applicationDate']}") String applicationDate) {
+	public FlatFileItemReader<CsvJapanStockDto> reader(
+			@Value("#{jobParameters['applicationDate']}") String applicationDate) {
 		logger.info("applicationDate =" + applicationDate);
 		// flat file item reader (using an csv extractor)
 		FlatFileItemReader<CsvJapanStockDto> reader = new FlatFileItemReader<CsvJapanStockDto>();
@@ -70,34 +57,40 @@ public class ImportJapanStockJobConfig {
 
 	@Bean
 	@StepScope
-	public ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor(@Value("#{jobParameters['applicationDate']}") String applicationDate) {
-		return new JapanStockProcessor(applicationDate);
+	public ItemProcessor<CsvJapanStockDto, CsvJapanStockDto> processor1() {
+		return new JapanStockValidateProcessor();
+	}
+
+	@Bean
+	@StepScope
+	public ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor2(
+			@Value("#{jobParameters['applicationDate']}") String applicationDate) {
+		return new JapanStockConvertProcessor(applicationDate);
 	}
 
 	@Bean
 	public ItemWriter<TrnJapanStock> writer() {
 		return new JapanStockWriter();
-/*		Jaxb2Marshaller reportMarshaller = new Jaxb2Marshaller();
-		reportMarshaller.setClassesToBeBound(Report.class);
-
-		Resource resource = new FileSystemResource("target/xml/outputs/report.xml");
-		StaxEventItemWriter<Report> xmlItemWriter = new StaxEventItemWriter<Report>();
-		xmlItemWriter.setRootTagName("report");
-		xmlItemWriter.setMarshaller(reportMarshaller);
-		xmlItemWriter.setResource(resource);
-		return xmlItemWriter;*/
 	}
 
 	@Bean
-	public Job importJapanStockJob(JobBuilderFactory jobs, Step step1) {
-		return jobs.get("importJapanStockJob").start(step1).build();
+	public Job importJapanStockJob(JobBuilderFactory jobs, Step step1, Step step2) {
+		return jobs.get("importJapanStockJob").start(step1).next(step2).build();
 	}
 
 	@Bean
-	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader, ItemWriter<TrnJapanStock> writer,
-			ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor) {
-//		logger.info("applicationDate =" + applicationDate);
-		return stepBuilderFactory.get("step1").<CsvJapanStockDto, TrnJapanStock> chunk(50).reader(reader).processor(processor)
-				.writer(writer).build();
+	public Step step2(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
+			ItemWriter<TrnJapanStock> writer, ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor2) {
+		// logger.info("applicationDate =" + applicationDate);
+		return stepBuilderFactory.get("step2").<CsvJapanStockDto, TrnJapanStock> chunk(500).reader(reader)
+				.processor(processor2).writer(writer).build();
+	}
+
+	@Bean
+	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
+			ItemProcessor<CsvJapanStockDto, CsvJapanStockDto> processor1) {
+		// logger.info("applicationDate =" + applicationDate);
+		return stepBuilderFactory.get("step1").<CsvJapanStockDto, CsvJapanStockDto> chunk(500).reader(reader)
+				.processor(processor1).build();
 	}
 }

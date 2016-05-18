@@ -14,10 +14,10 @@ public enum Onboard {
 	private static final Map<String, Onboard> lookup = new HashMap<String, Onboard>();
 
 	static {
-        for (Onboard c : Onboard.values()) {
-            lookup.put(c.getValue(), c);
-        }
-    }
+		for (Onboard c : Onboard.values()) {
+			lookup.put(c.getValue(), c);
+		}
+	}
 
 	private Onboard(String label, String value) {
 		this.label = label;
@@ -33,8 +33,8 @@ public enum Onboard {
 	}
 
 	public static Onboard get(String value) {
-        return lookup.get(value);
-    }
+		return lookup.get(value);
+	}
 
 	@Override
 	public String toString() {

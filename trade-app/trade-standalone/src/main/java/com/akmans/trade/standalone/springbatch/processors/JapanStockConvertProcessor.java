@@ -6,25 +6,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
 
-//@Scope(value = "step")
-public class JapanStockProcessor implements ItemProcessor<CsvJapanStockDto, TrnJapanStock> {
+public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDto, TrnJapanStock> {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanStockProcessor.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanStockConvertProcessor.class);
 
-	// @Value("#{jobParameters['applicationDate']}")
 	private String applicationDate;
 
-	public JapanStockProcessor(String applicationDate) {
+	public JapanStockConvertProcessor(String applicationDate) {
 		this.applicationDate = applicationDate;
 	}
 
@@ -44,7 +38,8 @@ public class JapanStockProcessor implements ItemProcessor<CsvJapanStockDto, TrnJ
 		japanStockKey.setCode(Integer.valueOf(codes[0]));
 		japanStockKey.setRegistDate(convertDate(applicationDate));
 		stock.setJapanStockKey(japanStockKey);
-		if (item.getOpeningPrice().isEmpty()) {
+		// Omit data that price is empty or market is not TOKYO.
+		if (item.getOpeningPrice().isEmpty() || !"T".equals(codes[1])) {
 			return null;
 		}
 //		logger.debug("CsvJapanStockDto = {}", item);

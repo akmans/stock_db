@@ -70,14 +70,14 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		return new CSRFHandlerInterceptor();
 	}
 
-	@Bean
+/*	@Bean
 	public CookieLocaleResolver localeResolver() {
 		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
 		Locale defaultLocale = new Locale("en");
 		localeResolver.setDefaultLocale(defaultLocale);
 		return localeResolver;
 	}
-
+*/
 	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();

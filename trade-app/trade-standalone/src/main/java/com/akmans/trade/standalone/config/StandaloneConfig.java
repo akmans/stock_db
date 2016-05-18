@@ -22,7 +22,8 @@ import com.akmans.trade.core.enums.RunningMode;
 @Import({
 	TradeCoreConfig.class,
 //	HelloWorldJobConfig.class,
-	ImportJapanStockJobConfig.class
+//	ImportJapanStockJobConfig.class,
+	ImportJapanInstrumentJobConfig.class
 	})
 public class StandaloneConfig {
 	@Autowired

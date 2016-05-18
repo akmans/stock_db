@@ -14,10 +14,10 @@ public enum Calendar {
 	private static final Map<String, Calendar> lookup = new HashMap<String, Calendar>();
 
 	static {
-        for (Calendar c : Calendar.values()) {
-            lookup.put(c.getValue(), c);
-        }
-    }
+		for (Calendar c : Calendar.values()) {
+			lookup.put(c.getValue(), c);
+		}
+	}
 
 	private Calendar(String label, String value) {
 		this.label = label;
@@ -33,8 +33,8 @@ public enum Calendar {
 	}
 
 	public static Calendar get(String value) {
-        return lookup.get(value);
-    }
+		return lookup.get(value);
+	}
 
 	@Override
 	public String toString() {

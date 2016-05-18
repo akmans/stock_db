@@ -6,7 +6,7 @@ public class InstrumentQueryDto extends AbstractQueryDto implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** code */
-	private Integer code;
+	private Long code;
 
 	/** sector17 */
 	private Integer sector17;
@@ -28,7 +28,7 @@ public class InstrumentQueryDto extends AbstractQueryDto implements Serializable
 	 * 
 	 * @return code
 	 */
-	public Integer getCode() {
+	public Long getCode() {
 		return this.code;
 	}
 
@@ -37,7 +37,7 @@ public class InstrumentQueryDto extends AbstractQueryDto implements Serializable
 	 * 
 	 * @param code
 	 */
-	public void setCode(Integer code) {
+	public void setCode(Long code) {
 		this.code = code;
 	}
 
