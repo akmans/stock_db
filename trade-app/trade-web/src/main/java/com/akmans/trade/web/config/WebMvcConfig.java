@@ -1,7 +1,5 @@
 package com.akmans.trade.web.config;
 
-import java.util.Locale;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
@@ -70,14 +67,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		return new CSRFHandlerInterceptor();
 	}
 
-/*	@Bean
-	public CookieLocaleResolver localeResolver() {
-		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-		Locale defaultLocale = new Locale("en");
-		localeResolver.setDefaultLocale(defaultLocale);
-		return localeResolver;
-	}
-*/
 	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();

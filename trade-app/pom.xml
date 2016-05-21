@@ -34,6 +34,8 @@
 		<spring.batch.version>3.0.6.RELEASE</spring.batch.version>
 		<excel-parser.version>1.0</excel-parser.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
+		<javax.mail-api.version>1.5.1</javax.mail-api.version>
+		<javax.mail.version>1.4.7</javax.mail.version>
 		<!-- jackson.version>1.9.7</jackson.version -->
 	</properties>
 
@@ -316,6 +318,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Excel Parser -->
 		<dependency>
 			<groupId>org.javafunk</groupId>
 			<artifactId>excel-parser</artifactId>
@@ -329,10 +332,23 @@
 			<version>${javax.inject.version}</version>
 		</dependency>
 
+		<!-- Java Mail -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>${jaxb-api.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${javax.mail.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>${javax.mail-api.version}</version>
 		</dependency>
 	</dependencies>
 

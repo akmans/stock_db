@@ -12,7 +12,8 @@ public class CoreMessageUtils {
 	public static String getMessage(String key, Object... objects) {
 		try {
 			ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-			messageSource.setBasename("/META-INF/core/i18n/messages");
+			messageSource.setBasename("classpath:/META-INF/core/i18n/messages");
+			messageSource.setFallbackToSystemLocale(false);
 			Locale locale = LocaleContextHolder.getLocale();
 			String message = messageSource.getMessage(key, objects, locale);
 			logger.debug("The content of key [" + key + "] is [" + message + "]");

@@ -35,7 +35,7 @@ public class ViewConstants {
 
 	public final static String VIEW_INSTRUMENT_LIST = "instrument/list";
 
-	public final static String VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT = "instrument/list :: content";
+//	public final static String VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT = "instrument/list :: content";
 
 	public final static String VIEW_INSTRUMENT_FORM_FRAGEMENT = "instrument/entry-form :: form";
 

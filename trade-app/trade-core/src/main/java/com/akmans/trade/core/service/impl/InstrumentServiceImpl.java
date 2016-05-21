@@ -22,14 +22,11 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
 import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentRepository;
-import com.akmans.trade.core.springdata.jpa.entities.MstCalendar;
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
-import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialDetail;
-import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialItem;
 import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
@@ -44,6 +41,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 	private MstInstrumentRepository mstInstrumentRepository;
 
 	public Page<MstInstrument> findPage(InstrumentQueryDto dto) {
+		// Select statement.
 		StringBuilder jpql = new StringBuilder();
 		jpql.append("select instrument, scale, market, sector33, sector17 ");
 		jpql.append("from MstInstrument as instrument ");
@@ -51,6 +49,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		jpql.append("left outer join instrument.scale as scale ");
 		jpql.append("left outer join instrument.sector17 as sector17 ");
 		jpql.append("left outer join instrument.sector33 as sector33 ");
+		// Count statement.
 		StringBuilder cntJpql = new StringBuilder();
 		cntJpql.append("select count(instrument.code) ");
 		cntJpql.append("from MstInstrument as instrument ");
@@ -58,13 +57,14 @@ public class InstrumentServiceImpl implements InstrumentService {
 		cntJpql.append("left outer join instrument.scale as scale ");
 		cntJpql.append("left outer join instrument.sector17 as sector17 ");
 		cntJpql.append("left outer join instrument.sector33 as sector33 ");
-//		String jpql = "select instrument from MstInstrument as instrument ";
-//		String cntJpql = "select count(cal.code) from MstCalendar as cal ";
+		// Query criteria.
 		StringBuilder criteria = new StringBuilder();
 		criteria.append("where 1 = 1 ");
+		// Set instrument code.
 		if (dto.getCode() != null) {
 			criteria.append("and instrument.code = :code ");
 		}
+		
 		if (dto.getMarket() != null) {
 			criteria.append("and market.code = :market ");
 		}
@@ -126,9 +126,6 @@ public class InstrumentServiceImpl implements InstrumentService {
 		query.setMaxResults(dto.getPageable().getPageSize());
 		List<Object[]> list = query.getResultList();
 		em.close();
-/*		long count = mstInstrumentRepository.count();
-		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		List<Object[]> list = mstInstrumentRepository.findPage(pg);*/
 		ArrayList<MstInstrument> content = new ArrayList<MstInstrument>();
 		for(Object[] item : list) {
 			MstInstrument instrument = (MstInstrument)item[0];
@@ -190,7 +187,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 
 	public MstInstrument findOneEager(Long code) throws TradeException {
 		List<Object[]> list = mstInstrumentRepository.findOneEager(code);
-		MstInstrument instrument = new MstInstrument();
+		MstInstrument instrument = null;
 		for (Object[] item : list) {
 			instrument = (MstInstrument) item[0];
 			instrument.setScale((MstScale) item[1]);

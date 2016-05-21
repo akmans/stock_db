@@ -5,8 +5,6 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,13 +16,11 @@ import com.akmans.trade.core.service.MarketService;
 import com.akmans.trade.core.service.ScaleService;
 import com.akmans.trade.core.service.Sector17Service;
 import com.akmans.trade.core.service.Sector33Service;
-import com.akmans.trade.core.springdata.jpa.entities.MstCalendar;
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
-import com.akmans.trade.web.form.CalendarEntryForm;
 import com.akmans.trade.web.form.InstrumentEntryForm;
 import com.akmans.trade.web.utils.PathConstants;
 import com.akmans.trade.web.utils.ViewConstants;
@@ -114,21 +110,4 @@ public class InstrumentEntryController extends AbstractEntryController<Instrumen
 		}
 		instrumentService.operation(instrument, instrumentEntryForm.getOperationMode());
 	}
-
-/*	public Page<MstInstrument> doSearch(Pageable pageable) {
-		logger.debug("The pageable is {}", pageable);
-		return instrumentService.findPage(pageable);
-	}
-
-	public MstInstrument findOne(Integer code) throws TradeException {
-		logger.debug("The code is {}", code);
-		return instrumentService.findOne(code);
-	}
-
-	public void confirmOperation(InstrumentForm instrumentForm) throws TradeException {
-		logger.debug("The marketForm is {}", instrumentForm);
-		MstInstrument instrument = new MstInstrument();
-		BeanUtils.copyProperties(instrumentForm, instrument);
-		instrumentService.operation(instrument, instrumentForm.getOperationMode());
-	}*/
 }

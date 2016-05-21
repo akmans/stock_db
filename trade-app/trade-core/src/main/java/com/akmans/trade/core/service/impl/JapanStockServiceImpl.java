@@ -1,30 +1,15 @@
 package com.akmans.trade.core.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
-import com.akmans.trade.core.dto.CalendarQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
-import com.akmans.trade.core.service.CalendarService;
 import com.akmans.trade.core.service.JapanStockService;
-import com.akmans.trade.core.springdata.jpa.repositories.MstCalendarRepository;
 import com.akmans.trade.core.springdata.jpa.repositories.TrnJapanStockRepository;
-import com.akmans.trade.core.springdata.jpa.entities.MstCalendar;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 import com.akmans.trade.core.utils.CoreMessageUtils;

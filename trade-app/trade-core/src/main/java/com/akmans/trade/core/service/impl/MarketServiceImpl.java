@@ -75,4 +75,15 @@ public class MarketServiceImpl implements MarketService {
 		}
 		}
 	}
+
+	public MstMarket findByName(String name) throws TradeException {
+		List<MstMarket> markets = mstMarketRepository.findByName(name);
+		if (markets == null) {
+//			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.notfound.by.name", name));
+			return null;
+		} else if (markets.size() > 1) {
+			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.found.duplicated", name));
+		}
+		return markets.get(0);
+	}
 }

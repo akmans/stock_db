@@ -28,8 +28,8 @@ public class ImportJapanInstrumentApp {
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("uuid", UUID.randomUUID().toString())
-					.toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("applicationDate", "2007-07-24")
+					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 
