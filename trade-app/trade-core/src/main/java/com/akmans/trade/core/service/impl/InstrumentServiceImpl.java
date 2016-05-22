@@ -21,18 +21,21 @@ import com.akmans.trade.core.dto.InstrumentQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.springdata.jpa.repositories.MstInstrumentRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector17;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class InstrumentServiceImpl implements InstrumentService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private LocalContainerEntityManagerFactoryBean emf;
@@ -187,7 +190,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		if (instrument.isPresent()) {
 			return instrument.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.instrument.record.notfound", code));
 		}
 	}
 
@@ -197,7 +200,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		switch (mode) {
 		case NEW: {
 			if (mstInstrumentRepository.findOne(instrument.getCode()).isPresent()) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.alreadyexist",
+				throw new TradeException(messageService.getMessage("core.service.instrument.record.alreadyexist",
 						instrument.getCode()));
 			}
 			mstInstrumentRepository.save(instrument);
@@ -206,7 +209,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		case EDIT: {
 			MstInstrument origin = findOne(instrument.getCode());
 			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.instrument.record.inconsistent",
 						instrument.getCode()));
 			}
 			mstInstrumentRepository.save(instrument);
@@ -215,7 +218,7 @@ public class InstrumentServiceImpl implements InstrumentService {
 		case DELETE: {
 			MstInstrument origin = findOne(instrument.getCode());
 			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.instrument.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.instrument.record.inconsistent",
 						instrument.getCode()));
 			}
 			mstInstrumentRepository.delete(instrument);

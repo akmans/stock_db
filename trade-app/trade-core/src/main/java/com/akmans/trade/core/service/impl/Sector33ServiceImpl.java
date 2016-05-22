@@ -13,15 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.service.Sector33Service;
 import com.akmans.trade.core.springdata.jpa.repositories.MstSector33Repository;
 import com.akmans.trade.core.springdata.jpa.entities.MstSector33;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class Sector33ServiceImpl implements Sector33Service {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private MstSector33Repository mstSector33Repository;
@@ -40,7 +43,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 		if (sector33.isPresent()) {
 			return sector33.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.sector33.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.sector33.record.notfound", code));
 		}
 	}
 
@@ -51,7 +54,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 		case NEW: {
 			if (mstSector33Repository.findOne(sector33.getCode()).isPresent()) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.sector33.record.alreadyexist", sector33.getCode()));
+						messageService.getMessage("core.service.sector33.record.alreadyexist", sector33.getCode()));
 			}
 			mstSector33Repository.save(sector33);
 			break;
@@ -60,7 +63,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 			MstSector33 origin = findOne(sector33.getCode());
 			if (!origin.getUpdatedDate().equals(sector33.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
+						messageService.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
 			}
 			mstSector33Repository.save(sector33);
 			break;
@@ -69,7 +72,7 @@ public class Sector33ServiceImpl implements Sector33Service {
 			MstSector33 origin = findOne(sector33.getCode());
 			if (!origin.getUpdatedDate().equals(sector33.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
+						messageService.getMessage("core.service.sector33.record.inconsistent", sector33.getCode()));
 			}
 			mstSector33Repository.delete(sector33);
 		}

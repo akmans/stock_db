@@ -13,15 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.service.ScaleService;
 import com.akmans.trade.core.springdata.jpa.repositories.MstScaleRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstScale;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class ScaleServiceImpl implements ScaleService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private MstScaleRepository mstScaleRepository;
@@ -40,7 +43,7 @@ public class ScaleServiceImpl implements ScaleService {
 		if (scale.isPresent()) {
 			return scale.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.scale.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.scale.record.notfound", code));
 		}
 	}
 
@@ -51,7 +54,7 @@ public class ScaleServiceImpl implements ScaleService {
 		case NEW: {
 			if (mstScaleRepository.findOne(scale.getCode()).isPresent()) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", scale.getCode()));
+						messageService.getMessage("core.service.market.record.alreadyexist", scale.getCode()));
 			}
 			mstScaleRepository.save(scale);
 			break;
@@ -60,7 +63,7 @@ public class ScaleServiceImpl implements ScaleService {
 			MstScale origin = findOne(scale.getCode());
 			if (!origin.getUpdatedDate().equals(scale.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", scale.getCode()));
+						messageService.getMessage("core.service.market.record.inconsistent", scale.getCode()));
 			}
 			mstScaleRepository.save(scale);
 			break;
@@ -69,7 +72,7 @@ public class ScaleServiceImpl implements ScaleService {
 			MstScale origin = findOne(scale.getCode());
 			if (!origin.getUpdatedDate().equals(scale.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", scale.getCode()));
+						messageService.getMessage("core.service.market.record.inconsistent", scale.getCode()));
 			}
 			mstScaleRepository.delete(scale);
 		}

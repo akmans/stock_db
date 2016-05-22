@@ -20,16 +20,19 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.dto.SpecialDetailQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.service.SpecialDetailService;
 import com.akmans.trade.core.springdata.jpa.repositories.TrnSpecialDetailRepository;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialDetail;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialItem;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class SpecialDetailServiceImpl implements SpecialDetailService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private LocalContainerEntityManagerFactoryBean emf;
@@ -92,7 +95,7 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 		if (specialDetail.isPresent()) {
 			return specialDetail.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.specialDetail.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.specialDetail.record.notfound", code));
 		}
 	}
 
@@ -107,7 +110,7 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 		case EDIT: {
 			TrnSpecialDetail origin = findOne(specialDetail.getCode());
 			if (!origin.getUpdatedDate().equals(specialDetail.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialDetail.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.specialDetail.record.inconsistent",
 						specialDetail.getCode()));
 			}
 			trnSpecialDetailRepository.save(specialDetail);
@@ -116,7 +119,7 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 		case DELETE: {
 			TrnSpecialDetail origin = findOne(specialDetail.getCode());
 			if (!origin.getUpdatedDate().equals(specialDetail.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialDetail.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.specialDetail.record.inconsistent",
 						specialDetail.getCode()));
 			}
 			trnSpecialDetailRepository.delete(specialDetail);

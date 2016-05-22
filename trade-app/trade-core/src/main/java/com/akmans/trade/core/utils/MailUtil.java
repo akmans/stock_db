@@ -10,40 +10,58 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import com.akmans.trade.core.service.MessageService;
+
+@Component
+@PropertySources({ @PropertySource("classpath:/META-INF/core/config/smtp.properties"),
+		@PropertySource("classpath:/META-INF/core/config/environment.properties") })
 public class MailUtil {
-	public static void sendMail() {
-		final String username = "mr.wgang@gmail.com";
-        final String password = "gmail601626";
 
-        Properties props = new Properties();
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
-        Session session = Session.getInstance(props,
-          new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-          });
+	@Autowired
+	private Environment env;
 
-        try {
+	@Autowired
+	private MessageService messageService;
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("mr.wgang@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO,
-                InternetAddress.parse("js84sk2hh@i.softbank.jp"));
-            message.setSubject("Testing Subject");
-            message.setText("Dear Mail Crawler,"
-                + "\n\n No spam to my email, please!");
+	public void sendMail() {
+		Properties props = new Properties();
+		props.put("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
+		props.put("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
+		props.put("mail.smtp.host", env.getRequiredProperty("mail.smtp.host"));
+		props.put("mail.smtp.port", env.getRequiredProperty("mail.smtp.port"));
 
-            Transport.send(message);
+		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(env.getRequiredProperty("mail.username"),
+						env.getRequiredProperty("mail.password"));
+			}
+		});
 
-            System.out.println("Done");
+		try {
 
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(env.getRequiredProperty("mail.sender")));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(env.getRequiredProperty("mail.receiver")));
+			message.setSubject("Testing Subject");
+			message.setText("Dear Mail Crawler," + "\n\n No spam to my email, please!");
+
+			Transport.send(message);
+
+			System.out.println("Done");
+
+		} catch (MessagingException e) {
+			logger.error("Error sending mail.", e);
+			throw new RuntimeException(e);
+		}
 	}
 }

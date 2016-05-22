@@ -13,15 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.service.SpecialItemService;
 import com.akmans.trade.core.springdata.jpa.repositories.TrnSpecialItemRepository;
 import com.akmans.trade.core.springdata.jpa.entities.TrnSpecialItem;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class SpecialItemServiceImpl implements SpecialItemService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(SpecialItemServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private TrnSpecialItemRepository trnSpecialItemRepository;
@@ -40,7 +43,7 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 		if (specialItem.isPresent()) {
 			return specialItem.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.specialitem.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.specialitem.record.notfound", code));
 		}
 	}
 
@@ -55,7 +58,7 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 		case EDIT: {
 			TrnSpecialItem origin = findOne(specialItem.getCode());
 			if (!origin.getUpdatedDate().equals(specialItem.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.specialitem.record.inconsistent",
 						specialItem.getCode()));
 			}
 			trnSpecialItemRepository.save(specialItem);
@@ -64,7 +67,7 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 		case DELETE: {
 			TrnSpecialItem origin = findOne(specialItem.getCode());
 			if (!origin.getUpdatedDate().equals(specialItem.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.specialitem.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.specialitem.record.inconsistent",
 						specialItem.getCode()));
 			}
 			trnSpecialItemRepository.delete(specialItem);

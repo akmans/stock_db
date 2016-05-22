@@ -6,19 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@PropertySource("classpath:/META-INF/core/jdbc/jdbc-dev.properties")
+@PropertySources({ @PropertySource("classpath:/META-INF/core/config/jdbc.properties"),
+		@PropertySource("classpath:/META-INF/core/config/environment.properties") })
 public class DataSourceConfig {
 
 	@Autowired
 	private Environment env;
 
-	@Bean(destroyMethod="close")
+	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
 		HikariConfig dataSourceConfig = new HikariConfig();
 		dataSourceConfig.setDriverClassName(env.getRequiredProperty("db.driver"));

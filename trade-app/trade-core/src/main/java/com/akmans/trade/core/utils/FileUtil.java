@@ -9,30 +9,37 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 
+@Component
 public class FileUtil {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
-	public static String download(String sourceUrl, String targetDirectory) throws TradeException {
+	@Autowired
+	private MessageService messageService;
+
+	public String download(String sourceUrl, String targetFile) throws TradeException {
 		Path targetPath = null;
 		try {
 			URL url = new URL(sourceUrl);
-			String fileName = url.getFile();
-			if (fileName != null && fileName.lastIndexOf('/') > 0) {
-				fileName = fileName.substring(fileName.lastIndexOf('/'));
-			}
-			targetPath = new File(targetDirectory + fileName).toPath();
+//			String fileName = url.getFile();
+//			if (fileName != null && fileName.lastIndexOf('/') > 0) {
+//				fileName = fileName.substring(fileName.lastIndexOf('/'));
+//			}
+			targetPath = new File(targetFile).toPath();
 			Files.copy(url.openStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (MalformedURLException mfe) {
 			logger.error("The URL is not correct!", mfe);
-			throw new TradeException(CoreMessageUtils.getMessage("core.util.file.download.url.invalid", sourceUrl));
+			throw new TradeException(messageService.getMessage("core.util.file.download.url.invalid", sourceUrl));
 		} catch (IOException ie) {
 			logger.error("Error copying file.", ie);
 			throw new TradeException(
-					CoreMessageUtils.getMessage("core.util.file.download.copy.error", ie.getMessage()));
+					messageService.getMessage("core.util.file.download.copy.error", ie.getMessage()));
 		}
 		return targetPath.toString();
 	}

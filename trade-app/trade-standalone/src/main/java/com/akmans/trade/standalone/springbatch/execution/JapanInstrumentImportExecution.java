@@ -17,13 +17,15 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.enums.Onboard;
 import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
 import com.akmans.trade.core.service.MarketService;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.service.ScaleService;
 import com.akmans.trade.core.service.Sector17Service;
 import com.akmans.trade.core.service.Sector33Service;
@@ -38,6 +40,9 @@ import com.akmans.trade.standalone.dto.ExcelInstrumentDto;
 public class JapanInstrumentImportExecution implements Tasklet {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanInstrumentImportExecution.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private InstrumentService instrumentService;
@@ -55,11 +60,13 @@ public class JapanInstrumentImportExecution implements Tasklet {
 	private Sector33Service sector33Service;
 
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		logger.debug("Begin");
 		// Get the sheet using POI API.
 		String sheetName = "Sheet1";
 		SheetParser parser = new SheetParser();
-		InputStream inputStream = new ClassPathResource("csv/data_j.xls").getInputStream();
+		String fullFilePath = (String) chunkContext.getStepContext().getStepExecution().getJobExecution()
+				.getExecutionContext().get("targetFile");
+		logger.debug("fullFilePath = {}", fullFilePath);
+		InputStream inputStream = new FileSystemResource(fullFilePath).getInputStream();
 		Sheet sheet = new HSSFWorkbook(inputStream).getSheet(sheetName);
 
 		// Error handler
@@ -77,56 +84,103 @@ public class JapanInstrumentImportExecution implements Tasklet {
 		}
 		Iterator<String> itr = hashSet.iterator();
 		while (itr.hasNext()) {
-	         String str = (String) itr.next();
-	         MstMarket market = marketService.findByName(str.trim());
-	         if (market == null) {
-	        	 market = new MstMarket();// TODO make Code serial
-	        	 market.setName(str);
-	        	 marketService.operation(market, OperationMode.NEW);
-	         }
-	      }
+			String str = (String) itr.next();
+			MstMarket market = marketService.findByName(str.trim());
+			if (market == null) {
+				// market = new MstMarket();
+				// market.setName(str);
+				// marketService.operation(market, OperationMode.NEW);
+				throw new TradeException(
+						messageService.getMessage("core.service.market.record.notfound.by.name", str.trim()));
+			}
+		}
 		for (ExcelInstrumentDto dto : entityList) {
 			if (dto.getDate() != null && dto.getDate().length() > 0) {
-//				logger.debug("dto = {}", dto);
+				// logger.debug("dto = {}", dto);
 				OperationMode om = OperationMode.EDIT;
+				// Get current value from database.
 				MstInstrument instrument = instrumentService.findOneEager(Long.valueOf(dto.getCode()));
+				// Mark new if not found.
 				if (instrument == null || instrument.getCode() == null) {
 					instrument = new MstInstrument();
 					om = OperationMode.NEW;
 				}
+
+				// Set instrument code.
 				instrument.setCode(Long.valueOf(dto.getCode()));
+
+				// Set instrument name.
 				instrument.setName(dto.getName());
+
+				// Set market if not equals to "-".
 				if (!dto.getMarketName().equals("-")) {
-					MstMarket market = marketService.findByName(dto.getMarketName().trim());
-					instrument.setMarket(market);
+					// Current market is null or not equals to value of server.
+					if (instrument.getMarket() == null
+							|| !instrument.getMarket().getName().equals(dto.getMarketName())) {
+						// Find the market.
+						MstMarket market = marketService.findByName(dto.getMarketName().trim());
+						// Set market.
+						instrument.setMarket(market);
+					}
 				} else {
+					// Market is null.
 					instrument.setMarket(null);
 				}
+
+				// Set scale if not equals to "-".
 				if (!dto.getScale().equals("-")) {
-					MstScale scale = scaleService.findOne(Integer.valueOf(dto.getScale()));
-					instrument.setScale(scale);
+					// Current scale is null or not equals to value of server.
+					if (instrument.getScale() == null
+							|| instrument.getScale().getCode() != Integer.valueOf(dto.getScale())) {
+						// Find the scale.
+						MstScale scale = scaleService.findOne(Integer.valueOf(dto.getScale()));
+						// Set market.
+						instrument.setScale(scale);
+					}
 				} else {
+					// Scale is null.
 					instrument.setScale(null);
 				}
+
+				// Set sector17 if not equals to "-".
 				if (!dto.getSector17().equals("-")) {
-					MstSector17 sector17 = sector17Service.findOne(Integer.valueOf(dto.getSector17()));
-					instrument.setSector17(sector17);
+					// Current sector17 is null or not equals to value of
+					// server.
+					if (instrument.getSector17() == null
+							|| instrument.getSector17().getCode() != Integer.valueOf(dto.getSector17())) {
+						// Find the sector17.
+						MstSector17 sector17 = sector17Service.findOne(Integer.valueOf(dto.getSector17()));
+						// Set sector17.
+						instrument.setSector17(sector17);
+					}
 				} else {
+					// Sector17 is null.
 					instrument.setSector17(null);
 				}
+
+				// Set sector33 if not equals to "-".
 				if (!dto.getSector33().equals("-")) {
-					MstSector33 sector33 = sector33Service.findOne(Integer.valueOf(dto.getSector33()));
-					instrument.setSector33(sector33);
+					// Current sector33 is null or not equals to value of
+					// server.
+					if (instrument.getSector33() == null
+							|| instrument.getSector33().getCode() != Integer.valueOf(dto.getSector33())) {
+						// Find the sector33.
+						MstSector33 sector33 = sector33Service.findOne(Integer.valueOf(dto.getSector33()));
+						// Set sector33.
+						instrument.setSector33(sector33);
+					}
 				} else {
+					// Sector33 is null.
 					instrument.setSector33(null);
 				}
+
+				// Set on board false to ON.
 				instrument.setOnboard(Onboard.ON.getValue());
-//				logger.debug("instrument = {}", instrument);
+
+				// Do database operation.
 				instrumentService.operation(instrument, om);
 			}
 		}
-		logger.debug("End");
 		return RepeatStatus.FINISHED;
 	}
-
 }

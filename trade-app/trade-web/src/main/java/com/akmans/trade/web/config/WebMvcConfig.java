@@ -36,7 +36,10 @@ import com.akmans.trade.web.config.csrf2conversationsupport.ConversationalSessio
 @EnableSpringDataWebSupport
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-	private static final String MESSAGE_SOURCE1 = "classpath:/META-INF/web/i18n/messages";
+	private static final String MESSAGE_SOURCE2 = "classpath:/META-INF/web/i18n/messages";
+
+	private static final String MESSAGE_SOURCE1 = "classpath:/META-INF/core/i18n/messages";
+
 	private static final int KEEP_ALIVE_CONVERSATIONS = 10;
 
 	@Override
@@ -71,7 +74,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE1);
+		messageSource.setBasenames(MESSAGE_SOURCE1, MESSAGE_SOURCE2);
 		// reload messages every 3600 seconds
 		messageSource.setCacheSeconds(3600);
 		return messageSource;

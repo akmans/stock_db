@@ -14,14 +14,17 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MarketService;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.springdata.jpa.repositories.MstMarketRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstMarket;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class MarketServiceImpl implements MarketService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MarketServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private MstMarketRepository mstMarketRepository;
@@ -40,7 +43,7 @@ public class MarketServiceImpl implements MarketService {
 		if (market.isPresent()) {
 			return market.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.market.record.notfound", code));
 		}
 	}
 
@@ -51,7 +54,7 @@ public class MarketServiceImpl implements MarketService {
 		case NEW: {
 			if (mstMarketRepository.findOne(market.getCode()).isPresent()) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.alreadyexist", market.getCode()));
+						messageService.getMessage("core.service.market.record.alreadyexist", market.getCode()));
 			}
 			mstMarketRepository.save(market);
 			break;
@@ -60,7 +63,7 @@ public class MarketServiceImpl implements MarketService {
 			MstMarket origin = findOne(market.getCode());
 			if (!origin.getUpdatedDate().equals(market.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
+						messageService.getMessage("core.service.market.record.inconsistent", market.getCode()));
 			}
 			mstMarketRepository.save(market);
 			break;
@@ -69,7 +72,7 @@ public class MarketServiceImpl implements MarketService {
 			MstMarket origin = findOne(market.getCode());
 			if (!origin.getUpdatedDate().equals(market.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.market.record.inconsistent", market.getCode()));
+						messageService.getMessage("core.service.market.record.inconsistent", market.getCode()));
 			}
 			mstMarketRepository.delete(market);
 		}
@@ -78,11 +81,11 @@ public class MarketServiceImpl implements MarketService {
 
 	public MstMarket findByName(String name) throws TradeException {
 		List<MstMarket> markets = mstMarketRepository.findByName(name);
-		if (markets == null) {
+		if (markets == null || markets.size() == 0) {
 //			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.notfound.by.name", name));
 			return null;
 		} else if (markets.size() > 1) {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.market.record.found.duplicated", name));
+			throw new TradeException(messageService.getMessage("core.service.market.record.found.duplicated", name));
 		}
 		return markets.get(0);
 	}

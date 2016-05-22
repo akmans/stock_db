@@ -57,7 +57,6 @@ public class AopConfiguration {
 	public Advisor performanceMonitorAdvisor() {
 		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
 		pointcut.setExpression("com.akmans.trade.core.config.AopConfiguration.serviceAnnotation()");
-//		pointcut.setExpression("execution(public * com.akmans.trade..*.*(..))");
 		return new DefaultPointcutAdvisor(pointcut, performanceMonitorInterceptor());
 	}
 }

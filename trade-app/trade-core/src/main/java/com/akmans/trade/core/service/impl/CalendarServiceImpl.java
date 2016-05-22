@@ -21,9 +21,9 @@ import com.akmans.trade.core.dto.CalendarQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.CalendarService;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.springdata.jpa.repositories.MstCalendarRepository;
 import com.akmans.trade.core.springdata.jpa.entities.MstCalendar;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class CalendarServiceImpl implements CalendarService {
@@ -31,11 +31,15 @@ public class CalendarServiceImpl implements CalendarService {
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
 	@Autowired
+	private MessageService messageService;
+
+	@Autowired
 	private LocalContainerEntityManagerFactoryBean emf;
 
 	@Autowired
 	private MstCalendarRepository mstCalendarRepository;
 
+	@SuppressWarnings("unchecked")
 	public Page<MstCalendar> findPage(CalendarQueryDto dto) {
 		String jpql = "select cal from MstCalendar as cal ";
 		String cntJpql = "select count(cal.code) from MstCalendar as cal ";
@@ -82,7 +86,7 @@ public class CalendarServiceImpl implements CalendarService {
 		if (calendar.isPresent()) {
 			return calendar.get();
 		} else {
-			throw new TradeException(CoreMessageUtils.getMessage("core.service.calendar.record.notfound", code));
+			throw new TradeException(messageService.getMessage("core.service.calendar.record.notfound", code));
 		}
 	}
 
@@ -95,7 +99,7 @@ public class CalendarServiceImpl implements CalendarService {
 					calendar.getHoliday());
 			if (result != null && result.size() > 0) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.calendar.record.alreadyexist", calendar.getCode()));
+						messageService.getMessage("core.service.calendar.record.alreadyexist", calendar.getCode()));
 			}
 			mstCalendarRepository.save(calendar);
 			break;
@@ -104,7 +108,7 @@ public class CalendarServiceImpl implements CalendarService {
 			MstCalendar origin = findOne(calendar.getCode());
 			if (!origin.getUpdatedDate().equals(calendar.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.calendar.record.inconsistent", calendar.getCode()));
+						messageService.getMessage("core.service.calendar.record.inconsistent", calendar.getCode()));
 			}
 			mstCalendarRepository.save(calendar);
 			break;
@@ -113,7 +117,7 @@ public class CalendarServiceImpl implements CalendarService {
 			MstCalendar origin = findOne(calendar.getCode());
 			if (!origin.getUpdatedDate().equals(calendar.getUpdatedDate())) {
 				throw new TradeException(
-						CoreMessageUtils.getMessage("core.service.calendar.record.inconsistent", calendar.getCode()));
+						messageService.getMessage("core.service.calendar.record.inconsistent", calendar.getCode()));
 			}
 			mstCalendarRepository.delete(calendar);
 		}

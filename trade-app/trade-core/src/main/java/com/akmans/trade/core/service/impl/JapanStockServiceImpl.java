@@ -9,15 +9,18 @@ import org.springframework.stereotype.Service;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.JapanStockService;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.springdata.jpa.repositories.TrnJapanStockRepository;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
-import com.akmans.trade.core.utils.CoreMessageUtils;
 
 @Service
 public class JapanStockServiceImpl implements JapanStockService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanStockServiceImpl.class);
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private TrnJapanStockRepository trnJapanStockRepository;
@@ -28,7 +31,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 			return option.get();
 		} else {
 			throw new TradeException(
-					CoreMessageUtils.getMessage("core.service.calendar.record.notfound", key.toString()));
+					messageService.getMessage("core.service.calendar.record.notfound", key.toString()));
 		}
 	}
 
@@ -39,7 +42,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 		case NEW: {
 			Optional<TrnJapanStock> option = trnJapanStockRepository.findOne(stock.getJapanStockKey());
 			if (option.isPresent()) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.japanstock.record.alreadyexist",
+				throw new TradeException(messageService.getMessage("core.service.japanstock.record.alreadyexist",
 						stock.getJapanStockKey().toString()));
 			}
 			trnJapanStockRepository.save(stock);
@@ -48,7 +51,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 		case EDIT: {
 			TrnJapanStock origin = findOne(stock.getJapanStockKey());
 			if (!origin.getUpdatedDate().equals(stock.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.japanstock.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.japanstock.record.inconsistent",
 						stock.getJapanStockKey().toString()));
 			}
 			trnJapanStockRepository.save(stock);
@@ -57,7 +60,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 		case DELETE: {
 			TrnJapanStock origin = findOne(stock.getJapanStockKey());
 			if (!origin.getUpdatedDate().equals(stock.getUpdatedDate())) {
-				throw new TradeException(CoreMessageUtils.getMessage("core.service.japanstock.record.inconsistent",
+				throw new TradeException(messageService.getMessage("core.service.japanstock.record.inconsistent",
 						stock.getJapanStockKey().toString()));
 			}
 			trnJapanStockRepository.delete(stock);
