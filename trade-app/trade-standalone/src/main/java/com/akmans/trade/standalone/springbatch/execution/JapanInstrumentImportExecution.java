@@ -55,6 +55,7 @@ public class JapanInstrumentImportExecution implements Tasklet {
 	private Sector33Service sector33Service;
 
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		logger.debug("Begin");
 		// Get the sheet using POI API.
 		String sheetName = "Sheet1";
 		SheetParser parser = new SheetParser();
@@ -124,6 +125,7 @@ public class JapanInstrumentImportExecution implements Tasklet {
 				instrumentService.operation(instrument, om);
 			}
 		}
+		logger.debug("End");
 		return RepeatStatus.FINISHED;
 	}
 

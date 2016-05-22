@@ -40,6 +40,13 @@ public class InstrumentServiceImpl implements InstrumentService {
 	@Autowired
 	private MstInstrumentRepository mstInstrumentRepository;
 
+	/**
+	 * Find data for display on screen by specified query criteria.<br/>
+	 * 
+	 * @param InstrumentQueryDto dto<br/>
+	 * @return Page<MstInstrument><br/>
+	 */
+	@SuppressWarnings("unchecked")
 	public Page<MstInstrument> findPage(InstrumentQueryDto dto) {
 		// Select statement.
 		StringBuilder jpql = new StringBuilder();
@@ -60,81 +67,112 @@ public class InstrumentServiceImpl implements InstrumentService {
 		// Query criteria.
 		StringBuilder criteria = new StringBuilder();
 		criteria.append("where 1 = 1 ");
-		// Set instrument code.
+		// Append instrument code.
 		if (dto.getCode() != null) {
 			criteria.append("and instrument.code = :code ");
 		}
-		
+		// Append market code.
 		if (dto.getMarket() != null) {
 			criteria.append("and market.code = :market ");
 		}
+		// Append scale code.
 		if (dto.getScale() != null) {
 			criteria.append("and scale.code = :scale ");
 		}
+		// Append sector17 code.
 		if (dto.getSector17() != null) {
 			criteria.append("and sector17.code = :sector17 ");
 		}
+		// Append sector33 code.
 		if (dto.getSector33() != null) {
 			criteria.append("and sector33.code = :sector33 ");
 		}
+		// Append on board flag.
 		if (dto.getOnboard() != null && dto.getOnboard().length() > 0) {
 			criteria.append("and instrument.onboard = :onboard ");
 		}
+		// Set order by criteria.
 		String orderByCriteria = "order by instrument.code asc ";
+		// Create entity manager.
 		EntityManager em = emf.getObject().createEntityManager();
+		// Create select query.
 		Query query = em.createQuery(cntJpql.toString() + criteria.toString());
+		// Set parameter instrument code.
 		if (dto.getCode() != null) {
 			query.setParameter("code", dto.getCode());
 		}
+		// Set parameter market code.
 		if (dto.getMarket() != null) {
 			query.setParameter("market", dto.getMarket());
 		}
+		// Set parameter scale code.
 		if (dto.getScale() != null) {
 			query.setParameter("scale", dto.getScale());
 		}
+		// Set parameter sector17 code.
 		if (dto.getSector17() != null) {
 			query.setParameter("sector17", dto.getSector17());
 		}
+		// Set parameter sector33 code.
 		if (dto.getSector33() != null) {
 			query.setParameter("sector33", dto.getSector33());
 		}
+		// Set parameter on board flag.
 		if (dto.getOnboard() != null && dto.getOnboard().length() > 0) {
 			query.setParameter("onboard", dto.getOnboard());
 		}
+		// Get count.
 		List<Object> cnt = query.getResultList();
 		long count = (long) cnt.get(0);
+		// Create select query.
 		query = em.createQuery(jpql.toString() + criteria.toString() + orderByCriteria);
+		// Set parameter instrument code.
 		if (dto.getCode() != null) {
 			query.setParameter("code", dto.getCode());
 		}
+		// Set parameter market code.
 		if (dto.getMarket() != null) {
 			query.setParameter("market", dto.getMarket());
 		}
+		// Set parameter scale code.
 		if (dto.getScale() != null) {
 			query.setParameter("scale", dto.getScale());
 		}
+		// Set parameter sector17 code.
 		if (dto.getSector17() != null) {
 			query.setParameter("sector17", dto.getSector17());
 		}
+		// Set parameter sector33 code.
 		if (dto.getSector33() != null) {
 			query.setParameter("sector33", dto.getSector33());
 		}
+		// Set parameter on board flag.
 		if (dto.getOnboard() != null && dto.getOnboard().length() > 0) {
 			query.setParameter("onboard", dto.getOnboard());
 		}
+		// Set first result.
 		query.setFirstResult(dto.getPageable().getOffset());
+		// Set max results (page size).
 		query.setMaxResults(dto.getPageable().getPageSize());
 		List<Object[]> list = query.getResultList();
+		// Close entity manager.
 		em.close();
 		ArrayList<MstInstrument> content = new ArrayList<MstInstrument>();
+		// Parsing select query result.
 		for(Object[] item : list) {
+			// First element to be instrument.
 			MstInstrument instrument = (MstInstrument)item[0];
+			// Second scale.
 			instrument.setScale((MstScale)item[1]);
+			// Third market.
 			instrument.setMarket((MstMarket)item[2]);
+			// Fourth sector33.
 			instrument.setSector33((MstSector33)item[3]);
+			// Fifth sector17.
 			instrument.setSector17((MstSector17)item[4]);
 			content.add(instrument);
 		}
+		// Return page content.
 		return count > 0 ? new PageImpl<MstInstrument>(content, dto.getPageable(), count)
 				: new PageImpl<MstInstrument>(new ArrayList<MstInstrument>(), dto.getPageable(), 0);
 	}

@@ -37,6 +37,7 @@ public class SpecialDetailServiceImpl implements SpecialDetailService {
 	@Autowired
 	private TrnSpecialDetailRepository trnSpecialDetailRepository;
 
+	@SuppressWarnings("unchecked")
 	public Page<TrnSpecialDetail> findPage(SpecialDetailQueryDto dto) {
 		String jpql = "select specialDetail, specialItem from TrnSpecialDetail as specialDetail "
 				+ "left outer join specialDetail.specialItem as specialItem ";
