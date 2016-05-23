@@ -21,4 +21,6 @@ public class PathConstants {
 	public final static String PATH_SPECIAL_ITEMS = "/specialitems";
 
 	public final static String PATH_SPECIAL_DETAILS = "/specialdetails";
+
+	public final static String PATH_JAPAN_STOCK_LOGS = "/japanstocklogs";
 }

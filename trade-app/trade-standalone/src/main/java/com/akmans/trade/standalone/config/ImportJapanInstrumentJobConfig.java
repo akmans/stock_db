@@ -21,34 +21,28 @@ import org.springframework.core.env.Environment;
 
 import com.akmans.trade.core.utils.FileUtil;
 import com.akmans.trade.core.utils.MailUtil;
+import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentDownloadExecution;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentImportExecution;
 
 @Configuration
-@PropertySource("classpath:/META-INF/core/config/environment.properties")
 public class ImportJapanInstrumentJobConfig {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportJapanInstrumentJobConfig.class);
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	private FileUtil fileUtil;
 
 	@Autowired
 	private MailUtil mailUtil;
 
 	@Bean
 	public Job importJapanInstrumentJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-			JapanInstrumentImportExecution execution) {
-		Step step1 = stepBuilderFactory.get("step1").tasklet(new Step1Execution()).build();
-		Step step2 = stepBuilderFactory.get("step2").tasklet(execution).build();
+			JapanInstrumentImportExecution importExecution, JapanInstrumentDownloadExecution downloadExecution) {
+		Step step1 = stepBuilderFactory.get("step1").tasklet(downloadExecution).build();
+		Step step2 = stepBuilderFactory.get("step2").tasklet(importExecution).build();
 		Step step3 = stepBuilderFactory.get("step3").tasklet(new Step3Execution()).build();
 		return jobs.get("importJapanInstrumentJob").start(step1).next(step2).next(step3).build();
 		// return
 		// jobs.get("importJapanInstrumentJob").start(step2).next(step3).build();
 	}
-
+/*
 	private class Step1Execution extends StepExecutionListenerSupport implements Tasklet {
 		private String applicationDate;
 
@@ -68,7 +62,7 @@ public class ImportJapanInstrumentJobConfig {
 					targetFile);
 			return RepeatStatus.FINISHED;
 		}
-	}
+	}*/
 
 	private class Step3Execution implements Tasklet {
 		public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>バッチ処理検索フォーム</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="form" th:remove="tag">
+		<h3 th:text="#{view.japanstocklog.query-form.title}">バッチ処理検索</h3>
+		<form id="query-form" action="REPLACED_BY_SCRIPT" method="post"
+			th:object="${japanStockLogQueryForm}" th:action="@{/japanstocklogs}"
+			class="form-horizontal" accept-charset="UTF-8">
+			<div th:if="${#fields.hasErrors('*')}"
+				th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
+				<ul>
+					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+				</ul>
+			</div>
+			<div class="form-group bound">
+				<div class="col-md-6 grid"
+					th:attrappend="class=${#fields.hasErrors('jobId')}? ' has-error' ">
+					<div class="col-md-4 text-left control-label header"
+						th:text="#{view.japanstocklog.query-form.jobid}">バッチ処理</div>
+					<div class="col-md-8 normal">
+						<select th:field="*{jobId}" class="form-control">
+							<option value=""></option>
+							<option value="importJapanInstrumentJob">Import Japan
+								Instrument Job</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6 grid"
+					th:attrappend="class=${#fields.hasErrors('processDate')}? ' has-error' ">
+					<div class="col-md-4 control-label header"
+						th:text="#{view.japanstocklog.query-form.processDate}">処理日</div>
+					<div class="col-md-8 normal">
+						<input type='text' id="processDate" name="processDate"
+							class="form-control"
+							th:value="*{#calendars.format(#objects.nullSafe(processDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+						<script type="text/javascript">
+							$(function() {
+								$('#processDate').datetimepicker({
+									format : 'YYYY-MM-DD'
+								});
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-12 text-right">
+					<input type="submit" id="confirm" class="btn btn-primary"
+						th:value="#{view.japanstocklog.query-form.search}" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
