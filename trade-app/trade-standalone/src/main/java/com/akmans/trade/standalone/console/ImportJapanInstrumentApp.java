@@ -1,5 +1,6 @@
 package com.akmans.trade.standalone.console;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,8 @@ public class ImportJapanInstrumentApp {
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("applicationDate", "2007-07-24")
-					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("jobId", "importJapanInstrumentJob")
+					.addDate("processDate", new Date()).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 

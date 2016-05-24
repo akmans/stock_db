@@ -42,20 +42,25 @@
 						th:text="#{view.japanstocklog.list.jobid}">バッチID</div>
 					<!-- Add the extra clearfix for only the required viewport -->
 					<div class="clearfix visible-xs-block"></div>
-					<div class="col-xs-6 col-md-3"
+					<div class="col-xs-4 col-md-3"
 						th:text="#{view.japanstocklog.list.processdate}">処理日</div>
-					<div class="col-xs-6 col-md-3"
+					<div class="col-xs-4 col-md-2"
 						th:text="#{view.japanstocklog.list.result}">処理結果</div>
+					<div class="col-xs-4 col-md-1 text-right">
+						<a id="add" href="#" th:href="@{/japanstocklogs/new}"
+							th:text="#{view.japanstocklog.list.button.new}"
+							class="btn btn-default">新規</a>
+					</div>
 				</div>
 				<div class="row" th:each="item : ${page.content}">
 					<div class="col-xs-12 col-md-6"
-						th:text="${item.japanStockLogKey.jobId}">Job 001</div>
+						th:text="*{item.japanStockLogKey.jobId}">Job 001</div>
 					<!-- Add the extra clearfix for only the required viewport -->
 					<div class="clearfix visible-xs-block"></div>
 					<div class="col-xs-6 col-md-3"
-						th:text="${#calendars.format(item.japanStockLogKey.processDate, 'yyyy-MM-dd')}">2016-01-02</div>
+						th:text="*{#calendars.format(item.japanStockLogKey.processDate, 'yyyy-MM-dd')}">2016-01-02</div>
 					<div class="col-xs-6 col-md-3"
-						th:text="ABC">tester</div>
+						th:text="*{item.status}">tester</div>
 				</div>
 				<div class="row" th:remove="all">
 					<div class="col-xs-12 col-md-6">Job 002</div>

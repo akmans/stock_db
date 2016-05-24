@@ -1,9 +1,5 @@
 package com.akmans.trade.web.controller;
 
-import java.beans.PropertyEditorSupport;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,8 +11,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +21,7 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.springdata.jpa.entities.AbstractEntity;
 import com.akmans.trade.web.form.AbstractSimpleForm;
 
-public abstract class AbstractEntryController<T extends AbstractSimpleForm, E extends AbstractEntity> {
+public abstract class AbstractEntryController<T extends AbstractSimpleForm, E extends AbstractEntity> extends AbstractController {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(AbstractEntryController.class);
 
@@ -38,28 +32,6 @@ public abstract class AbstractEntryController<T extends AbstractSimpleForm, E ex
 
 	public AbstractEntryController(String viewForm) {
 		this.viewForm = viewForm;
-	}
-
-	@InitBinder
-	public void binder(WebDataBinder binder) {
-		binder.registerCustomEditor(Date.class, new PropertyEditorSupport() {
-			public void setAsText(String value) {
-				try {
-					setValue(new SimpleDateFormat("yyyy-MM-dd").parse(value));
-				} catch (ParseException e) {
-					setValue(null);
-				}
-			}
-
-			public String getAsText() {
-				Date input = (Date) getValue();
-				if (input == null) {
-					return null;
-				}
-				return new SimpleDateFormat("yyyy-MM-dd").format(input);
-			}
-
-		});
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")

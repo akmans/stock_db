@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.thymeleaf.org"
+	layout:decorator="layout/layout">
+<head>
+<meta charset="utf-8" th:remove="all" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" th:remove="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	th:remove="all" />
+<meta name="description" content="Trade Application" th:remove="all" />
+<meta name="author" content="akmans" th:remove="all" />
+
+<title>ジョブ登録フォーム</title>
+
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen" th:remove="all" />
+<link href="../../../resources/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/resources/css/core.css}" th:remove="all" />
+<script src="../../../resources/js/jquery.js" th:remove="all"></script>
+<script src="../../../resources/js/bootstrap.min.js" th:remove="all"></script>
+<script src="../../../resources/js/core.js" th:remove="all"></script>
+</head>
+<body>
+	<div th:fragment="form" th:remove="tag">
+		<form id="entry-form" action="REPLACED_BY_SCRIPT" method="post"
+			th:object="${japanStockLogEntryForm}"
+			th:action="@{/japanstocklogs/post}"
+			class="form-horizontal form-dialog">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h4 th:text="#{view.japanstocklog.entry-form.new.title}">New</h4>
+			</div>
+			<div class="modal-body">
+				<div th:if="${#fields.hasErrors('*')}"
+					th:class="${'alert ' + #strings.defaultString(cssStyle, '')}">
+					<ul>
+						<li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+					</ul>
+				</div>
+				<div id="form-messages">
+					<div th:unless="${#strings.isEmpty(message)}"
+						th:class="${'alert ' + #strings.defaultString(cssStyle, '')}"
+						th:text="${message}">Form Messages</div>
+				</div>
+				<div class="form-group"
+					th:attrappend="class=${#fields.hasErrors('jobId')}? ' has-error' ">
+					<div class="col-md-3 control-label"
+						th:text="#{view.japanstocklog.entry-form.jobid}">Job Id</div>
+					<div class="col-md-9 form-control-static"
+						th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
+						th:text="*{jobId}">jobid001</div>
+					<div class="col-md-9"
+						th:if="*{operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
+						<select th:field="*{jobId}" class="form-control">
+							<option value=""></option>
+							<option value="importJapanInstrumentJob">Import Japan
+								Instrument Job</option>
+							<option value="1" th:remove="all">Another payment method</option>
+							<option value="2" th:remove="all">Another payment method</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group"
+					th:attrappend="class=${#fields.hasErrors('processDate')}? ' has-error' ">
+					<div class="col-md-3 control-label"
+						th:text="#{view.japanstocklog.entry-form.processdate}">処理日</div>
+					<div class="col-md-9 form-control-static"
+						th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
+						th:text="*{#calendars.format(processDate, 'yyyy-MM-dd')}">2016-01-01</div>
+					<div class="col-md-9"
+						th:if="*{operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
+						<input type='text' id="e-processDate" name="processDate"
+							class="form-control"
+							th:value="*{#calendars.format(#objects.nullSafe(processDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+						<script type="text/javascript">
+							$(function() {
+								$('#e-processDate').datetimepicker({
+									format : 'YYYY-MM-DD'
+								});
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="confirm" class="btn btn-primary"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
+					th:text="#{view.japanstocklog.entry-form.confirm}">Save changes</a>
+				<a id="cancel" class="btn btn-default"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).ENTRY}"
+					data-dismiss="modal"
+					th:text="#{view.japanstocklog.entry-form.cancel}">Close</a> <a
+					id="complete" class="btn btn-primary"
+					th:if="*{operationStatus == T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}"
+					data-dismiss="modal"
+					th:text="#{view.japanstocklog.entry-form.complete}">Close</a>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

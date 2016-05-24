@@ -23,6 +23,7 @@ import com.akmans.trade.core.utils.FileUtil;
 import com.akmans.trade.core.utils.MailUtil;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentDownloadExecution;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentImportExecution;
+import com.akmans.trade.standalone.springbatch.listener.JapanStockJobExecutionListener;
 
 @Configuration
 public class ImportJapanInstrumentJobConfig {
@@ -34,11 +35,11 @@ public class ImportJapanInstrumentJobConfig {
 
 	@Bean
 	public Job importJapanInstrumentJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-			JapanInstrumentImportExecution importExecution, JapanInstrumentDownloadExecution downloadExecution) {
+			JapanInstrumentImportExecution importExecution, JapanInstrumentDownloadExecution downloadExecution, JapanStockJobExecutionListener listener) {
 		Step step1 = stepBuilderFactory.get("step1").tasklet(downloadExecution).build();
 		Step step2 = stepBuilderFactory.get("step2").tasklet(importExecution).build();
-		Step step3 = stepBuilderFactory.get("step3").tasklet(new Step3Execution()).build();
-		return jobs.get("importJapanInstrumentJob").start(step1).next(step2).next(step3).build();
+		//Step step3 = stepBuilderFactory.get("step3").tasklet(new Step3Execution()).build();
+		return jobs.get("importJapanInstrumentJob").start(step1).next(step2).listener(listener).build();
 		// return
 		// jobs.get("importJapanInstrumentJob").start(step2).next(step3).build();
 	}

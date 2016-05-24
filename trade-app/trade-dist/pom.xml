@@ -18,7 +18,7 @@
 			<artifactId>trade-web</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- Trade Web Application -->
+		<!-- Trade Standalone Application -->
 		<dependency>
 			<groupId>com.akmans.trade</groupId>
 			<artifactId>trade-standalone</artifactId>

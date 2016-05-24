@@ -53,4 +53,6 @@ public class ViewConstants {
 	public final static String VIEW_SPECIAL_DETAIL_ENTRY_FORM_FRAGEMENT = "specialdetail/entry-form :: form";
 
 	public final static String VIEW_JAPAN_STOCK_LOG_LIST = "japanstocklog/list";
+
+	public final static String VIEW_JAPAN_STOCK_LOG_ENTRY_FORM_FRAGEMENT = "japanstocklog/entry-form :: form";
 }

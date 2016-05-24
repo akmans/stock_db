@@ -6,6 +6,7 @@ CREATE TABLE trn_japan_stock_log
 (
   job_id character varying(50) NOT NULL,
   process_date date NOT NULL,
+  status character varying(10),
   created_date timestamp with time zone,
   updated_date timestamp with time zone,
   created_by character varying(20),

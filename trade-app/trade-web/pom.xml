@@ -12,6 +12,12 @@
 			<artifactId>trade-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- Trade Standalone Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>trade-standalone</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<parent>
