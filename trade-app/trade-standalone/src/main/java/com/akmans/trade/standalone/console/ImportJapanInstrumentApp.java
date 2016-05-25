@@ -1,7 +1,6 @@
 package com.akmans.trade.standalone.console;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;

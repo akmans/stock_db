@@ -4,7 +4,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -20,10 +19,8 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
 import com.akmans.trade.core.Application;
-import com.akmans.trade.core.config.TradeCoreConfig;
 import com.akmans.trade.core.enums.RunningMode;
 import com.akmans.trade.standalone.config.LauncherConfig;
-import com.akmans.trade.standalone.config.StandaloneConfig;
 import com.akmans.trade.web.config.csrf2conversationsupport.CSRFHandlerInterceptor;
 import com.akmans.trade.web.config.csrf2conversationsupport.CustomRequestDataValueProcessor;
 import com.akmans.trade.web.utils.PathConstants;
@@ -33,7 +30,7 @@ import com.akmans.trade.web.config.csrf2conversationsupport.ConversationalSessio
 
 @EnableWebMvc
 @Configuration
-@Import({ /*TradeCoreConfig.class, */ThymeleafConfig.class, SpringSecurityConfig.class, LauncherConfig.class })
+@Import({ ThymeleafConfig.class, SpringSecurityConfig.class, LauncherConfig.class })
 @ComponentScan(basePackages = { "com.akmans.trade.web.controller" })
 @EnableSpringDataWebSupport
 public class WebMvcConfig extends WebMvcConfigurerAdapter {

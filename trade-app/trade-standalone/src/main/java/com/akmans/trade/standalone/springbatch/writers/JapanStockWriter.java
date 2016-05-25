@@ -20,8 +20,19 @@ public class JapanStockWriter implements ItemWriter<TrnJapanStock> {
 	@Override
 	public void write(List<? extends TrnJapanStock> stocks) throws Exception {
 		for(TrnJapanStock stock : stocks) {
-			logger.info("TrnJapanStock = {}", stock);
-			japanStockService.operation(stock, OperationMode.NEW);
+			logger.debug("TrnJapanStock = {}", stock);
+			if (japanStockService.exist(stock.getJapanStockKey())) {
+				TrnJapanStock origin = japanStockService.findOne(stock.getJapanStockKey());
+				origin.setOpeningPrice(stock.getOpeningPrice());
+				origin.setHighPrice(stock.getHighPrice());
+				origin.setLowPrice(stock.getLowPrice());
+				origin.setFinishPrice(stock.getFinishPrice());
+				origin.setTurnover(stock.getTurnover());
+				origin.setTradingValue(stock.getTradingValue());
+				japanStockService.operation(origin, OperationMode.EDIT);
+			} else {
+				japanStockService.operation(stock, OperationMode.NEW);
+			}
 		}
 	}
 

@@ -1,7 +1,5 @@
 package com.akmans.trade.standalone.config;
 
-import java.util.Locale;
-
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -9,30 +7,25 @@ import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
 import com.akmans.trade.core.Application;
 import com.akmans.trade.core.config.TradeCoreConfig;
 import com.akmans.trade.core.enums.RunningMode;
+import com.akmans.trade.standalone.springbatch.CustomAsyncTaskExecutor;
 
 @Configuration
 @EnableBatchProcessing
 @ComponentScan(basePackages = { "com.akmans.trade.standalone.springbatch.execution",
 		"com.akmans.trade.standalone.springbatch.listener" })
-// @EnableAutoConfiguration
 @Import({TradeCoreConfig.class,
-		// ImportJapanStockJobConfig.class,
+		ImportJapanStockJobConfig.class,
 		ImportJapanInstrumentJobConfig.class })
 public class LauncherConfig {
-
-//	private static final String MESSAGE_SOURCE1 = "classpath:/META-INF/core/i18n/messages";
 
 	@Autowired
 	private DataSource dataSource;
@@ -50,28 +43,12 @@ public class LauncherConfig {
 	}
 
 	@Bean
-	public SimpleJobLauncher jobLauncher() throws Exception {
+	public SimpleJobLauncher jobLauncher(Application application) throws Exception {
 		SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
 		jobLauncher.setJobRepository(jobRepository());
-		jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
+		if (RunningMode.WEB == application.getRunningMode()) {
+			jobLauncher.setTaskExecutor(new CustomAsyncTaskExecutor());
+		}
 		return jobLauncher;
 	}
-/*
-	@Bean(name = "messageSource")
-	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE1);
-		// reload messages every 3600 seconds
-		messageSource.setCacheSeconds(3600);
-		return messageSource;
-	}
-
-	@Bean
-	public Application application() {
-		Application application = new Application();
-		application.setRunningMode(RunningMode.STANDALONE);
-		// TODO new locale
-		Locale.setDefault(Locale.ENGLISH);
-		return application;
-	}*/
 }

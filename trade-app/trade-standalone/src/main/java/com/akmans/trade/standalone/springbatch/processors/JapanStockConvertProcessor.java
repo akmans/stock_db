@@ -7,7 +7,11 @@ import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.InstrumentService;
+import com.akmans.trade.core.service.JapanStockService;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
@@ -18,6 +22,12 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 
 	private String applicationDate;
 
+	@Autowired
+	private InstrumentService instrumentService;
+
+	@Autowired
+	private JapanStockService japanStockService;
+
 	public JapanStockConvertProcessor(String applicationDate) {
 		this.applicationDate = applicationDate;
 	}
@@ -25,8 +35,20 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 	public TrnJapanStock process(CsvJapanStockDto item) throws Exception {
 		// logger.warn("CsvJapanStockDto = {}", item);
 
+		// Skip null or empty record.
 		if (item == null || item.getCode() == null) {
 			logger.warn("The item is empty! item = {}", item);
+			return null;
+		}
+
+		// Skip record not match those in MstInstrument.
+		try {
+			// Process stock code.
+			String codes[] = item.getCode().split("-");
+			instrumentService.findOne(Long.valueOf(codes[0]));
+		} catch(TradeException te) {
+			logger.warn("The item is {}", item);
+			logger.warn(te.getMessage());
 			return null;
 		}
 
@@ -38,8 +60,12 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 		japanStockKey.setCode(Integer.valueOf(codes[0]));
 		japanStockKey.setRegistDate(convertDate(applicationDate));
 		stock.setJapanStockKey(japanStockKey);
-		// Omit data that price is empty or market is not TOKYO.
-		if (item.getOpeningPrice().isEmpty() || !"T".equals(codes[1])) {
+		// Skip data that price is empty.
+		if (item.getOpeningPrice().isEmpty()) {
+			return null;
+		}
+		// Skip data that already loaded if market is not TOKYO.
+		if (!"T".equals(codes[1]) && japanStockService.exist(japanStockKey)) {
 			return null;
 		}
 //		logger.debug("CsvJapanStockDto = {}", item);

@@ -67,4 +67,8 @@ public class JapanStockServiceImpl implements JapanStockService {
 		}
 		}
 	}
+
+	public boolean exist(JapanStockKey key) {
+		return trnJapanStockRepository.findOne(key).isPresent();
+	}
 }

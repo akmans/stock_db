@@ -19,8 +19,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
+import com.akmans.trade.standalone.springbatch.listener.JapanStockJobExecutionListener;
 import com.akmans.trade.standalone.springbatch.processors.JapanStockConvertProcessor;
-import com.akmans.trade.standalone.springbatch.processors.JapanStockValidateProcessor;
 import com.akmans.trade.standalone.springbatch.writers.JapanStockWriter;
 
 public class ImportJapanStockJobConfig {
@@ -31,7 +31,7 @@ public class ImportJapanStockJobConfig {
 	@StepScope
 	public FlatFileItemReader<CsvJapanStockDto> reader(
 			@Value("#{jobParameters['applicationDate']}") String applicationDate) {
-		logger.info("applicationDate =" + applicationDate);
+//		logger.info("applicationDate =" + applicationDate);
 		// flat file item reader (using an csv extractor)
 		FlatFileItemReader<CsvJapanStockDto> reader = new FlatFileItemReader<CsvJapanStockDto>();
 		reader.setLinesToSkip(1);
@@ -55,15 +55,15 @@ public class ImportJapanStockJobConfig {
 		return reader;
 	}
 
-	@Bean
+/*	@Bean
 	@StepScope
 	public ItemProcessor<CsvJapanStockDto, CsvJapanStockDto> processor1() {
 		return new JapanStockValidateProcessor();
 	}
-
+*/
 	@Bean
 	@StepScope
-	public ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor2(
+	public ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor(
 			@Value("#{jobParameters['applicationDate']}") String applicationDate) {
 		return new JapanStockConvertProcessor(applicationDate);
 	}
@@ -74,23 +74,24 @@ public class ImportJapanStockJobConfig {
 	}
 
 	@Bean
-	public Job importJapanStockJob(JobBuilderFactory jobs, Step step1, Step step2) {
-		return jobs.get("importJapanStockJob").start(step1).next(step2).build();
+	public Job importJapanStockJob(JobBuilderFactory jobs, Step step, JapanStockJobExecutionListener listener) {
+//		return jobs.get("importJapanStockJob").start(step).listener(listener).build();
+		return jobs.get("importJapanStockJob").start(step).build();
 	}
 
 	@Bean
-	public Step step2(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
-			ItemWriter<TrnJapanStock> writer, ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor2) {
+	public Step step(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
+			ItemWriter<TrnJapanStock> writer, ItemProcessor<CsvJapanStockDto, TrnJapanStock> processor) {
 		// logger.info("applicationDate =" + applicationDate);
-		return stepBuilderFactory.get("step2").<CsvJapanStockDto, TrnJapanStock> chunk(500).reader(reader)
-				.processor(processor2).writer(writer).build();
+		return stepBuilderFactory.get("step").<CsvJapanStockDto, TrnJapanStock> chunk(500).reader(reader)
+				.processor(processor).writer(writer).build();
 	}
 
-	@Bean
+/*	@Bean
 	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
 			ItemProcessor<CsvJapanStockDto, CsvJapanStockDto> processor1) {
 		// logger.info("applicationDate =" + applicationDate);
 		return stepBuilderFactory.get("step1").<CsvJapanStockDto, CsvJapanStockDto> chunk(500).reader(reader)
 				.processor(processor1).build();
-	}
+	}*/
 }

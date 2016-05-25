@@ -13,12 +13,16 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.JapanStockLogService;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStockLog;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockLogKey;
+import com.akmans.trade.core.utils.MailUtil;
 
 @Component
 public class JapanStockJobExecutionListener implements JobExecutionListener {
 
 	@Autowired
 	private JapanStockLogService japanStockLogService;
+
+	@Autowired
+	private MailUtil mailUtil;
 
 	public void beforeJob(JobExecution jobExecution) {
 		String jobId = jobExecution.getJobParameters().getString("jobId");
@@ -30,6 +34,7 @@ public class JapanStockJobExecutionListener implements JobExecutionListener {
 		String jobId = jobExecution.getJobParameters().getString("jobId");
 		Date processDate = jobExecution.getJobParameters().getDate("processDate");
 		updateJapanStockLog(jobId, processDate, jobExecution.getExitStatus().getExitCode());
+		// mailUtil.sendMail();
 	}
 
 	private void updateJapanStockLog(String jobId, Date processDate, String status) {
