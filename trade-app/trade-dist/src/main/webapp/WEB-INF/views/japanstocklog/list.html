@@ -54,7 +54,7 @@
 				</div>
 				<div class="row" th:each="item : ${page.content}">
 					<div class="col-xs-12 col-md-6"
-						th:text="*{item.japanStockLogKey.jobId}">Job 001</div>
+						th:text="*{T(com.akmans.trade.core.enums.JapanStockJob).get(item.japanStockLogKey.jobId).label}">Job 001</div>
 					<!-- Add the extra clearfix for only the required viewport -->
 					<div class="clearfix visible-xs-block"></div>
 					<div class="col-xs-6 col-md-3"

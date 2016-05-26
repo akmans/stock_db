@@ -6,8 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
@@ -16,11 +21,13 @@ import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
 
-public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDto, TrnJapanStock> {
+@Component
+public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDto, TrnJapanStock>, StepExecutionListener {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanStockConvertProcessor.class);
 
-	private String applicationDate;
+//	private String applicationDate;
+	private Date applicationDate;
 
 	@Autowired
 	private InstrumentService instrumentService;
@@ -28,13 +35,21 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 	@Autowired
 	private JapanStockService japanStockService;
 
-	public JapanStockConvertProcessor(String applicationDate) {
+	private StepExecution stepExecution;
+
+/*	@BeforeStep
+    public void saveStepExecution(StepExecution stepExecution) {
+        this.stepExecution = stepExecution;
+    }
+
+	public JapanStockConvertProcessor(Date applicationDate) {
 		this.applicationDate = applicationDate;
 	}
-
+*/
 	public TrnJapanStock process(CsvJapanStockDto item) throws Exception {
 		// logger.warn("CsvJapanStockDto = {}", item);
 
+		applicationDate = stepExecution.getJobExecution().getJobParameters().getDate("processDate");
 		// Skip null or empty record.
 		if (item == null || item.getCode() == null) {
 			logger.warn("The item is empty! item = {}", item);
@@ -58,7 +73,8 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 		// Primary key.
 		JapanStockKey japanStockKey = new JapanStockKey();
 		japanStockKey.setCode(Integer.valueOf(codes[0]));
-		japanStockKey.setRegistDate(convertDate(applicationDate));
+//		japanStockKey.setRegistDate(convertDate(applicationDate));
+		japanStockKey.setRegistDate(applicationDate);
 		stock.setJapanStockKey(japanStockKey);
 		// Skip data that price is empty.
 		if (item.getOpeningPrice().isEmpty()) {
@@ -87,5 +103,17 @@ public class JapanStockConvertProcessor implements ItemProcessor<CsvJapanStockDt
 		Date rt = null;
 		rt = df.parse(date);
 		return rt;
+	}
+
+	@Override
+	public void beforeStep(StepExecution stepExecution) {
+		this.stepExecution = stepExecution;
+		
+	}
+
+	@Override
+	public ExitStatus afterStep(StepExecution stepExecution) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

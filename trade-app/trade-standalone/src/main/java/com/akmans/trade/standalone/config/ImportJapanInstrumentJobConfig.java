@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentDownloadExecution;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentImportExecution;
-import com.akmans.trade.standalone.springbatch.listener.JapanStockJobExecutionListener;
+import com.akmans.trade.standalone.springbatch.listeners.JapanStockJobExecutionListener;
 
 @Configuration
 public class ImportJapanInstrumentJobConfig {

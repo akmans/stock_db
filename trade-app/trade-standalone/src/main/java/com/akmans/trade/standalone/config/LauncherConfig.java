@@ -21,10 +21,9 @@ import com.akmans.trade.standalone.springbatch.CustomAsyncTaskExecutor;
 @Configuration
 @EnableBatchProcessing
 @ComponentScan(basePackages = { "com.akmans.trade.standalone.springbatch.execution",
-		"com.akmans.trade.standalone.springbatch.listener" })
-@Import({TradeCoreConfig.class,
-		ImportJapanStockJobConfig.class,
-		ImportJapanInstrumentJobConfig.class })
+		"com.akmans.trade.standalone.springbatch.listeners", "com.akmans.trade.standalone.springbatch.processors",
+		"com.akmans.trade.standalone.springbatch.writers" })
+@Import({ TradeCoreConfig.class, ImportJapanStockJobConfig.class, ImportJapanInstrumentJobConfig.class })
 public class LauncherConfig {
 
 	@Autowired

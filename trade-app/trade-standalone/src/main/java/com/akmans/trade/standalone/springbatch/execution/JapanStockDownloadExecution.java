@@ -20,9 +20,9 @@ import com.akmans.trade.core.utils.FileUtil;
 
 @Component
 @PropertySource("classpath:/META-INF/core/config/environment.properties")
-public class JapanInstrumentDownloadExecution extends StepExecutionListenerSupport implements Tasklet {
+public class JapanStockDownloadExecution extends StepExecutionListenerSupport implements Tasklet {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanInstrumentImportExecution.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanStockDownloadExecution.class);
 
 	private Date applicationDate;
 
@@ -39,11 +39,13 @@ public class JapanInstrumentDownloadExecution extends StepExecutionListenerSuppo
 	}
 
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		String sourceUrl = env.getRequiredProperty("japan.instrument.url");
+		String appDate = DateUtil.formatDate(applicationDate, "yyyy-MM-dd");
+		String sourceUrl = env.getRequiredProperty("japan.stock.url") + appDate + "?download=csv";
 		String targetDirectory = env.getRequiredProperty("standalone.work.dir");
-		String targetFile = targetDirectory + "/Instruments_" + DateUtil.formatDate(applicationDate, "yyyy-MM-dd")
-				+ ".xls";
+		logger.debug("SourceUrl is {}", sourceUrl);
+		String targetFile = targetDirectory + "/stocks_" + appDate + ".csv";
 		fileUtil.download(sourceUrl, targetFile);
+//		String targetFile = "/Users/owner99/Desktop/FX/work/stocks_2016-05-26.csv";
 		logger.debug("Downloaded file is {}", targetFile);
 		chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("targetFile",
 				targetFile);

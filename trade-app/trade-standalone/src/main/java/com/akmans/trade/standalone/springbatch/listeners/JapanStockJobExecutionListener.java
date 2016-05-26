@@ -1,4 +1,4 @@
-package com.akmans.trade.standalone.springbatch.listener;
+package com.akmans.trade.standalone.springbatch.listeners;
 
 import java.util.Date;
 

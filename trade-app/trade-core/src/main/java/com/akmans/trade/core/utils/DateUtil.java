@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.springframework.stereotype.Component;
-
 public class DateUtil {
 	/**
 	 * Get first day of week using provided specific date.

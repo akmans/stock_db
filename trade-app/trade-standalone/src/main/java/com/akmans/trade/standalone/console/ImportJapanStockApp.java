@@ -1,5 +1,6 @@
 package com.akmans.trade.standalone.console;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
 public class ImportJapanStockApp {
@@ -23,12 +25,14 @@ public class ImportJapanStockApp {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 
+		String jobId = JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue();
+		Date applicationDate = new Date();
 		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-		Job job = (Job) context.getBean("importJapanStockJob");
+		Job job = (Job) context.getBean(jobId);
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("applicationDate", "2007-07-24")
+			JobParameters params = new JobParametersBuilder().addString("jobId", jobId).addDate("processDate", applicationDate)
 					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());

@@ -10,6 +10,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.standalone.config.StandaloneConfig;
 
 public class ImportJapanInstrumentApp {
@@ -23,13 +24,15 @@ public class ImportJapanInstrumentApp {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 
+		String jobId = JapanStockJob.IMPORT_JAPAN_INSTRUMENT_JOB.getValue();
+		Date applicationDate = new Date();
 		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-		Job job = (Job) context.getBean("importJapanInstrumentJob");
+		Job job = (Job) context.getBean(jobId);
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("jobId", "importJapanInstrumentJob")
-					.addDate("processDate", new Date()).toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
+					.addDate("processDate", applicationDate).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 
