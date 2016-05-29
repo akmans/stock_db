@@ -58,8 +58,12 @@
 						th:text="*{disRegistAt}">2016-05-01</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type='text' id="registAt" name="registAt"
-							class="form-control" th:value="*{disRegistAt}" />
+						<div class='input-group date' id="registAt">
+							<input type='text' name="registAt" class="form-control"
+								th:value="*{disRegistAt}" /> <span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
 						<script type="text/javascript">
 							$(function() {
 								$('#registAt').datetimepicker({

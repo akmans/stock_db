@@ -116,4 +116,8 @@ public class JapanStockLogServiceImpl implements JapanStockLogService {
 		}
 		}
 	}
+
+	public boolean exist(JapanStockLogKey key) {
+		return trnJapanStockLogRepository.findOne(key).isPresent();
+	}
 }

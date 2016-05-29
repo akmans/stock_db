@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -74,13 +75,25 @@ public class JapanStockLogEntryController extends AbstractController {
 				// Errors
 				model.addAttribute("cssStyle", "alert-danger");
 			} else {
+				TrnJapanStockLog japanStockLog = null;
 				JapanStockLogKey japanStockLogKey = new JapanStockLogKey();
 				japanStockLogKey.setJobId(japanStockLogEntryForm.getJobId());
 				japanStockLogKey.setProcessDate(japanStockLogEntryForm.getProcessDate());
-				// do confirm operation.
-				TrnJapanStockLog japanStockLog = new TrnJapanStockLog();
-				japanStockLog.setJapanStockLogKey(japanStockLogKey);
-				japanStockLogService.operation(japanStockLog, japanStockLogEntryForm.getOperationMode());
+				if (japanStockLogService.exist(japanStockLogKey)) {
+					japanStockLog = japanStockLogService.findOne(japanStockLogKey);
+					if (ExitStatus.COMPLETED.getExitCode().equals(japanStockLog.getStatus())) {
+						// get message.
+						message = messageSource.getMessage("controller.japanstocklog.job.already.completed", new Object[] {japanStockLogKey}, locale);
+						throw new TradeException(message);
+					}
+					// do confirm operation.
+					japanStockLogService.operation(japanStockLog, OperationMode.EDIT);
+				} else {
+					japanStockLog = new TrnJapanStockLog();
+					japanStockLog.setJapanStockLogKey(japanStockLogKey);
+					// do confirm operation.
+					japanStockLogService.operation(japanStockLog, japanStockLogEntryForm.getOperationMode());
+				}
 				// launch the job.
 				launch(japanStockLogKey.getJobId(), japanStockLogKey.getProcessDate());
 				// get message.

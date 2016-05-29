@@ -82,7 +82,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean(name = "validationMessageSource")
 	public ReloadableResourceBundleMessageSource validationMessageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE1);
+		messageSource.setBasename(MESSAGE_SOURCE2);
 		// reload messages every 3600 seconds
 		messageSource.setCacheSeconds(3600);
 		return messageSource;

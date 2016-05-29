@@ -55,9 +55,12 @@
 					<div class="col-md-4 control-label header"
 						th:text="#{view.japanstocklog.query-form.processDate}">処理日</div>
 					<div class="col-md-8 normal">
-						<input type='text' id="processDate" name="processDate"
-							class="form-control"
-							th:value="*{processDate == null} ? '' : *{#calendars.format(processDate, 'yyyy-MM-dd')}" />
+						<div class='input-group date' id="processDate">
+							<input type='text' name="processDate" class="form-control"
+								th:value="*{processDate == null} ? '' : *{#calendars.format(processDate, 'yyyy-MM-dd')}" />
+							<span class="input-group-addon"> <span
+								class="glyphicon glyphicon-calendar"></span></span>
+						</div>
 						<script type="text/javascript">
 							$(function() {
 								$('#processDate').datetimepicker({

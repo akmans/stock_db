@@ -59,9 +59,12 @@
 						th:text="*{#calendars.format(registDate, 'yyyy-MM-dd')}">2016-05-01</div>
 					<div class="col-md-9"
 						th:if="*{operationMode != T(com.akmans.trade.core.enums.OperationMode).DELETE and operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type='text' id="registDate" name="registDate"
-							class="form-control"
-							th:value="*{#calendars.format(#objects.nullSafe(registDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+						<div class='input-group date' id="registDate">
+							<input type='text' name="registDate" class="form-control"
+								th:value="*{#calendars.format(#objects.nullSafe(registDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+							<span class="input-group-addon"> <span
+								class="glyphicon glyphicon-calendar"></span></span>
+						</div>
 						<script type="text/javascript">
 							$(function() {
 								$('#registDate').datetimepicker({

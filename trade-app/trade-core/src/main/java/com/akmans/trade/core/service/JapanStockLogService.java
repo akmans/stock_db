@@ -14,4 +14,6 @@ public interface JapanStockLogService {
 	public TrnJapanStockLog findOne(JapanStockLogKey key) throws TradeException;
 
 	public void operation(TrnJapanStockLog japanStockLog, OperationMode mode) throws TradeException;
+
+	public boolean exist(JapanStockLogKey key);
 }

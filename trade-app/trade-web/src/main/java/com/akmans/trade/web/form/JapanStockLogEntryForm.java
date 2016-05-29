@@ -3,13 +3,18 @@ package com.akmans.trade.web.form;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class JapanStockLogEntryForm extends AbstractSimpleForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** jobId. */
+	@Size(min = 1, message = "{form.japanstocklogform.jobid.notnull}")
 	private String jobId;
 
 	/** processDate */
+	@NotNull(message = "{form.japanstocklogform.processdate.notnull}")
 	private Date processDate;
 
 	/**
