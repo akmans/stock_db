@@ -1,5 +1,7 @@
 package com.akmans.trade.core.service;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +18,6 @@ public interface CalendarService {
 	public MstCalendar findOne(Long code) throws TradeException;
 
 	public void operation(MstCalendar calendar, OperationMode mode) throws TradeException;
+
+	public boolean isJapanBusinessDay(Date registAt);
 }

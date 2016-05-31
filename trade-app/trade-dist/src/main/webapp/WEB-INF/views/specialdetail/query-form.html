@@ -52,7 +52,8 @@
 						<select th:field="*{itemCode}" class="form-control">
 							<option value=""></option>
 							<option th:each="specialItem : ${itemList}"
-								th:value="${specialItem.code}" th:text="${specialItem.name}">Credit
+								th:value="${specialItem.code}"
+								th:text="${specialItem.code + ' : ' + specialItem.name}">Credit
 								card</option>
 							<option value="1" th:remove="all">Another payment method</option>
 							<option value="2" th:remove="all">Another payment method</option>

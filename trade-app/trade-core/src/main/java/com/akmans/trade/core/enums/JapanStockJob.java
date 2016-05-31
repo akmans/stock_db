@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum JapanStockJob {
-	IMPORT_JAPAN_INSTRUMENT_JOB("0:日本銘柄導入処理", "importJapanInstrumentJob"), IMPORT_JAPAN_STOCK_JOB("1:日本株データ導入処理",
+	IMPORT_JAPAN_INSTRUMENT_JOB("0 : 日本銘柄導入処理", "importJapanInstrumentJob"), IMPORT_JAPAN_STOCK_JOB("1 : 日本株データ導入処理",
 			"importJapanStockJob");
 
 	private final String value;

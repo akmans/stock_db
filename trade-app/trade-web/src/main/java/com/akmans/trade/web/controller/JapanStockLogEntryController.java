@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.enums.OperationStatus;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.CalendarService;
 import com.akmans.trade.core.service.JapanStockLogService;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStockLog;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockLogKey;
@@ -43,6 +44,9 @@ public class JapanStockLogEntryController extends AbstractController {
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private CalendarService calendarService;
 
 	@Autowired
 	private JapanStockLogService japanStockLogService;
@@ -63,7 +67,8 @@ public class JapanStockLogEntryController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-	String confirm(Locale locale, ModelMap model, @Valid final JapanStockLogEntryForm japanStockLogEntryForm, BindingResult bindingResult) {
+	String confirm(Locale locale, ModelMap model, @Valid final JapanStockLogEntryForm japanStockLogEntryForm,
+			BindingResult bindingResult) {
 		logger.debug("The commandForm = {}", japanStockLogEntryForm);
 		String message = null;
 		try {
@@ -79,11 +84,18 @@ public class JapanStockLogEntryController extends AbstractController {
 				JapanStockLogKey japanStockLogKey = new JapanStockLogKey();
 				japanStockLogKey.setJobId(japanStockLogEntryForm.getJobId());
 				japanStockLogKey.setProcessDate(japanStockLogEntryForm.getProcessDate());
+				if (!calendarService.isJapanBusinessDay(japanStockLogEntryForm.getProcessDate())) {
+					// get message.
+					message = messageSource.getMessage("controller.japanstocklog.not.businessday",
+							new Object[] { japanStockLogKey }, locale);
+					throw new TradeException(message);
+				}
 				if (japanStockLogService.exist(japanStockLogKey)) {
 					japanStockLog = japanStockLogService.findOne(japanStockLogKey);
 					if (ExitStatus.COMPLETED.getExitCode().equals(japanStockLog.getStatus())) {
 						// get message.
-						message = messageSource.getMessage("controller.japanstocklog.job.already.completed", new Object[] {japanStockLogKey}, locale);
+						message = messageSource.getMessage("controller.japanstocklog.job.already.completed",
+								new Object[] { japanStockLogKey }, locale);
 						throw new TradeException(message);
 					}
 					// do confirm operation.

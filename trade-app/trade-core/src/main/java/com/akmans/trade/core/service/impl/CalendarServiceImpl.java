@@ -1,6 +1,7 @@
 package com.akmans.trade.core.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.dto.CalendarQueryDto;
+import com.akmans.trade.core.enums.Calendar;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.CalendarService;
@@ -95,8 +97,8 @@ public class CalendarServiceImpl implements CalendarService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			List<MstCalendar> result = mstCalendarRepository.findByCalendarAndHoliday(calendar.getCalendar(),
-					calendar.getHoliday());
+			List<MstCalendar> result = mstCalendarRepository.findByCalendarAndHolidayAndRegistAt(calendar.getCalendar(),
+					calendar.getHoliday(), calendar.getRegistAt());
 			if (result != null && result.size() > 0) {
 				throw new TradeException(
 						messageService.getMessage("core.service.calendar.record.alreadyexist", calendar.getCode()));
@@ -121,6 +123,21 @@ public class CalendarServiceImpl implements CalendarService {
 			}
 			mstCalendarRepository.delete(calendar);
 		}
+		}
+	}
+
+	public boolean isJapanBusinessDay(Date registAt) {
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+		cal.setTime(registAt);
+		int week = cal.get(java.util.Calendar.DAY_OF_WEEK);
+		if (week == 1 || week == 7) {
+			return false;
+		}
+		List<MstCalendar> result = mstCalendarRepository.findByCalendarAndRegistAt(Calendar.JAPAN.getValue(), registAt);
+		if (result == null || result.size() == 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
