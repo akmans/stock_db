@@ -73,9 +73,13 @@
 						th:text="*{#calendars.format(processDate, 'yyyy-MM-dd')}">2016-01-01</div>
 					<div class="col-md-9"
 						th:if="*{operationStatus != T(com.akmans.trade.core.enums.OperationStatus).COMPLETE}">
-						<input type='text' id="e-processDate" name="processDate"
-							class="form-control"
-							th:value="*{#calendars.format(#objects.nullSafe(processDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+						<div class='input-group date' id="e-processDate">
+							<input type='text' name="processDate" class="form-control"
+								th:value="*{#calendars.format(#objects.nullSafe(processDate, #calendars.createToday()), 'yyyy-MM-dd')}" />
+							<span class="input-group-addon"> <span
+								class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
 						<script type="text/javascript">
 							$(function() {
 								$('#e-processDate').datetimepicker({

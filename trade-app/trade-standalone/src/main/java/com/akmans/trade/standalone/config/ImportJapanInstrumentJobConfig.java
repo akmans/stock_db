@@ -16,7 +16,8 @@ public class ImportJapanInstrumentJobConfig {
 
 	@Bean
 	public Job importJapanInstrumentJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
-			JapanInstrumentImportExecution importExecution, JapanInstrumentDownloadExecution downloadExecution, JapanStockJobExecutionListener listener) {
+			JapanInstrumentImportExecution importExecution, JapanInstrumentDownloadExecution downloadExecution,
+			JapanStockJobExecutionListener listener) {
 		Step step1 = stepBuilderFactory.get("step1").tasklet(downloadExecution).build();
 		Step step2 = stepBuilderFactory.get("step2").tasklet(importExecution).build();
 		return jobs.get("importJapanInstrumentJob").start(step1).next(step2).listener(listener).build();

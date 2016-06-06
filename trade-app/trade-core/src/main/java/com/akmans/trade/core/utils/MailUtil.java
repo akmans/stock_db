@@ -32,7 +32,7 @@ public class MailUtil {
 	@Autowired
 	private MessageService messageService;
 
-	public void sendMail() {
+	public void sendMail(String subject, String body) {
 		Properties props = new Properties();
 		props.put("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
 		props.put("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
@@ -52,8 +52,8 @@ public class MailUtil {
 			message.setFrom(new InternetAddress(env.getRequiredProperty("mail.sender")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(env.getRequiredProperty("mail.receiver")));
-			message.setSubject("Testing Subject");
-			message.setText("Dear Mail Crawler," + "\n\n No spam to my email, please!");
+			message.setSubject(subject);
+			message.setText(body);
 
 			Transport.send(message);
 

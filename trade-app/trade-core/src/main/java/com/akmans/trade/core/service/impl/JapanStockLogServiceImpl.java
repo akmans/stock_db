@@ -48,7 +48,7 @@ public class JapanStockLogServiceImpl implements JapanStockLogService {
 		if (dto.getProcessDate() != null) {
 			criteria = criteria + "and log.japanStockLogKey.processDate = :processDate ";
 		}
-		String orderByCriteria = "order by log.japanStockLogKey.processDate asc, log.japanStockLogKey.processDate desc ";
+		String orderByCriteria = "order by log.japanStockLogKey.processDate desc ";
 		EntityManager em = emf.getObject().createEntityManager();
 		Query query = em.createQuery(cntJpql + criteria);
 		if (dto.getJobId() != null && dto.getJobId().length() > 0) {
