@@ -1,5 +1,7 @@
 package com.akmans.trade.core.service;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 
 import com.akmans.trade.core.dto.JapanStockLogQueryDto;
@@ -16,4 +18,6 @@ public interface JapanStockLogService {
 	public void operation(TrnJapanStockLog japanStockLog, OperationMode mode) throws TradeException;
 
 	public boolean exist(JapanStockLogKey key);
+
+	public TrnJapanStockLog findMaxRegistDate(String jobId, Date processDate);
 }

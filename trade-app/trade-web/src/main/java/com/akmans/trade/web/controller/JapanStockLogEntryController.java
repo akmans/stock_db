@@ -1,5 +1,6 @@
 package com.akmans.trade.web.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.enums.OperationStatus;
 import com.akmans.trade.core.exception.TradeException;
@@ -58,6 +60,26 @@ public class JapanStockLogEntryController extends AbstractController {
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	String initNew(ModelMap model, JapanStockLogEntryForm japanStockLogEntryForm) {
+		// Set job id.
+		String jobId = JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue();
+		japanStockLogEntryForm.setJobId(jobId);
+		// Set process date.
+		Calendar cal1 = Calendar.getInstance();
+		cal1.set(2016, 4, 1); // 20160501
+		TrnJapanStockLog log = japanStockLogService
+				.findMaxRegistDate(jobId, cal1.getTime());
+		logger.debug("JapanStockLogEntryController log is !!!" + log);
+		Date currentDate = log.getJapanStockLogKey().getProcessDate();
+		logger.debug("JapanStockLogEntryController !!!" + currentDate);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(currentDate);
+		do {
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			logger.debug("JapanStockLogEntryController cal is !!!" + cal.getTime());
+		} while (!calendarService.isJapanBusinessDay(cal.getTime()));
+
+		Date processDate = cal.getTime();
+		japanStockLogEntryForm.setProcessDate(processDate);
 		// Set operation mode.
 		japanStockLogEntryForm.setOperationMode(OperationMode.NEW);
 		// Set operation status.

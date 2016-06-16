@@ -2,8 +2,11 @@ package com.akmans.trade.standalone.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJobOperator;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.akmans.trade.core.Application;
 import com.akmans.trade.core.config.TradeCoreConfig;
@@ -22,8 +26,9 @@ import com.akmans.trade.standalone.springbatch.CustomAsyncTaskExecutor;
 @EnableBatchProcessing
 @ComponentScan(basePackages = { "com.akmans.trade.standalone.springbatch.execution",
 		"com.akmans.trade.standalone.springbatch.listeners", "com.akmans.trade.standalone.springbatch.processors",
-		"com.akmans.trade.standalone.springbatch.writers" })
+		"com.akmans.trade.standalone.springbatch.writers", "com.akmans.trade.standalone.springbatch.runners" })
 @Import({ TradeCoreConfig.class, ImportJapanStockJobConfig.class, ImportJapanInstrumentJobConfig.class })
+@EnableScheduling
 public class LauncherConfig {
 
 	@Autowired
@@ -31,6 +36,12 @@ public class LauncherConfig {
 
 	@Autowired
 	private JpaTransactionManager transactionManager;
+
+	@Autowired
+	private JobRegistry jobRegistry;
+
+	@Autowired
+	private JobExplorer jobExplorer;
 
 	@Bean
 	public JobRepository jobRepository() throws Exception {
@@ -49,5 +60,15 @@ public class LauncherConfig {
 			jobLauncher.setTaskExecutor(new CustomAsyncTaskExecutor());
 		}
 		return jobLauncher;
+	}
+
+	@Bean
+	public SimpleJobOperator jobOperator(SimpleJobLauncher jobLauncher) throws Exception {
+		SimpleJobOperator jobOperator = new SimpleJobOperator();
+		jobOperator.setJobLauncher(jobLauncher);
+		jobOperator.setJobRepository(jobRepository());
+		jobOperator.setJobRegistry(jobRegistry);
+		jobOperator.setJobExplorer(jobExplorer);
+		return jobOperator;
 	}
 }

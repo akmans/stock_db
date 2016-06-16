@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.akmans.trade.core.Application;
 import com.akmans.trade.core.enums.RunningMode;
@@ -22,6 +22,7 @@ public class UsernameAuditorAware implements AuditorAware<String> {
 			return "system";
 		}
 
+		String auditor = null;
 		// In web environment.
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !authentication.isAuthenticated()) {
@@ -29,8 +30,14 @@ public class UsernameAuditorAware implements AuditorAware<String> {
 			return null;
 		}
 
-		logger.debug("Username is " + ((User) authentication.getPrincipal()).getUsername());
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof UserDetails) {
+			auditor = ((UserDetails) principal).getUsername();
+		} else {
+			auditor = principal.toString();
+		}
+		logger.debug("Username is " + auditor);
 
-		return ((User) authentication.getPrincipal()).getUsername();
+		return auditor;
 	}
 }

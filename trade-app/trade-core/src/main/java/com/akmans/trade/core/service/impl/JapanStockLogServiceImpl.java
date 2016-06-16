@@ -1,6 +1,7 @@
 package com.akmans.trade.core.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,5 +120,10 @@ public class JapanStockLogServiceImpl implements JapanStockLogService {
 
 	public boolean exist(JapanStockLogKey key) {
 		return trnJapanStockLogRepository.findOne(key).isPresent();
+	}
+
+	public TrnJapanStockLog findMaxRegistDate(String jobId, Date processDate) {
+		return trnJapanStockLogRepository.findMaxRegistDate(jobId, processDate);
+		// TODO null check required.
 	}
 }
