@@ -23,6 +23,27 @@ public class DateUtil {
 		return cal.getTime();
 	}
 
+	/**
+	 * Get last day of week using provided specific date.
+	 * @param date the provided date.
+	 * @return Last day of week.
+	 */
+	public static Date getLastDayOfWeek(Date date) {
+		// Calendar instance.
+		Calendar cal = Calendar.getInstance(Locale.JAPAN);
+		cal.clear();
+		// Set date of calendar.
+		cal.setTime(date);
+		// Set day of week.
+		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+		// Next week.
+		cal.add(Calendar.WEEK_OF_YEAR, 1);
+		// Last day of current week.
+		cal.add(Calendar.DAY_OF_YEAR, -1);
+		// return first day of week.
+		return cal.getTime();
+	}
+
 	public static String formatDate(Date date, String format) {
 		if (date == null || format == null) {
 			return null;

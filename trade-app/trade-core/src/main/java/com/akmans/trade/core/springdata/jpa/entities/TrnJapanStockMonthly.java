@@ -27,7 +27,7 @@ public class TrnJapanStockMonthly extends AbstractEntity {
 	private Integer finishPrice;
 
 	@Column(name = "turnover")
-	private Integer turnover;
+	private Long turnover;
 
 	@Column(name = "trading_value")
 	private Long tradingValue;
@@ -72,11 +72,11 @@ public class TrnJapanStockMonthly extends AbstractEntity {
 		return this.finishPrice;
 	}
 
-	public void setTurnover(Integer turnover) {
+	public void setTurnover(Long turnover) {
 		this.turnover = turnover;
 	}
 
-	public Integer getTurnover() {
+	public Long getTurnover() {
 		return this.turnover;
 	}
 

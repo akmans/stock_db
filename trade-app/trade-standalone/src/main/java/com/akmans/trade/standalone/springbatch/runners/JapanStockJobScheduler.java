@@ -130,7 +130,7 @@ public class JapanStockJobScheduler {
 
 	private void launch(String jobId) throws TradeException, Exception{
 		Calendar cal1 = Calendar.getInstance();
-		cal1.set(2016, 4, 1); // 20160501
+		cal1.set(2099, 11, 31); // 20991231
 		TrnJapanStockLog log = japanStockLogService
 				.findMaxRegistDate(jobId, cal1.getTime());
 		logger.debug("JapanStockJobScheduler log is !!!" + log);
@@ -141,7 +141,7 @@ public class JapanStockJobScheduler {
 		do {
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 			logger.debug("JapanStockJobScheduler cal is !!!" + cal.getTime());
-		} while (!calendarService.isJapanBusinessDay(cal.getTime()));
+		} while (!calendarService.isJapanBusinessDay(cal.getTime()) && cal.getTime().compareTo(new Date()) < 0);
 
 		Date processDate = cal.getTime();
 		JapanStockLogKey japanStockLogKey = new JapanStockLogKey();

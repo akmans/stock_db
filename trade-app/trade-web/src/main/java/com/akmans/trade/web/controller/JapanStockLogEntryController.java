@@ -65,9 +65,8 @@ public class JapanStockLogEntryController extends AbstractController {
 		japanStockLogEntryForm.setJobId(jobId);
 		// Set process date.
 		Calendar cal1 = Calendar.getInstance();
-		cal1.set(2016, 4, 1); // 20160501
-		TrnJapanStockLog log = japanStockLogService
-				.findMaxRegistDate(jobId, cal1.getTime());
+		cal1.set(2099, 11, 31); // 20991231
+		TrnJapanStockLog log = japanStockLogService.findMaxRegistDate(jobId, cal1.getTime());
 		logger.debug("JapanStockLogEntryController log is !!!" + log);
 		Date currentDate = log.getJapanStockLogKey().getProcessDate();
 		logger.debug("JapanStockLogEntryController !!!" + currentDate);
@@ -76,7 +75,7 @@ public class JapanStockLogEntryController extends AbstractController {
 		do {
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 			logger.debug("JapanStockLogEntryController cal is !!!" + cal.getTime());
-		} while (!calendarService.isJapanBusinessDay(cal.getTime()));
+		} while (!calendarService.isJapanBusinessDay(cal.getTime()) && cal.getTime().compareTo(new Date()) < 0);
 
 		Date processDate = cal.getTime();
 		japanStockLogEntryForm.setProcessDate(processDate);

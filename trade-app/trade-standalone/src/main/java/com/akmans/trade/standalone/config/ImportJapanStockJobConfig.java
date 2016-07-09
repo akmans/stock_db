@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 
+import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
 import com.akmans.trade.standalone.springbatch.execution.JapanStockDownloadExecution;
@@ -56,7 +57,8 @@ public class ImportJapanStockJobConfig {
 	@Bean
 	public Job importJapanStockJob(JobBuilderFactory jobs, Step step1, Step step2,
 			JapanStockJobExecutionListener listener) {
-		return jobs.get("importJapanStockJob").start(step1).next(step2).listener(listener).build();
+		return jobs.get(JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue()).start(step1).next(step2).listener(listener)
+				.build();
 	}
 
 	@Bean

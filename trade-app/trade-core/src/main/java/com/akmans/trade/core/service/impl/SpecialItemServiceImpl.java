@@ -35,7 +35,7 @@ public class SpecialItemServiceImpl implements SpecialItemService {
 	}
 
 	public List<TrnSpecialItem> findAll() {
-		return trnSpecialItemRepository.findAll();
+		return trnSpecialItemRepository.findAllByOrderByCodeAsc();
 	}
 
 	public TrnSpecialItem findOne(Integer code) throws TradeException {

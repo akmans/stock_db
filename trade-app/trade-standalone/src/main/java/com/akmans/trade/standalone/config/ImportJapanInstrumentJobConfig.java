@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentDownloadExecution;
 import com.akmans.trade.standalone.springbatch.execution.JapanInstrumentImportExecution;
 import com.akmans.trade.standalone.springbatch.listeners.JapanStockJobExecutionListener;
@@ -20,6 +21,7 @@ public class ImportJapanInstrumentJobConfig {
 			JapanStockJobExecutionListener listener) {
 		Step step1 = stepBuilderFactory.get("step1").tasklet(downloadExecution).build();
 		Step step2 = stepBuilderFactory.get("step2").tasklet(importExecution).build();
-		return jobs.get("importJapanInstrumentJob").start(step1).next(step2).listener(listener).build();
+		return jobs.get(JapanStockJob.IMPORT_JAPAN_INSTRUMENT_JOB.getValue()).start(step1).next(step2)
+				.listener(listener).build();
 	}
 }
