@@ -3,7 +3,6 @@ package com.akmans.trade.core.utils;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import org.junit.Test;
