@@ -38,6 +38,7 @@
 		<javax.mail.version>1.4.7</javax.mail.version>
 		<!-- jackson.version>1.9.7</jackson.version -->
 		<google-collections.version>1.0</google-collections.version>
+		<commons-lang.version>2.2</commons-lang.version>
 	</properties>
 
 	<dependencies>
@@ -363,6 +364,13 @@
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>${google-collections.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
@@ -72,10 +73,13 @@ public class JapanStockLogEntryController extends AbstractController {
 		logger.debug("JapanStockLogEntryController !!!" + currentDate);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(currentDate);
-		do {
-			cal.add(Calendar.DAY_OF_MONTH, 1);
-			logger.debug("JapanStockLogEntryController cal is !!!" + cal.getTime());
-		} while (!calendarService.isJapanBusinessDay(cal.getTime()) && cal.getTime().compareTo(new Date()) < 0);
+		if (DateUtils.truncate(cal.getTime(), Calendar.DAY_OF_MONTH)
+				.compareTo(DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH)) < 0) {
+			do {
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+				logger.debug("JapanStockLogEntryController cal is !!!" + cal.getTime());
+			} while (!calendarService.isJapanBusinessDay(cal.getTime()));
+		}
 
 		Date processDate = cal.getTime();
 		japanStockLogEntryForm.setProcessDate(processDate);
@@ -137,29 +141,29 @@ public class JapanStockLogEntryController extends AbstractController {
 				model.addAttribute("cssStyle", "alert-success");
 				model.addAttribute("message", message);
 			}
-		} catch (TradeException te) {
+		} catch (Exception te) {
 			// errors
 			model.addAttribute("cssStyle", "alert-danger");
 			model.addAttribute("message", te.getMessage());
+			te.printStackTrace();
 		}
 
 		// render path
 		return viewForm;
 	}
 
-	private void launch(String jobId, Date processDate) {
+	private void launch(String jobId, Date processDate) throws Exception {
+		// Get job launcher.
 		JobLauncher jobLauncher = (JobLauncher) appContext.getBean("jobLauncher");
+		// Get job.
 		Job job = (Job) appContext.getBean(jobId);
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
-		try {
-			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
-					.addDate("processDate", processDate).toJobParameters();
-			JobExecution execution = jobLauncher.run(job, params);
-			logger.info("Exit Status : " + execution.getStatus());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// Build job parameters.
+		JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
+				.addDate("processDate", processDate).toJobParameters();
+		// Run the job.
+		JobExecution execution = jobLauncher.run(job, params);
+		logger.info("Exit Status : " + execution.getStatus());
 	}
 }

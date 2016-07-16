@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +43,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 	/**
 	 * Find data for display on screen by specified query criteria.<br/>
 	 * 
-	 * @param InstrumentQueryDto dto<br/>
+	 * @param InstrumentQueryDto
+	 *            dto<br/>
 	 * @return Page<MstInstrument><br/>
 	 */
 	@SuppressWarnings("unchecked")
@@ -162,17 +160,17 @@ public class InstrumentServiceImpl implements InstrumentService {
 		em.close();
 		ArrayList<MstInstrument> content = new ArrayList<MstInstrument>();
 		// Parsing select query result.
-		for(Object[] item : list) {
+		for (Object[] item : list) {
 			// First element to be instrument.
-			MstInstrument instrument = (MstInstrument)item[0];
+			MstInstrument instrument = (MstInstrument) item[0];
 			// Second scale.
-			instrument.setScale((MstScale)item[1]);
+			instrument.setScale((MstScale) item[1]);
 			// Third market.
-			instrument.setMarket((MstMarket)item[2]);
+			instrument.setMarket((MstMarket) item[2]);
 			// Fourth sector33.
-			instrument.setSector33((MstSector33)item[3]);
+			instrument.setSector33((MstSector33) item[3]);
 			// Fifth sector17.
-			instrument.setSector17((MstSector17)item[4]);
+			instrument.setSector17((MstSector17) item[4]);
 			content.add(instrument);
 		}
 		// Return page content.
@@ -180,9 +178,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 				: new PageImpl<MstInstrument>(new ArrayList<MstInstrument>(), dto.getPageable(), 0);
 	}
 
-	public Page<MstInstrument> findAll(Pageable pageable) {
-		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstInstrumentRepository.findAll(pg);
+	public List<MstInstrument> findAll() {
+		return mstInstrumentRepository.findAll();
 	}
 
 	public MstInstrument findOne(Long code) throws TradeException {
@@ -200,8 +197,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 		switch (mode) {
 		case NEW: {
 			if (mstInstrumentRepository.findOne(instrument.getCode()).isPresent()) {
-				throw new TradeException(messageService.getMessage("core.service.instrument.record.alreadyexist",
-						instrument.getCode()));
+				throw new TradeException(
+						messageService.getMessage("core.service.instrument.record.alreadyexist", instrument.getCode()));
 			}
 			mstInstrumentRepository.save(instrument);
 			break;
@@ -209,8 +206,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 		case EDIT: {
 			MstInstrument origin = findOne(instrument.getCode());
 			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.instrument.record.inconsistent",
-						instrument.getCode()));
+				throw new TradeException(
+						messageService.getMessage("core.service.instrument.record.inconsistent", instrument.getCode()));
 			}
 			mstInstrumentRepository.save(instrument);
 			break;
@@ -218,8 +215,8 @@ public class InstrumentServiceImpl implements InstrumentService {
 		case DELETE: {
 			MstInstrument origin = findOne(instrument.getCode());
 			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.instrument.record.inconsistent",
-						instrument.getCode()));
+				throw new TradeException(
+						messageService.getMessage("core.service.instrument.record.inconsistent", instrument.getCode()));
 			}
 			mstInstrumentRepository.delete(instrument);
 		}

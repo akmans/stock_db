@@ -1,6 +1,5 @@
 package com.akmans.trade.standalone.springbatch.processors;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -13,12 +12,12 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.InstrumentService;
 import com.akmans.trade.core.service.JapanStockService;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
-import com.akmans.trade.core.utils.DateUtil;
 import com.akmans.trade.standalone.dto.CsvJapanStockDto;
 
 @Component
@@ -103,8 +102,8 @@ public class JapanStockConvertProcessor
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
-		stepExecution.getJobExecution().getExecutionContext().putInt("skippedRows", 0);
-		stepExecution.getJobExecution().getExecutionContext().putInt("processedRows", 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS, 0);
 	}
 
 	@Override
@@ -114,12 +113,12 @@ public class JapanStockConvertProcessor
 	}
 
 	private void countSkippedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt("skippedRows",
-				stepExecution.getJobExecution().getExecutionContext().getInt("skippedRows", 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.SKIPPED_ROWS, 0) + 1);
 	}
 
 	private void countProcessedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt("processedRows",
-				stepExecution.getJobExecution().getExecutionContext().getInt("processedRows", 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.PROCESSED_ROWS, 0) + 1);
 	}
 }

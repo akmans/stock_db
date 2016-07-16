@@ -1,7 +1,8 @@
 package com.akmans.trade.core.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import com.akmans.trade.core.dto.InstrumentQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
@@ -9,7 +10,7 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.springdata.jpa.entities.MstInstrument;
 
 public interface InstrumentService {
-	public Page<MstInstrument> findAll(Pageable pageRequest);
+	public List<MstInstrument> findAll();
 
 	public Page<MstInstrument> findPage(InstrumentQueryDto dto);
 

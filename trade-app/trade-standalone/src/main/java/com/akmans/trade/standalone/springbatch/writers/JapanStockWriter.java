@@ -10,6 +10,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.service.JapanStockService;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
@@ -48,8 +49,8 @@ public class JapanStockWriter implements ItemWriter<TrnJapanStock>, StepExecutio
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
-		stepExecution.getJobExecution().getExecutionContext().putInt("insertedRows", 0);
-		stepExecution.getJobExecution().getExecutionContext().putInt("updatedRows", 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
 	}
 
 	@Override
@@ -59,12 +60,12 @@ public class JapanStockWriter implements ItemWriter<TrnJapanStock>, StepExecutio
 	}
 
 	private void countInsertedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt("insertedRows",
-				stepExecution.getJobExecution().getExecutionContext().getInt("insertedRows", 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + 1);
 	}
 
 	private void countUpdatedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt("updatedRows",
-				stepExecution.getJobExecution().getExecutionContext().getInt("updatedRows", 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + 1);
 	}
 }

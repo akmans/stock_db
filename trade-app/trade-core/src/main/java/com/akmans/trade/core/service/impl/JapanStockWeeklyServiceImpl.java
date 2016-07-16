@@ -45,7 +45,9 @@ public class JapanStockWeeklyServiceImpl implements JapanStockWeeklyService {
 				throw new TradeException(messageService.getMessage("core.service.japanstock.record.alreadyexist",
 						stock.getJapanStockKey().toString()));
 			}
+			logger.debug("before save");
 			trnJapanStockWeeklyRepository.save(stock);
+			logger.debug("after save");
 			break;
 		}
 		case EDIT: {
@@ -54,7 +56,9 @@ public class JapanStockWeeklyServiceImpl implements JapanStockWeeklyService {
 				throw new TradeException(messageService.getMessage("core.service.japanstock.record.inconsistent",
 						stock.getJapanStockKey().toString()));
 			}
+			logger.debug("before save");
 			trnJapanStockWeeklyRepository.save(stock);
+			logger.debug("after save");
 			break;
 		}
 		case DELETE: {

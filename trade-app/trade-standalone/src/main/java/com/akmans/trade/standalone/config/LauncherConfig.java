@@ -27,7 +27,8 @@ import com.akmans.trade.standalone.springbatch.CustomAsyncTaskExecutor;
 @ComponentScan(basePackages = { "com.akmans.trade.standalone.springbatch.execution",
 		"com.akmans.trade.standalone.springbatch.listeners", "com.akmans.trade.standalone.springbatch.processors",
 		"com.akmans.trade.standalone.springbatch.writers", "com.akmans.trade.standalone.springbatch.runners" })
-@Import({ TradeCoreConfig.class, ImportJapanStockJobConfig.class, ImportJapanInstrumentJobConfig.class })
+@Import({ TradeCoreConfig.class, ImportJapanStockJobConfig.class, ImportJapanInstrumentJobConfig.class,
+		GenerateJapanStockWeeklyJobConfig.class })
 @EnableScheduling
 public class LauncherConfig {
 
