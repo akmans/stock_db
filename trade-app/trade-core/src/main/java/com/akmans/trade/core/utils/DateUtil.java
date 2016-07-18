@@ -40,7 +40,41 @@ public class DateUtil {
 		cal.add(Calendar.WEEK_OF_YEAR, 1);
 		// Last day of current week.
 		cal.add(Calendar.DAY_OF_YEAR, -1);
-		// return first day of week.
+		// return last day of week.
+		return cal.getTime();
+	}
+
+	/**
+	 * Get first day of month using provided specific date.
+	 * @param date the provided date.
+	 * @return First day of month.
+	 */
+	public static Date getFirstDayOfMonth(Date date) {
+		// Calendar instance.
+		Calendar cal = Calendar.getInstance(Locale.JAPAN);
+		cal.clear();
+		// Set date of calendar.
+		cal.setTime(date);
+		// Set day of month.
+		cal.set(Calendar.DATE, 1);
+		// return first day of month.
+		return cal.getTime();
+	}
+
+	/**
+	 * Get last day of month using provided specific date.
+	 * @param date the provided date.
+	 * @return Last day of month.
+	 */
+	public static Date getLastDayOfMonth(Date date) {
+		// Calendar instance.
+		Calendar cal = Calendar.getInstance(Locale.JAPAN);
+		cal.clear();
+		// Set date of calendar.
+		cal.setTime(date);
+		// Set day of month.
+		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+		// return last day of month.
 		return cal.getTime();
 	}
 

@@ -54,4 +54,25 @@ public class DateUtilTest {
 		assertTrue(targetFirstDay - DateUtil.getFirstDayOfWeek(cal.getTime()).getTime() == 0);
 		assertTrue(targetLastDay - DateUtil.getLastDayOfWeek(cal.getTime()).getTime() == 0);
 	}
+
+	@Test
+	public void testGetFirstDayOfMonthAndGetLastDayOfMonth() {
+		Calendar cal = Calendar.getInstance(Locale.JAPAN);
+		// January
+		cal.clear();
+		cal.set(2016, 0, 1);
+		Calendar target = Calendar.getInstance(Locale.JAPAN);;
+		target.clear();
+		// Test January
+		target.set(2016, 0, 1);
+		assertEquals(target.getTime(), DateUtil.getFirstDayOfMonth(cal.getTime()));
+		target.set(2016, 0, 31);
+		assertEquals(target.getTime(), DateUtil.getLastDayOfMonth(cal.getTime()));
+		// Test February
+		cal.set(2016, 1, 2);
+		target.set(2016, 1, 1);
+		assertEquals(target.getTime(), DateUtil.getFirstDayOfMonth(cal.getTime()));
+		target.set(2016, 1, 29);
+		assertEquals(target.getTime(), DateUtil.getLastDayOfMonth(cal.getTime()));
+	}
 }

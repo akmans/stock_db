@@ -28,7 +28,7 @@ import com.akmans.trade.standalone.springbatch.CustomAsyncTaskExecutor;
 		"com.akmans.trade.standalone.springbatch.listeners", "com.akmans.trade.standalone.springbatch.processors",
 		"com.akmans.trade.standalone.springbatch.writers", "com.akmans.trade.standalone.springbatch.runners" })
 @Import({ TradeCoreConfig.class, ImportJapanStockJobConfig.class, ImportJapanInstrumentJobConfig.class,
-		GenerateJapanStockWeeklyJobConfig.class })
+		GenerateJapanStockWeeklyJobConfig.class, GenerateJapanStockMonthlyJobConfig.class })
 @EnableScheduling
 public class LauncherConfig {
 

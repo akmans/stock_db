@@ -8,4 +8,5 @@ CREATE DATABASE stock
        TABLESPACE = pg_default
        LC_COLLATE = 'C'
        LC_CTYPE = 'C'
-       CONNECTION LIMIT = -1;
+       CONNECTION LIMIT = -1
+       TEMPLATE template0;

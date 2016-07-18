@@ -1,0 +1,18 @@
+1. Dump the database.
+export PGPASSWORD=pgsql1 && pg_dump -U postgres -F c stock | gzip -c > stock.7.gz 
+
+2. Gunzip the gz file.
+gunzip stock.7.gz
+
+3. Create new database using psql tool.
+CREATE DATABASE new_stock
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'C'
+       LC_CTYPE = 'C'
+       CONNECTION LIMIT = -1
+       TEMPLATE template0;
+
+4. Restore the dump file.
+pg_restore -U postgres -d dev_stock -F c stock.7 

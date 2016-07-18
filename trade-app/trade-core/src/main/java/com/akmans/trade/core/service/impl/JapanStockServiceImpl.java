@@ -13,8 +13,8 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.JapanStockService;
 import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.springdata.jpa.repositories.TrnJapanStockRepository;
-import com.akmans.trade.core.utils.DateUtil;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStock;
+import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStockMonthly;
 import com.akmans.trade.core.springdata.jpa.entities.TrnJapanStockWeekly;
 import com.akmans.trade.core.springdata.jpa.keys.JapanStockKey;
 
@@ -92,7 +92,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 			Integer lowPrice = 0;
 			Long turnover = 0L;
 			Long tradingValue = 0L;
-			for(int i = 0; i < japanStocks.size(); i++) {
+			for (int i = 0; i < japanStocks.size(); i++) {
 				TrnJapanStock japanStock = japanStocks.get(i);
 				// Set opening price.
 				if (i == 0) {
@@ -103,7 +103,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 					highPrice = japanStock.getHighPrice();
 				}
 				// Get low price.
-				if (lowPrice == 0  || lowPrice > japanStock.getLowPrice()) {
+				if (lowPrice == 0 || lowPrice > japanStock.getLowPrice()) {
 					lowPrice = japanStock.getLowPrice();
 				}
 				// Set finish price.
@@ -113,7 +113,7 @@ public class JapanStockServiceImpl implements JapanStockService {
 				// Sum turnover.
 				turnover = turnover + japanStock.getTurnover();
 				// Sum tradingValue.
-				tradingValue = tradingValue + japanStock.getTradingValue();
+				tradingValue = tradingValue + (japanStock.getTradingValue() == null ? 0 : japanStock.getTradingValue());
 			}
 			// Set high price.
 			japanStockWeekly.setHighPrice(highPrice);
@@ -124,6 +124,57 @@ public class JapanStockServiceImpl implements JapanStockService {
 			// Set tradingValue.
 			japanStockWeekly.setTradingValue(tradingValue);
 			return japanStockWeekly;
+		}
+	}
+
+	public TrnJapanStockMonthly generateJapanStockMonthlyData(Integer code, Date dateFrom, Date dateTo) {
+		List<TrnJapanStock> japanStocks = trnJapanStockRepository.findJapanStockInPeriod(code, dateFrom, dateTo);
+		if (japanStocks == null || japanStocks.size() == 0) {
+			return null;
+		} else {
+			// Generate japan stock key.
+			JapanStockKey japanStockKey = new JapanStockKey();
+			japanStockKey.setCode(code);
+			japanStockKey.setRegistDate(dateFrom);
+			// new TrnJapanStockWeekly instance.
+			TrnJapanStockMonthly japanStockMonthly = new TrnJapanStockMonthly();
+			japanStockMonthly.setJapanStockKey(japanStockKey);
+			Integer highPrice = 0;
+			Integer lowPrice = 0;
+			Long turnover = 0L;
+			Long tradingValue = 0L;
+			for (int i = 0; i < japanStocks.size(); i++) {
+				TrnJapanStock japanStock = japanStocks.get(i);
+				// Set opening price.
+				if (i == 0) {
+					japanStockMonthly.setOpeningPrice(japanStock.getOpeningPrice());
+				}
+				// Get high price.
+				if (highPrice < japanStock.getHighPrice()) {
+					highPrice = japanStock.getHighPrice();
+				}
+				// Get low price.
+				if (lowPrice == 0 || lowPrice > japanStock.getLowPrice()) {
+					lowPrice = japanStock.getLowPrice();
+				}
+				// Set finish price.
+				if (i == japanStocks.size() - 1) {
+					japanStockMonthly.setFinishPrice(japanStock.getFinishPrice());
+				}
+				// Sum turnover.
+				turnover = turnover + japanStock.getTurnover();
+				// Sum tradingValue.
+				tradingValue = tradingValue + (japanStock.getTradingValue() == null ? 0 : japanStock.getTradingValue());
+			}
+			// Set high price.
+			japanStockMonthly.setHighPrice(highPrice);
+			// Set low price.
+			japanStockMonthly.setLowPrice(lowPrice);
+			// Set turnover.
+			japanStockMonthly.setTurnover(turnover);
+			// Set tradingValue.
+			japanStockMonthly.setTradingValue(tradingValue);
+			return japanStockMonthly;
 		}
 	}
 }

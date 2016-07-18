@@ -59,7 +59,8 @@ public class JapanStockJobExecutionListener implements JobExecutionListener {
 			body = body + "Skipped Rows: " + skippedRows + "\n";
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else if (JapanStockJob.GENERATE_JAPAN_STOCK_WEEKLY_JOB.getValue().equals(jobId)) {
+		} else if (JapanStockJob.GENERATE_JAPAN_STOCK_WEEKLY_JOB.getValue().equals(jobId)
+				|| JapanStockJob.GENERATE_JAPAN_STOCK_MONTHLY_JOB.getValue().equals(jobId)) {
 			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
 			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Inserted Rows: " + insertedRows + "\n";
