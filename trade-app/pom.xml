@@ -317,7 +317,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax.servlet-api.version}</version>
-			<scope>provided</scope>
+<!-- 			<scope>provided</scope> -->
 		</dependency>
 
 		<dependency>
@@ -375,10 +375,11 @@
 	</dependencies>
 
 	<modules>
-		<module>trade-core</module>
-		<module>trade-web</module>
-		<module>trade-standalone</module>
-		<module>trade-dist</module>
+		<module>core</module>
+		<module>stock</module>
+		<module>fx</module>
+		<module>cashing</module>
+		<module>distribution</module>
 	</modules>
 
 	<build>
@@ -392,19 +393,40 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
+<!--  				<plugin>
+         <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <descriptors>
+              <descriptor>src/assembly/bin.xml</descriptor>
+            </descriptors>
+          </configuration>
+        </plugin> -->
+			</plugins>
+		</pluginManagement>
+	</build>
+<profiles>
+<profile>
+<id>deploy</id>
+<build>
+<plugins>
 				<plugin>
 					<groupId>org.wildfly.plugins</groupId>
 					<artifactId>wildfly-maven-plugin</artifactId>
 					<version>1.1.0.Alpha8</version>
 					<configuration>
+						<!-- Set to true if you want the deployment to be skipped, otherwise false(default). -->
 						<skip>true</skip>
+						<!-- If force mode is disabled, the deploy goal will cause a build failure if the application being deployed already exists. Default is true. -->
 						<force>true</force>
 						<hostname>localhost</hostname>
 						<username>test</username>
 						<password>password</password>
+					<name>trade-app.war</name>
 					</configuration>
 				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+</plugins>
+</build>
+</profile>
+</profiles>
 </project>

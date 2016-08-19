@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>distribution</artifactId>
+	<packaging>war</packaging>
+	<name>Trade Distribution Application</name>
+
+	<dependencies>
+		<!-- Trade Core Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Trade Stock Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>stock</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Trade Forex Exchange Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>fx</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Trade Cashing Application -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>cashing</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<parent>
+		<groupId>com.akmans.trade</groupId>
+		<artifactId>trade-app</artifactId>
+		<version>${project.parent.version}</version>
+	</parent>
+ <profiles>
+<profile>
+<id>deploy</id>
+	<build>
+		<finalName>trade-app</finalName>
+		<plugins>
+		<plugin><!-- don't pack the war  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <phase>none</phase>
+                    </execution>
+                    </executions>
+                    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>war-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly/war.xml</descriptor>
+					</descriptors>
+				</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<!-- Set to true if you want the deployment to be skipped, otherwise false(default). -->
+					<skip>false</skip>
+				</configuration>
+				<executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
+		</plugins>
+	</build>
+</profile>
+ <profile>
+ <id>console</id>
+	<build>
+		<finalName>trade-app</finalName>
+		<plugins>
+		<plugin><!-- don't pack the war  -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <phase>none</phase>
+                    </execution>
+                    </executions>
+                    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>console-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly/console.xml</descriptor>
+					</descriptors>
+				</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	</profile>
+</profiles>
+</project>
