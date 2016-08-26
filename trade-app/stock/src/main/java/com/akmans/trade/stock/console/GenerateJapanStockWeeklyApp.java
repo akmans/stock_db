@@ -40,7 +40,7 @@ public class GenerateJapanStockWeeklyApp {
 			context.refresh();
 			// Date process
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			Date endDate = formatter.parse(args[0] + "-12-31");
+			Date endDate = formatter.parse(args[0] + "-07-31");
 			Calendar calendar = new GregorianCalendar(Integer.valueOf(args[0]), 0, 1);
 
 			while (calendar.getTime().compareTo(endDate) <= 0) {

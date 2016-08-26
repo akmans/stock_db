@@ -2,9 +2,9 @@ package com.akmans.trade.cashing.web.form;
 
 import java.io.Serializable;
 
-//import javax.validation.constraints.Min;
-//import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.akmans.trade.core.web.form.AbstractSimpleForm;
 
@@ -12,12 +12,11 @@ public class SpecialItemForm extends AbstractSimpleForm implements Serializable 
 	private static final long serialVersionUID = 1L;
 
 	/** code. */
-	// @NotNull(message="{form.specialitemform.code.notnull}")
-	// @Min(value = 1, message="{form.specialitemform.code.min}")
 	private Integer code;
 
 	/** name. */
-	@Size(min = 1, max = 30, message = "{form.specialitemform.code.name}")
+	@NotEmpty
+	@Size(min = 1, max = 30)
 	private String name;
 
 	/**

@@ -29,7 +29,7 @@
 			th:unless="${#strings.isEmpty(message)}">
 			<div th:text="${message}">メッセージはここに表示されます。</div>
 		</div>
-		<div id="search-area" th:include="specialdetail/query-form :: form">Search
+		<div id="search-area" th:include="cashing/specialdetail/query-form :: form">Search
 			Area</div>
 		<div id="result-area">
 			<div th:fragment="result-area" th:remove="tag">

@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
-//import javax.validation.constraints.Min;
-//import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.akmans.trade.core.web.form.AbstractSimpleForm;
 
@@ -14,24 +14,23 @@ public class SpecialDetailEntryForm extends AbstractSimpleForm implements Serial
 	private static final long serialVersionUID = 1L;
 
 	/** code. */
-	// @NotNull(message="{form.specialdetailform.code.notnull}")
-	// @Min(value = 1, message="{form.specialdetailform.code.min}")
 	private Long code;
 
-	@NotNull(message = "{form.specialdetailform.registdate.notnull}")
+	@NotNull
 	private Date registDate;
 
 	/** name. */
-	@Size(min = 1, max = 30, message = "{form.specialdetailform.code.name}")
+	@NotEmpty
+	@Size(min = 1, max = 30)
 	private String name;
 
-	@Size(min = 1, max = 300, message = "{form.specialdetailform.code.detail}")
+	@Size(min = 0, max = 30)
 	private String detail;
 
-	@NotNull(message = "{form.specialdetailform.amount.notnull}")
+	@NotNull
 	private Long amount;
 
-	@NotNull(message = "{form.specialdetailform.itemcode.notnull}")
+	@NotNull
 	private Integer itemCode;
 
 	private String itemName;
