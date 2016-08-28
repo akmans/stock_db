@@ -28,7 +28,7 @@ import com.akmans.trade.core.enums.RunningMode;
 		"com.akmans.trade.*.console.springbatch.listener", "com.akmans.trade.*.console.springbatch.processor",
 		"com.akmans.trade.*.console.springbatch.writer", "com.akmans.trade.*.console.springbatch.runner",
 		"com.akmans.trade.*.console.jobconfig" })
-@Import({ TradeCoreConfig.class })
+@Import({TradeCoreConfig.class })
 @EnableScheduling
 public class LauncherConfig {
 

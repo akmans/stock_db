@@ -12,17 +12,12 @@ import javax.mail.internet.MimeMessage;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.service.MessageService;
 
 @Component
-@PropertySources({ @PropertySource(Constants.SMTP_PROPERITES_FILE_PATH),
-		@PropertySource(Constants.ENVIRONMENT_PROPERITES_FILE_PATH) })
 public class MailUtil {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FileUtil.class);

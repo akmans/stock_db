@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<mst_calendar calendar="cn" holiday="10" regist_at="2015-01-11" description="Test CN Calendar" created_by="system" updated_by="system" />
+</dataset>

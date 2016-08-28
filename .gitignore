@@ -4,4 +4,6 @@
 **.project
 **/.settings/**
 **.DS_Store
-**environment.properties
+**development.properties
+**production.properties
+**test-config.properties

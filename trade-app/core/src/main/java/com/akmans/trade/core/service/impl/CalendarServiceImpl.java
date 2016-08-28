@@ -12,9 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -76,11 +73,6 @@ public class CalendarServiceImpl implements CalendarService {
 		em.close();
 		return count > 0 ? new PageImpl<MstCalendar>(list, dto.getPageable(), count)
 				: new PageImpl<MstCalendar>(new ArrayList<MstCalendar>(), dto.getPageable(), 0);
-	}
-
-	public Page<MstCalendar> findAll(Pageable pageable) {
-		Pageable pg = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.ASC, "code");
-		return mstCalendarRepository.findAll(pg);
 	}
 
 	public MstCalendar findOne(Long code) throws TradeException {

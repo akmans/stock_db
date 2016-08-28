@@ -20,7 +20,7 @@ import com.akmans.trade.core.utils.DateUtil;
 import com.akmans.trade.core.utils.FileUtil;
 
 @Component
-@PropertySource(Constants.ENVIRONMENT_PROPERITES_FILE_PATH)
+//@PropertySource(Constants.ENVIRONMENT_PROPERITES_FILE_PATH)
 public class JapanInstrumentDownloadExecution extends StepExecutionListenerSupport implements Tasklet {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(JapanInstrumentImportExecution.class);

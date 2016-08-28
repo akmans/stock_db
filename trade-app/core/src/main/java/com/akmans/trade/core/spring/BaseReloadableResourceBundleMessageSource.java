@@ -18,11 +18,6 @@ public class BaseReloadableResourceBundleMessageSource extends ReloadableResourc
 
 	private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-	// private final Charset encoding = Charset.forName("UTF-8");
-
-	// @Autowired
-	// private Environment environment;
-
 	/**
 	 * Returns the resource bundle corresponding to the given locale.
 	 */
@@ -33,17 +28,10 @@ public class BaseReloadableResourceBundleMessageSource extends ReloadableResourc
 
 	@Override
 	public void afterPropertiesSet() {
-		// setBasename("classpath*:/" +
-		// environment.getProperty("spring.messages.basename", "messages"));
+		// Set base names.
 		setBasenames(Constants.MESSAGE_SOURCE_BASE_NAMES);
-		// setDefaultEncoding(environment.getProperty("spring.messages.encoding",
-		// encoding.name()));
-		// setCacheSeconds(environment.getProperty("spring.messages.cache-seconds",
-		// int.class, -1));
+		// Set cache seconds.
 		setCacheSeconds(3600);
-		// setFallbackToSystemLocale(
-		// environment.getProperty("spring.messages.fallback-to-system-locale",
-		// boolean.class, true));
 	}
 
 	@Override

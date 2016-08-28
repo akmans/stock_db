@@ -20,13 +20,12 @@
 		<logback.version>1.0.13</logback.version>
 		<jcl-over-slf4j.version>1.7.5</jcl-over-slf4j.version>
 		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
-		<HikariCP.version>2.4.3</HikariCP.version>
 		<hibernate-entitymanager.version>4.3.8.Final</hibernate-entitymanager.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
 		<thymeleaf-layout-dialect.version>1.2.1</thymeleaf-layout-dialect.version>
 		<thymeleaf-extras-springsecurity4.version>2.1.2.RELEASE</thymeleaf-extras-springsecurity4.version>
 		<thymeleaf-extras-java8time.version>2.1.0.RELEASE</thymeleaf-extras-java8time.version>
-		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<usertype.extended.version>3.2.0.GA</usertype.extended.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<javax.servlet.jsp-api.version>2.2.1</javax.servlet.jsp-api.version>
@@ -42,6 +41,7 @@
 		<assertj-core.version>3.2.0</assertj-core.version>
 		<dbunit.version>2.5.1</dbunit.version>
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
+		<hsqldb.version>2.0.0</hsqldb.version>
 	</properties>
 
 	<dependencies>
@@ -118,9 +118,12 @@
 		</dependency>
 
 		<!-- JDBC Data Access Library (depends on spring-core, spring-beans, spring-context, 
-			spring-tx) Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*) 
-			<dependency> <groupId>org.springframework</groupId> <artifactId>spring-jdbc</artifactId> 
-			<version>${spring.version}</version> </dependency> -->
+			spring-tx) Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 
 		<!-- Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA and 
 			iBatis. (depends on spring-core, spring-beans, spring-context, spring-tx) 
@@ -231,18 +234,17 @@
 		<!-- Database (H2) <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
 			<version>1.4.185</version> </dependency> -->
 
-		<!-- DataSource (HikariCP) -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${HikariCP.version}</version>
-		</dependency>
-
 		<!-- JPA Provider (Hibernate) -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate-entitymanager.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
 		</dependency>
 
 		<dependency>
@@ -284,12 +286,6 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-java8time</artifactId>
 			<version>${thymeleaf-extras-java8time.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>${hibernate-validator.version}</version>
 		</dependency>
 
 		<!-- jstl <dependency> <groupId>javax.servlet</groupId> <artifactId>jstl</artifactId> 
@@ -384,7 +380,8 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Use DbUnit for initializing our database into a known state before each test case is invoked. -->
+		<!-- Use DbUnit for initializing our database into a known state before 
+			each test case is invoked. -->
 		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
