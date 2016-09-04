@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<mst_market code="10" name="The 10 Market" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_market code="11" name="The 11 Market" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<mst_scale code="1" name="The 1 Scale" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_scale code="2" name="The 2 Scale" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<mst_sector17 code="17" name="The 17 Sector17" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_sector17 code="18" name="The 18 Sector17" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<mst_sector33 code="33" name="The 33 Sector33" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_sector33 code="34" name="The 34 Sector33" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<mst_instrument code="1000" name="The 1000 Instrument" sector33_code="33" sector17_code="17" scale_code="1" market_code="10" onboard="Y" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_instrument code="1001" name="The 1001 Instrument" sector33_code="34" sector17_code="18" scale_code="2" market_code="11" onboard="N" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-01" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-01" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-02" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-02" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-03" opening_price="200" high_price="400" low_price="100" finish_price="299" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-03" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-04" opening_price="200" high_price="400" low_price="99"  finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-04" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-05" opening_price="200" high_price="405" low_price="100" finish_price="298" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-05" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-06" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-06" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-07" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-07" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-08" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-08" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1000" regist_date="2015-01-09" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock code="1001" regist_date="2015-01-09" opening_price="201" high_price="401" low_price="101" finish_price="301" turnover="2001" trading_value="30001" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

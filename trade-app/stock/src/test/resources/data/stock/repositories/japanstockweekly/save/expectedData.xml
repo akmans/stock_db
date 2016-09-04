@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_japan_stock_weekly code="1000" regist_date="2015-01-01" opening_price="200" high_price="400" low_price="100" finish_price="300" turnover="2000" trading_value="30000" created_by="system" updated_by="system" />
+</dataset>

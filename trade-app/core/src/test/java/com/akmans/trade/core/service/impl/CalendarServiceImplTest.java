@@ -34,7 +34,7 @@ public class CalendarServiceImplTest {
 	private CalendarService calendarService;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/service/calendar/findpagenfindone/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/service/calendar/find/input.xml")
 	public void testFindPage() throws Exception {
 		// Create search criteria.
 		CalendarQueryDto criteria1 = new CalendarQueryDto();

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-01" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_2" process_date="2015-01-02" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_3" process_date="2015-01-03" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_4" process_date="2015-01-04" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_5" process_date="2015-01-05" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_6" process_date="2015-01-06" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_7" process_date="2015-01-07" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_8" process_date="2015-01-08" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_9" process_date="2015-01-09" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-02" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-03" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-04" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-05" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-06" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-07" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-08" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_japan_stock_log job_id="JOB_ID_1" process_date="2015-01-01" status="COMPLETED" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_japan_stock_log job_id="JOB_ID_2" process_date="2015-01-02" status="EXECUTING" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

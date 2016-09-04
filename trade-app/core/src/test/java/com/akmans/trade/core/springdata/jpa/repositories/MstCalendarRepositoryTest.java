@@ -47,7 +47,7 @@ public class MstCalendarRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/repositories/calendar/findallncountnfindone/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/repositories/calendar/find/input.xml")
 	public void testFindAllnCountnFindOne() throws Exception {
 		// Retrieve first page data from DB.
 		Page<MstCalendar> calendars1 = calendarRepository.findAll(new PageRequest(0, 10));

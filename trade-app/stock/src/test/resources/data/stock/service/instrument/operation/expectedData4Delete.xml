@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<mst_instrument code="1000" name="The 1000 Instrument" sector33_code="33" sector17_code="17" scale_code="1" market_code="10" onboard="Y" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

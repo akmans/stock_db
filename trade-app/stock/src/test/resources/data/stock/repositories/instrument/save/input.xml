@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<mst_market code="10" name="The 10 Market" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_scale code="1" name="The 1 Scale" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_sector17 code="17" name="The 17 Sector17" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<mst_sector33 code="33" name="The 33 Sector33" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

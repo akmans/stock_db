@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<mst_market />
+	<mst_scale />
+	<mst_sector17 />
+	<mst_sector33 />
+	<mst_instrument />
+	<trn_japan_stock_log />
+	<trn_japan_stock />
+	<trn_japan_stock_weekly />
+	<trn_japan_stock_monthly />
+</dataset>

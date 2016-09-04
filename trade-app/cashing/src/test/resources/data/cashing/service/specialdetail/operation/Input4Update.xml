@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_special_item code="100" name="cn" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_item code="200" name="jp" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="1" regist_date="2015-01-02" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+</dataset>

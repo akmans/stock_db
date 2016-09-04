@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_special_item code="100" name="cn0" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_item code="200" name="jp1" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="0" regist_date="2015-01-01" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="1" regist_date="2015-01-01" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="2" regist_date="2015-01-02" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="3" regist_date="2015-01-02" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="4" regist_date="2015-01-03" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="5" regist_date="2015-01-03" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="6" regist_date="2015-01-04" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="7" regist_date="2015-01-04" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="8" regist_date="2015-01-05" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="9" regist_date="2015-01-05" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="10" regist_date="2015-01-06" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="11" regist_date="2015-01-06" name="jp" detail="1 detail" amount="12" item_code="200" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_special_detail code="12" regist_date="2015-01-07" name="cn" detail="0 detail" amount="11" item_code="100" created_by="user1" created_date="2015-01-01" updated_by="user2" updated_date="2015-01-02" />
+	<trn_special_detail code="13" regist_date="2015-01-07" name="jp" detail="1 detail" amount="12" item_code="100" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+</dataset>
