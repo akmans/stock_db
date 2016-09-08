@@ -27,7 +27,12 @@ import com.akmans.trade.core.enums.RunningMode;
 @ComponentScan(basePackages = { "com.akmans.trade.*.console.springbatch.execution",
 		"com.akmans.trade.*.console.springbatch.listener", "com.akmans.trade.*.console.springbatch.processor",
 		"com.akmans.trade.*.console.springbatch.writer", "com.akmans.trade.*.console.springbatch.runner",
-		"com.akmans.trade.*.console.jobconfig" })
+		"com.akmans.trade.*.console.jobconfig",
+		// new class path
+		"com.akmans.trade.*.springbatch.execution",
+		"com.akmans.trade.*.springbatch.listener", "com.akmans.trade.*.springbatch.processor",
+		"com.akmans.trade.*.springbatch.writer", "com.akmans.trade.*.springbatch.runner",
+		"com.akmans.trade.*.jobconfig"})
 @Import({TradeCoreConfig.class })
 @EnableScheduling
 public class LauncherConfig {

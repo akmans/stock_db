@@ -12,33 +12,33 @@ where step_execution_id in
 (select step_execution_id from batch_step_execution
  where job_execution_id in
  (select job_execution_id from batch_job_execution
-  where job_instance_id >= 6626));
+  where job_instance_id >= 3306));
 
 --2 delete batch_step_execution
 delete from batch_step_execution
  where job_execution_id in
  (select job_execution_id from batch_job_execution
-  where job_instance_id >= 6626);
+  where job_instance_id >= 3306);
 
 --3 delete batch_job_execution_params
 delete from batch_job_execution_params
  where job_execution_id in
  (select job_execution_id from batch_job_execution
-  where job_instance_id >= 6626);
+  where job_instance_id >= 3306);
 
 --4 delete batch_job_execution_context
 delete from batch_job_execution_context
  where job_execution_id in
  (select job_execution_id from batch_job_execution
-  where job_instance_id >= 6626);
+  where job_instance_id >= 3306);
 
 --5 delete batch_job_execution
 delete from batch_job_execution
-where job_instance_id >= 6626;
+where job_instance_id >= 3306;
 
 --6 delete batch_job_instance
 delete from batch_job_instance
-where job_instance_id >= 6626;
+where job_instance_id >= 3306;
 
 -- Patch October Data
 select count(*)

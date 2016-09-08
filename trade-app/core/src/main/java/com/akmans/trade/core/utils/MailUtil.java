@@ -20,7 +20,7 @@ import com.akmans.trade.core.service.MessageService;
 @Component
 public class MailUtil {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FileUtil.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MailUtil.class);
 
 	@Autowired
 	private Environment env;

@@ -11,6 +11,14 @@
 			<artifactId>trade-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- Trade Core Application(Test) -->
+		<dependency>
+			<groupId>com.akmans.trade</groupId>
+			<artifactId>trade-core</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<parent>

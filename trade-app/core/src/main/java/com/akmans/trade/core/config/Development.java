@@ -24,7 +24,8 @@ import com.akmans.trade.core.springdata.jpa.config.RepositoryConfig;
 @Profile("development")
 @PropertySources({ @PropertySource(Constants.JDBC_PROPERITES_FILE_PATH),
 		@PropertySource(Constants.DEVELOPMENT_PROPERITES_FILE_PATH),
-		@PropertySource(Constants.HIBERNATE_PROPERITES_FILE_PATH) })
+		@PropertySource(Constants.HIBERNATE_PROPERITES_FILE_PATH),
+		@PropertySource(Constants.SMTP_PROPERITES_FILE_PATH) })
 @Import({ AopConfiguration.class, RepositoryConfig.class })
 public class Development {
 

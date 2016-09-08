@@ -13,7 +13,7 @@ import com.akmans.trade.core.spring.BaseReloadableResourceBundleMessageSource;
 import com.akmans.trade.core.springdata.jpa.config.RepositoryConfig;
 
 @Configuration
-@ComponentScan(basePackages = { "com.akmans.trade.*.service.impl", "com.akmans.trade.core.utils" })
+@ComponentScan(basePackages = { "com.akmans.trade.*.service.impl", "com.akmans.trade.*.utils" })
 @Import({ Production.class, Development.class, AopConfiguration.class, RepositoryConfig.class })
 public class TradeCoreConfig {
 
