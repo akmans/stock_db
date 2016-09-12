@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.456" bid_price="10" ask_price="20" mid_price="100" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:13.456" bid_price="11" ask_price="21" mid_price="99" processed_flag="1" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 02:02:03.454" bid_price="12" ask_price="22" mid_price="112" processed_flag="3" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 02:02:03.455" bid_price="12" ask_price="22" mid_price="111" processed_flag="3" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 02:02:03.456" bid_price="12" ask_price="22" mid_price="113" processed_flag="3" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 07:02:03.455" bid_price="13" ask_price="23" mid_price="98" processed_flag="4" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 07:02:03.456" bid_price="14" ask_price="24" mid_price="114" processed_flag="5" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-03 01:02:03.455" bid_price="15" ask_price="25" mid_price="97" processed_flag="6" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-03 01:02:03.456" bid_price="16" ask_price="26" mid_price="115" processed_flag="7" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-09 01:02:03.455" bid_price="17" ask_price="27" mid_price="96" processed_flag="8" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-09 01:02:03.456" bid_price="18" ask_price="28" mid_price="116" processed_flag="9" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-02-02 01:02:03.455" bid_price="19" ask_price="29" mid_price="95" processed_flag="10" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-02-02 01:02:03.456" bid_price="20" ask_price="30" mid_price="110" processed_flag="11" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+</dataset>

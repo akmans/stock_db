@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.enums.FXJob;
-import com.akmans.trade.core.utils.DateUtil;
 import com.akmans.trade.core.utils.MailUtil;
 
 @Component
@@ -26,9 +25,12 @@ public class FXJobExecutionListener implements JobExecutionListener {
 
 	public void afterJob(JobExecution jobExecution) {
 		String jobId = jobExecution.getJobParameters().getString("jobId");
-		Date processDate = jobExecution.getJobParameters().getDate("processDate");
+		// Get currency pair from job parameters.
+		String currencyPair = jobExecution.getJobParameters().getString("currencyPair");
+		// Get processed month from job parameters.
+		String processedMonth = jobExecution.getJobParameters().getString("processedMonth");
 		String subject = FXJob.get(jobId).getLabel() + " : " + jobExecution.getExitStatus().getExitCode() + "["
-				+ DateUtil.formatDate(processDate, "yyyy-MM-dd") + "]";
+				+ currencyPair + "#" + processedMonth + "]";
 		String body = "";
 		long diff = new Date().getTime() - beginTime.getTime();
 		long diffSeconds = diff / 1000 % 60;
@@ -44,6 +46,11 @@ public class FXJobExecutionListener implements JobExecutionListener {
 			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Processed Rows: " + processedRows + "\n";
 			body = body + "Skipped Rows: " + skippedRows + "\n";
+			body = body + "Inserted Rows: " + insertedRows + "\n";
+			body = body + "Updated Rows: " + updatedRows + "\n";
+		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)) {
+			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
+			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
 		}

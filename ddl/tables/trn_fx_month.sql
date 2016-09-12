@@ -10,6 +10,8 @@ CREATE TABLE trn_fx_month
   high_price numeric NOT NULL,
   low_price numeric NOT NULL,
   finish_price numeric NOT NULL,
+--  av_opening_price numeric NOT NULL,
+--  av_finish_price numeric NOT NULL,
   created_date timestamp with time zone,
   updated_date timestamp with time zone,
   created_by character varying(20),

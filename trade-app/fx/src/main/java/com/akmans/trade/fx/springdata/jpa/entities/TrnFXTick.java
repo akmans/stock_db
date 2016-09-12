@@ -23,6 +23,9 @@ public class TrnFXTick extends AbstractEntity {
 	@Column(name = "mid_price")
 	private double midPrice;
 
+	@Column(name = "processed_flag")
+	private int processedFlag;
+
 	public void setTickKey(FXTickKey tickKey) {
 		this.tickKey = tickKey;
 	}
@@ -55,9 +58,18 @@ public class TrnFXTick extends AbstractEntity {
 		return this.midPrice;
 	}
 
+	public void setProcessedFlag(int processedFlag) {
+		this.processedFlag = processedFlag;
+	}
+
+	public int getProcessedFlag() {
+		return this.processedFlag;
+	}
+
 	@Override
 	public String toString() {
 		return this.getClass().getAnnotation(Table.class).name() + " [tickKey=[" + tickKey.toString() + "], bidPrice="
-				+ bidPrice + ", askPrice=" + askPrice + ", midPrice=" + midPrice + super.toString() + "]";
+				+ bidPrice + ", askPrice=" + askPrice + ", midPrice=" + midPrice + ", processedFlag=" + processedFlag
+				+ super.toString() + "]";
 	}
 }

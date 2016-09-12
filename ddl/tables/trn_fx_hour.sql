@@ -10,13 +10,15 @@ CREATE TABLE trn_fx_hour
   high_price numeric NOT NULL,
   low_price numeric NOT NULL,
   finish_price numeric NOT NULL,
+  av_opening_price numeric,
+  av_finish_price numeric,
   created_date timestamp with time zone,
   updated_date timestamp with time zone,
   created_by character varying(20),
   updated_by character varying(20)
 --  ,CONSTRAINT japan_stock_pkey PRIMARY KEY (currency_pair, regist_date),
 );
-
+--update trn_fx_tick set processed_flag=1, updated_by='system', updated_date=now() where currency_pair='usdjpy' and regist_date>='2009-05-01 00:00:00' and regist_date<'2009-05-02 00:00:00';
 -- USD/JPY
 CREATE TABLE child_fx_hour_usdjpy (
     CONSTRAINT pk_fx_hour_usdjpy PRIMARY KEY (currency_pair , regist_date),

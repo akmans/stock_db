@@ -1,0 +1,131 @@
+package com.akmans.trade.fx.springbatch.execution;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.listener.StepExecutionListenerSupport;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.akmans.trade.core.Constants;
+import com.akmans.trade.core.enums.FXType;
+import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.fx.service.FX6HourService;
+import com.akmans.trade.fx.service.FXHourService;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
+
+@Component
+public class FX6HourGenerateExecution extends StepExecutionListenerSupport implements Tasklet {
+
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FX6HourGenerateExecution.class);
+
+	private String currencyPair;
+
+	private String processedMonth;
+
+	@Autowired
+	private FXHourService fxHourService;
+
+	@Autowired
+	private FX6HourService fx6HourService;
+
+	private StepExecution stepExecution;
+
+	public void beforeStep(StepExecution stepExecution) {
+		this.stepExecution = stepExecution;
+		// Initialize inserted rows as 0.
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
+		// Initialize updated rows as 0.
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
+		JobParameters jobParameters = stepExecution.getJobParameters();
+		// Get currency pair from job parameters.
+		currencyPair = jobParameters.getString("currencyPair");
+		// Get processed month from job parameters.
+		processedMonth = jobParameters.getString("processedMonth");
+		logger.debug("The currencyPair is {}", currencyPair);
+		logger.debug("The processedMonth is {}", processedMonth);
+	}
+
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		// Get first hour.
+		ZonedDateTime currentDatetime = getFirst6HourOfMonth(processedMonth);
+		// Get end day.
+		ZonedDateTime endDay = currentDatetime.plusMonths(1);
+		// Inserted rows counter.
+		int insertedCnt = 0;
+		// updated rows counter.
+		int updatedCnt = 0;
+		// Loop all instruments.
+		while (currentDatetime.compareTo(endDay) < 0) {
+			// Retrieve weekly data.
+			TrnFX6Hour fx6Hour = (TrnFX6Hour)fxHourService
+					.generateFXPeriodData(FXType.SIXHOUR, currencyPair, currentDatetime);
+			// Continue to next instrument if no weekly data found.
+			if (fx6Hour == null) {
+				continue;
+			}
+			Optional<TrnFX6Hour> option = fx6HourService.findOne(fx6Hour.getTickKey());
+			// Do delete & insert if exist, or else do insert.
+			if (option.isPresent()) {
+				// Get the current data.
+				TrnFX6Hour current = option.get();
+				// Adapt all prices data.
+				current.setOpeningPrice(fx6Hour.getOpeningPrice());
+				current.setHighPrice(fx6Hour.getHighPrice());
+				current.setLowPrice(fx6Hour.getLowPrice());
+				current.setFinishPrice(fx6Hour.getFinishPrice());
+				// Copy all data.
+				BeanUtils.copyProperties(current, fx6Hour);
+				logger.debug("The updated data is {}", fx6Hour);
+				// Delete the current weekly data.
+				fx6HourService.operation(current, OperationMode.DELETE);
+				// Insert a new weekly data.
+				fx6HourService.operation(fx6Hour, OperationMode.NEW);
+				// Count up the updated rows counter.
+				updatedCnt++;
+			} else {
+				logger.debug("The inserted data is {}", fx6Hour);
+				// Insert a new weekly data.
+				fx6HourService.operation(fx6Hour, OperationMode.NEW);
+				// Count up the inserted rows counter.
+				insertedCnt++;
+			}
+			// Increment with 6 hour.
+			currentDatetime.plusHours(6);
+		}
+		// Save updated rows counter into job execution context.
+		countUpdatedRows(updatedCnt);
+		// Save inserted rows counter into job execution context.
+		countInsertedRows(insertedCnt);
+		return RepeatStatus.FINISHED;
+	}
+
+	private void countInsertedRows(int cnt) {
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + cnt);
+	}
+
+	private void countUpdatedRows(int cnt) {
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + cnt);
+	}
+
+	private ZonedDateTime getFirst6HourOfMonth(String processedMonth) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
+		LocalDateTime dateTime = LocalDateTime.parse(processedMonth + "01 00:00:00.000", formatter);
+		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
+		return result.truncatedTo(ChronoUnit.HOURS);
+	}
+}

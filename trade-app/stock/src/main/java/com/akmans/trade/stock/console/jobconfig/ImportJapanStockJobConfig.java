@@ -31,7 +31,7 @@ public class ImportJapanStockJobConfig {
 
 	@Bean
 	@StepScope
-	public FlatFileItemReader<CsvJapanStockDto> reader(@Value("#{jobExecutionContext['targetFile']}") String csv) {
+	public ItemReader<CsvJapanStockDto> japanStockReader(@Value("#{jobExecutionContext['targetFile']}") String csv) {
 		logger.info("csv =" + csv);
 		// flat file item reader (using an csv extractor)
 		FlatFileItemReader<CsvJapanStockDto> reader = new FlatFileItemReader<CsvJapanStockDto>();
@@ -64,9 +64,9 @@ public class ImportJapanStockJobConfig {
 	}
 
 	@Bean
-	public Step step2(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> reader,
+	public Step step2(StepBuilderFactory stepBuilderFactory, ItemReader<CsvJapanStockDto> japanStockReader,
 			JapanStockWriter writer, JapanStockConvertProcessor processor) {
-		return stepBuilderFactory.get("step2").<CsvJapanStockDto, TrnJapanStock> chunk(500).reader(reader)
+		return stepBuilderFactory.get("step2").<CsvJapanStockDto, TrnJapanStock> chunk(500).reader(japanStockReader)
 				.processor(processor).writer(writer).listener(processor).listener(writer).build();
 	}
 

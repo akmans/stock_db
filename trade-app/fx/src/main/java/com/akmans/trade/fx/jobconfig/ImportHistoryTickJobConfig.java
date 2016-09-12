@@ -35,7 +35,7 @@ public class ImportHistoryTickJobConfig {
 
 	@Bean
 	@StepScope
-	public FlatFileItemReader<CsvHistoryTickDto> reader(@Value("#{jobParameters['targetFile']}") String csv) {
+	public ItemReader<CsvHistoryTickDto> historyTickReader(@Value("#{jobParameters['targetFile']}") String csv) {
 		String fullPath = env.getRequiredProperty("truefx.folder") + "/" + csv;
 		logger.info("the processed csv file =" + fullPath);
 		// flat file item reader (using an csv extractor)
@@ -69,9 +69,9 @@ public class ImportHistoryTickJobConfig {
 	}
 
 	@Bean
-	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<CsvHistoryTickDto> reader,
+	public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<CsvHistoryTickDto> historyTickReader,
 			FXHistoryTickWriter writer, HistoryTickConvertProcessor processor) {
-		return stepBuilderFactory.get("step1").<CsvHistoryTickDto, FXTick> chunk(1000).reader(reader)
+		return stepBuilderFactory.get("step1").<CsvHistoryTickDto, FXTick> chunk(1000).reader(historyTickReader)
 				.processor(processor).writer(writer).listener(processor).listener(writer).build();
 	}
 }

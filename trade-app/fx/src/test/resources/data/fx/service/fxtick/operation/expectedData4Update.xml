@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.456" bid_price="1" ask_price="2" mid_price="10" processed_flag="1" updated_by="system" />
+</dataset>
