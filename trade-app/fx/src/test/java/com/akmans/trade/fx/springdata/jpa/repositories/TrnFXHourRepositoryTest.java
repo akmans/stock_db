@@ -22,7 +22,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.akmans.trade.core.config.TestConfig;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -34,54 +34,55 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class TrnFXTickRepositoryTest {
+public class TrnFXHourRepositoryTest {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXTickRepositoryTest.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXHourRepositoryTest.class);
 
 	@Autowired
-	private TrnFXTickRepository fxTickRepository;
+	private TrnFXHourRepository fxHourRepository;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxTick/delete/input.xml")
-	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/delete/expectedData.xml", table = "trn_fx_tick")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxhour/delete/input.xml")
+	@ExpectedDatabase(value = "/data/fx/repositories/fxhour/delete/expectedData.xml", table = "trn_fx_hour")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
-		// New FXTickKey
+		// New FXHourKey
 		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("audjpy");
+		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// New Calendar data.
-		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(key);
+		Optional<TrnFXHour> fxHour = fxHourRepository.findOne(key);
+		logger.debug("The FXHour is {}.", fxHour.get());
 		// New Calendar data.
-		fxTickRepository.delete(fxTick.get());
+		fxHourRepository.delete(fxHour.get());
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxTick/find/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxhour/find/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testFind() throws Exception {
 		// Retrieve first page data from DB.
-		Page<TrnFXTick> fxTicks1 = fxTickRepository.findAll(new PageRequest(0, 10));
-		assertEquals(18, fxTicks1.getTotalElements());
-		assertEquals(10, fxTicks1.getNumberOfElements());
-		assertEquals(2, fxTicks1.getTotalPages());
+		Page<TrnFXHour> fxHours1 = fxHourRepository.findAll(new PageRequest(0, 10));
+		assertEquals(15, fxHours1.getTotalElements());
+		assertEquals(10, fxHours1.getNumberOfElements());
+		assertEquals(2, fxHours1.getTotalPages());
 		// Retrieve second page data from DB.
-		Page<TrnFXTick> fxTicks2 = fxTickRepository.findAll(new PageRequest(1, 10));
-		assertEquals(18, fxTicks2.getTotalElements());
-		assertEquals(8, fxTicks2.getNumberOfElements());
-		assertEquals(2, fxTicks2.getTotalPages());
+		Page<TrnFXHour> fxHours2 = fxHourRepository.findAll(new PageRequest(1, 10));
+		assertEquals(15, fxHours2.getTotalElements());
+		assertEquals(5, fxHours2.getNumberOfElements());
+		assertEquals(2, fxHours2.getTotalPages());
 
 		// Retrieve all data from DB.
-		List<TrnFXTick> fxTicks = fxTickRepository.findAll();
-		assertEquals(18, fxTicks.size());
+		List<TrnFXHour> fxHours = fxHourRepository.findAll();
+		assertEquals(15, fxHours.size());
 
 		// Count all data from DB.
-		Long count = fxTickRepository.count();
-		assertEquals(18, count.longValue());
+		Long count = fxHourRepository.count();
+		assertEquals(15, count.longValue());
 
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -92,53 +93,57 @@ public class TrnFXTickRepositoryTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// Get one from DB by key.
-		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(key);
+		Optional<TrnFXHour> fxHour = fxHourRepository.findOne(key);
 		// Check result.
-		assertEquals(true, fxTick.isPresent());
+		assertEquals(true, fxHour.isPresent());
 		key.setCurrencyPair("nzdjpy");
 		// Get one from DB by key.
-		fxTick = fxTickRepository.findOne(key);
+		fxHour = fxHourRepository.findOne(key);
 		// Check result.
-		assertEquals(false, fxTick.isPresent());
+		assertEquals(false, fxHour.isPresent());
 	}
 
 	@Test
-	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/save/expectedData.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
+	@ExpectedDatabase(value = "/data/fx/repositories/fxhour/save/expectedData.xml", table = "trn_fx_hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
+		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
-		// New TrnFXTick data.
-		TrnFXTick fxTick = new TrnFXTick();
-		fxTick.setTickKey(key);
-		fxTick.setAskPrice(1000);
-		fxTick.setBidPrice(2000);
-		fxTick.setMidPrice(1500);
-		fxTick.setProcessedFlag(1);
+		// New TrnFXHour data.
+		TrnFXHour fxHour = new TrnFXHour();
+		fxHour.setTickKey(key);
+		fxHour.setOpeningPrice(2000);
+		fxHour.setHighPrice(4000);
+		fxHour.setLowPrice(1000);
+		fxHour.setFinishPrice(3000);
+		fxHour.setAvOpeningPrice(1500);
+		fxHour.setAvFinishPrice(2500);
 		// Do save.
-		fxTick = fxTickRepository.save(fxTick);
+		fxHour = fxHourRepository.save(fxHour);
 		// Check result.
-		assertNotNull(fxTick.getCreatedBy());
+		assertNotNull(fxHour.getCreatedBy());
 
 		// Test update.
-		fxTick.setAskPrice(200);
-		fxTick.setBidPrice(100);
-		fxTick.setMidPrice(150);
-		fxTick.setProcessedFlag(0);
+		fxHour.setOpeningPrice(200);
+		fxHour.setHighPrice(400);
+		fxHour.setLowPrice(100);
+		fxHour.setFinishPrice(300);
+		fxHour.setAvOpeningPrice(150);
+		fxHour.setAvFinishPrice(250);
 		// Do save.
-		fxTick = fxTickRepository.save(fxTick);
+		fxHour = fxHourRepository.save(fxHour);
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxhour/findinperiod/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
-	public void testFindFXTickInPeriod() throws Exception {
+	public void testFindFXHourInPeriod() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
@@ -148,23 +153,23 @@ public class TrnFXTickRepositoryTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// Get one from DB.
-		List<TrnFXTick> ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusHours(1));
+		List<TrnFXHour> ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusHours(1));
 		// Check result.
 		assertEquals(4, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusHours(6));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusHours(6));
 		// Check result.
 		assertEquals(6, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusDays(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusDays(1));
 		// Check result.
 		assertEquals(8, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusWeeks(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusWeeks(1));
 		// Check result.
 		assertEquals(10, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusMonths(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusMonths(1));
 		// Check result.
 		assertEquals(12, ticks.size());
 	}

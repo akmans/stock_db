@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 	<trn_fx_tick />
+	<trn_fx_hour />
+	<trn_fx_6hour />
 </dataset>

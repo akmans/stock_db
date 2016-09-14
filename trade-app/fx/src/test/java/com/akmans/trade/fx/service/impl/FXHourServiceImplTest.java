@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,16 +21,14 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
-import com.akmans.trade.fx.service.FXTickService;
+import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
-import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXTickRepositoryTest;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -40,17 +39,17 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class FXTickServiceImplTest {
+public class FXHourServiceImplTest {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXTickRepositoryTest.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXHourServiceImplTest.class);
 
 	private static final double DELTA = 1e-15;
 
 	@Autowired
-	private FXTickService fxTickService;
+	private FXHourService fxHourService;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/find/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/find/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testFind() throws Exception {
 		// New FXTickKey
@@ -62,27 +61,20 @@ public class FXTickServiceImplTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// Get one from DB by key.
-		TrnFXTick tick = fxTickService.findOne(key);
+		Optional<TrnFXHour> hour = fxHourService.findOne(key);
 		// Check result.
-		assertEquals("usdjpy", tick.getTickKey().getCurrencyPair());
-		assertEquals(100, tick.getBidPrice(), DELTA);
-		assertEquals(200, tick.getAskPrice(), DELTA);
-		assertEquals(150, tick.getMidPrice(), DELTA);
-		assertEquals(0, tick.getProcessedFlag(), DELTA);
-
-		// Exist from DB by key.
-		boolean exist = fxTickService.exist(key);
-		// Check result.
-		assertTrue(exist);
-		key.setCurrencyPair("nzdjpy");
-		// Exist from DB by key.
-		exist = fxTickService.exist(key);
-		// Check result.
-		assertEquals(false, exist);
+		assertTrue(hour.isPresent());
+		assertEquals("usdjpy", hour.get().getTickKey().getCurrencyPair());
+		assertEquals(200, hour.get().getOpeningPrice(), DELTA);
+		assertEquals(400, hour.get().getHighPrice(), DELTA);
+		assertEquals(100, hour.get().getLowPrice(), DELTA);
+		assertEquals(300, hour.get().getFinishPrice(), DELTA);
+		assertEquals(150, hour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(250, hour.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/generate/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/generate/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testGenerateFXPeriodData() throws Exception {
 		// New FXTickKey
@@ -94,53 +86,49 @@ public class FXTickServiceImplTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// Get one from DB.
-		AbstractFXEntity hour = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", result);
+		AbstractFXEntity hour = fxHourService.generateFXPeriodData(FXType.HOUR, "usdjpy", result);
 		// Check result.
-		assertEquals(true, hour instanceof TrnFXHour);
-		assertEquals(100, hour.getOpeningPrice(), DELTA);
-		assertEquals(112, hour.getHighPrice(), DELTA);
-		assertEquals(99, hour.getLowPrice(), DELTA);
-		assertEquals(111, hour.getFinishPrice(), DELTA);
+		assertNull(hour);
 
 		// Get one from DB.
-		AbstractFXEntity sixHour = fxTickService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", result);
+		AbstractFXEntity sixHour = fxHourService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", result);
 		// Check result.
 		assertEquals(true, sixHour instanceof TrnFX6Hour);
-		assertEquals(100, sixHour.getOpeningPrice(), DELTA);
-		assertEquals(113, sixHour.getHighPrice(), DELTA);
-		assertEquals(98, sixHour.getLowPrice(), DELTA);
-		assertEquals(98, sixHour.getFinishPrice(), DELTA);
+		assertEquals(10, sixHour.getOpeningPrice(), DELTA);
+		assertEquals(23, sixHour.getHighPrice(), DELTA);
+		assertEquals(99, sixHour.getLowPrice(), DELTA);
+		assertEquals(4, sixHour.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity day = fxTickService.generateFXPeriodData(FXType.DAY, "usdjpy", result);
+		AbstractFXEntity day = fxHourService.generateFXPeriodData(FXType.DAY, "usdjpy", result);
 		// Check result.
 		assertEquals(true, day instanceof TrnFXDay);
-		assertEquals(100, day.getOpeningPrice(), DELTA);
-		assertEquals(114, day.getHighPrice(), DELTA);
-		assertEquals(97, day.getLowPrice(), DELTA);
-		assertEquals(97, day.getFinishPrice(), DELTA);
+		assertEquals(10, day.getOpeningPrice(), DELTA);
+		assertEquals(25, day.getHighPrice(), DELTA);
+		assertEquals(99, day.getLowPrice(), DELTA);
+		assertEquals(6, day.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity week = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", result);
+		AbstractFXEntity week = fxHourService.generateFXPeriodData(FXType.WEEK, "usdjpy", result);
 		// Check result.
 		assertEquals(true, week instanceof TrnFXWeek);
-		assertEquals(100, week.getOpeningPrice(), DELTA);
-		assertEquals(115, week.getHighPrice(), DELTA);
-		assertEquals(96, week.getLowPrice(), DELTA);
-		assertEquals(96, week.getFinishPrice(), DELTA);
+		assertEquals(10, week.getOpeningPrice(), DELTA);
+		assertEquals(27, week.getHighPrice(), DELTA);
+		assertEquals(99, week.getLowPrice(), DELTA);
+		assertEquals(8, week.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity month = fxTickService.generateFXPeriodData(FXType.MONTH, "usdjpy", result);
+		AbstractFXEntity month = fxHourService.generateFXPeriodData(FXType.MONTH, "usdjpy", result);
 		// Check result.
 		assertEquals(true, month instanceof TrnFXMonth);
-		assertEquals(100, month.getOpeningPrice(), DELTA);
-		assertEquals(116, month.getHighPrice(), DELTA);
-		assertEquals(95, month.getLowPrice(), DELTA);
-		assertEquals(95, month.getFinishPrice(), DELTA);
+		assertEquals(10, month.getOpeningPrice(), DELTA);
+		assertEquals(29, month.getHighPrice(), DELTA);
+		assertEquals(99, month.getLowPrice(), DELTA);
+		assertEquals(10, month.getFinishPrice(), DELTA);
 	}
 
 	@Test
-	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Insert.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
+	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Insert.xml", table = "trn_fx_hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Insert() throws Exception {
 		// New FXTickKey
@@ -152,19 +140,21 @@ public class FXTickServiceImplTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// Get TrnFXTick data from DB.
-		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
-		tick.setBidPrice(10);
-		tick.setAskPrice(20);
-		tick.setMidPrice(100);
-		tick.setProcessedFlag(0);
+		TrnFXHour fxHour = new TrnFXHour();
+		fxHour.setTickKey(key);
+		fxHour.setOpeningPrice(10);
+		fxHour.setHighPrice(20);
+		fxHour.setLowPrice(100);
+		fxHour.setFinishPrice(0);
+		fxHour.setAvOpeningPrice(11);
+		fxHour.setAvFinishPrice(12);
 		// Do insert.
-		fxTickService.operation(tick, OperationMode.NEW);
+		fxHourService.operation(fxHour, OperationMode.NEW);
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/operation/input4Update.xml")
-	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Update.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/operation/input4Update.xml")
+	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Update.xml", table = "trn_fx_hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Update() throws Exception {
 		// New FXTickKey
@@ -175,19 +165,22 @@ public class FXTickServiceImplTest {
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
-		// New TrnFXTick data.
-		TrnFXTick tick = fxTickService.findOne(key);
-		tick.setBidPrice(1);
-		tick.setAskPrice(2);
-		tick.setMidPrice(10);
-		tick.setProcessedFlag(1);
+		// Get TrnFXTick data from DB.
+		TrnFXHour fxHour = fxHourService.findOne(key).get();
+		fxHour.setTickKey(key);
+		fxHour.setOpeningPrice(100);
+		fxHour.setHighPrice(200);
+		fxHour.setLowPrice(1000);
+		fxHour.setFinishPrice(10);
+		fxHour.setAvOpeningPrice(11);
+		fxHour.setAvFinishPrice(12);
 		// Do insert.
-		fxTickService.operation(tick, OperationMode.EDIT);
+		fxHourService.operation(fxHour, OperationMode.EDIT);
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/operation/input4Delete.xml")
-	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Delete.xml", table = "trn_fx_tick")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/operation/input4Delete.xml")
+	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Delete.xml", table = "trn_fx_hour")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Delete() throws Exception {
 		// New FXTickKey
@@ -199,8 +192,8 @@ public class FXTickServiceImplTest {
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
 		// New TrnFXTick data.
-		TrnFXTick tick = fxTickService.findOne(key);
+		Optional<TrnFXHour> fxHour = fxHourService.findOne(key);
 		// Delete one from DB.
-		fxTickService.operation(tick, OperationMode.DELETE);
+		fxHourService.operation(fxHour.get(), OperationMode.DELETE);
 	}
 }

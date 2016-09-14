@@ -5,13 +5,13 @@
 CREATE TABLE trn_fx_hour
 (
   currency_pair char(6) NOT NULL,
-  regist_date timestamp with time zone NOT NULL,
-  opening_price numeric NOT NULL,
-  high_price numeric NOT NULL,
-  low_price numeric NOT NULL,
-  finish_price numeric NOT NULL,
-  av_opening_price numeric,
-  av_finish_price numeric,
+  regist_date timestamp without time zone NOT NULL,
+  opening_price numeric(10, 6) NOT NULL,
+  high_price numeric(10, 6) NOT NULL,
+  low_price numeric(10, 6) NOT NULL,
+  finish_price numeric(10, 6) NOT NULL,
+  av_opening_price numeric(10, 6),
+  av_finish_price numeric(10, 6),
   created_date timestamp with time zone,
   updated_date timestamp with time zone,
   created_by character varying(20),
@@ -19,6 +19,7 @@ CREATE TABLE trn_fx_hour
 --  ,CONSTRAINT japan_stock_pkey PRIMARY KEY (currency_pair, regist_date),
 );
 --update trn_fx_tick set processed_flag=1, updated_by='system', updated_date=now() where currency_pair='usdjpy' and regist_date>='2009-05-01 00:00:00' and regist_date<'2009-05-02 00:00:00';
+--insert into trn_fx_hour values ('usdjpy', now(), 100, 200, 300, 400, 500, 600, now(), now(), 'abc', 'abc');
 -- USD/JPY
 CREATE TABLE child_fx_hour_usdjpy (
     CONSTRAINT pk_fx_hour_usdjpy PRIMARY KEY (currency_pair , regist_date),
