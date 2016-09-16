@@ -3,4 +3,7 @@
 	<trn_fx_tick />
 	<trn_fx_hour />
 	<trn_fx_6hour />
+	<trn_fx_day />
+	<trn_fx_week />
+	<trn_fx_month />
 </dataset>

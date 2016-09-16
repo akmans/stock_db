@@ -15,9 +15,7 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
@@ -124,7 +122,7 @@ public class FXDayServiceImpl implements FXDayService {
 					highPrice = day.getHighPrice();
 				}
 				// Get low price when necessary.
-				if (lowPrice > day.getLowPrice()) {
+				if (lowPrice == 0 || lowPrice > day.getLowPrice()) {
 					lowPrice = day.getLowPrice();
 				}
 				// Set finish price.

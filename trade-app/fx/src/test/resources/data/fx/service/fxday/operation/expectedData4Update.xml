@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<trn_fx_day currency_pair="usdjpy" regist_date="2016-01-02 00:00:00.000" opening_price="100" high_price="200" low_price="1000" finish_price="10" av_opening_price="11" av_finish_price="12" updated_by="system" />
+</dataset>
