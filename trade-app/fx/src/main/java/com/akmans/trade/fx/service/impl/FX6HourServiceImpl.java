@@ -62,4 +62,11 @@ public class FX6HourServiceImpl implements FX6HourService {
 	public Optional<TrnFX6Hour> findOne(FXTickKey key) {
 		return trnFX6HourRepository.findOne(key);
 	}
+
+	public Optional<TrnFX6Hour> findPrevious(FXTickKey key) {
+		if (key == null) {
+			return Optional.empty();
+		}
+		return trnFX6HourRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
+	}
 }

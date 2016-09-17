@@ -38,6 +38,8 @@ public class TrnFXWeekRepositoryTest {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXWeekRepositoryTest.class);
 
+	private static final double DELTA = 1e-15;
+
 	@Autowired
 	private TrnFXWeekRepository fxWeekRepository;
 
@@ -101,6 +103,33 @@ public class TrnFXWeekRepositoryTest {
 		fxWeek = fxWeekRepository.findOne(key);
 		// Check result.
 		assertEquals(false, fxWeek.isPresent());
+
+		// Test findPrevious method.
+		Optional<TrnFXWeek> fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result);
+		// Check result.
+		assertEquals(false, fxPreviousWeek.isPresent());
+		// Next hour.
+		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result.plusWeeks(1));
+		// Check result.
+		assertEquals(true, fxPreviousWeek.isPresent());
+		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
+		assertEquals(2, fxPreviousWeek.get().getOpeningPrice(), DELTA);
+		assertEquals(4, fxPreviousWeek.get().getHighPrice(), DELTA);
+		assertEquals(1, fxPreviousWeek.get().getLowPrice(), DELTA);
+		assertEquals(3, fxPreviousWeek.get().getFinishPrice(), DELTA);
+		assertEquals(1.5, fxPreviousWeek.get().getAvOpeningPrice(), DELTA);
+		assertEquals(2.5, fxPreviousWeek.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result.plusWeeks(2));
+		// Check result.
+		assertEquals(true, fxPreviousWeek.isPresent());
+		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousWeek.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousWeek.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousWeek.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousWeek.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousWeek.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousWeek.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

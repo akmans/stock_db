@@ -38,6 +38,8 @@ public class TrnFX6HourRepositoryTest {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFX6HourRepositoryTest.class);
 
+	private static final double DELTA = 1e-15;
+
 	@Autowired
 	private TrnFX6HourRepository fx6HourRepository;
 
@@ -88,7 +90,7 @@ public class TrnFX6HourRepositoryTest {
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
-		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
+		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
 		logger.debug("The DateTime is {}.", result);
 		key.setRegistDate(result);
@@ -101,6 +103,33 @@ public class TrnFX6HourRepositoryTest {
 		fx6Hour = fx6HourRepository.findOne(key);
 		// Check result.
 		assertEquals(false, fx6Hour.isPresent());
+
+		// Test findPrevious method.
+		Optional<TrnFX6Hour> fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result);
+		// Check result.
+		assertEquals(false, fxPrevious6Hour.isPresent());
+		// Next 6hour.
+		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result.plusHours(6));
+		// Check result.
+		assertEquals(true, fxPrevious6Hour.isPresent());
+		assertEquals("usdjpy", fxPrevious6Hour.get().getTickKey().getCurrencyPair());
+		assertEquals(2, fxPrevious6Hour.get().getOpeningPrice(), DELTA);
+		assertEquals(4, fxPrevious6Hour.get().getHighPrice(), DELTA);
+		assertEquals(1, fxPrevious6Hour.get().getLowPrice(), DELTA);
+		assertEquals(3, fxPrevious6Hour.get().getFinishPrice(), DELTA);
+		assertEquals(1.5, fxPrevious6Hour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(2.5, fxPrevious6Hour.get().getAvFinishPrice(), DELTA);
+		// Another next 6hour.
+		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result.plusHours(12));
+		// Check result.
+		assertEquals(true, fxPrevious6Hour.isPresent());
+		assertEquals("usdjpy", fxPrevious6Hour.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPrevious6Hour.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPrevious6Hour.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPrevious6Hour.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPrevious6Hour.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPrevious6Hour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPrevious6Hour.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

@@ -11,4 +11,6 @@ public interface FX6HourService {
 	public void operation(TrnFX6Hour tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFX6Hour> findOne(FXTickKey key);
+
+	public Optional<TrnFX6Hour> findPrevious(FXTickKey key);
 }

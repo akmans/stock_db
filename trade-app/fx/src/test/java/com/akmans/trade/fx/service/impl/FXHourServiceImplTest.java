@@ -71,6 +71,37 @@ public class FXHourServiceImplTest {
 		assertEquals(300, hour.get().getFinishPrice(), DELTA);
 		assertEquals(150, hour.get().getAvOpeningPrice(), DELTA);
 		assertEquals(250, hour.get().getAvFinishPrice(), DELTA);
+
+		// Test findPrevious method.
+		Optional<TrnFXHour> fxPreviousHour = fxHourService.findPrevious(key);
+		// Check result.
+		assertEquals(false, fxPreviousHour.isPresent());
+		// Next hour.
+		key.setRegistDate(key.getRegistDate().plusHours(1));
+		// Do fine.
+		fxPreviousHour = fxHourService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousHour.isPresent());
+		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
+		assertEquals(200, fxPreviousHour.get().getOpeningPrice(), DELTA);
+		assertEquals(400, fxPreviousHour.get().getHighPrice(), DELTA);
+		assertEquals(100, fxPreviousHour.get().getLowPrice(), DELTA);
+		assertEquals(300, fxPreviousHour.get().getFinishPrice(), DELTA);
+		assertEquals(150, fxPreviousHour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(250, fxPreviousHour.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		key.setRegistDate(key.getRegistDate().plusHours(1));
+		// Do find.
+		fxPreviousHour = fxHourService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousHour.isPresent());
+		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousHour.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousHour.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousHour.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousHour.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousHour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousHour.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

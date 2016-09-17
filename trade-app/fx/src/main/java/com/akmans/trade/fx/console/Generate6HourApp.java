@@ -34,8 +34,8 @@ public class Generate6HourApp {
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("currencyPair", args[0])
-					.addString("processedMonth", args[1]).toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
+					.addString("currencyPair", args[0]).addString("processedMonth", args[1]).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 

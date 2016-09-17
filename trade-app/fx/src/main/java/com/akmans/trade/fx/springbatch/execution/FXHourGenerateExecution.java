@@ -69,40 +69,60 @@ public class FXHourGenerateExecution extends StepExecutionListenerSupport implem
 		int updatedCnt = 0;
 		// Loop all instruments.
 		while (currentDatetime.compareTo(endDay) < 0) {
-			// Retrieve weekly data.
-			TrnFXHour fxHour = (TrnFXHour)fxTickService
-					.generateFXPeriodData(FXType.HOUR, currencyPair, currentDatetime);
+			logger.debug("The current datetime is {}", currentDatetime);
+			// Retrieve hourly data.
+			TrnFXHour fxHour = (TrnFXHour) fxTickService.generateFXPeriodData(FXType.HOUR, currencyPair,
+					currentDatetime);
 			logger.debug("TrnFXHour is {}.", fxHour);
-			// Continue to next instrument if no weekly data found.
-			Optional<TrnFXHour> option = fxHourService.findOne(fxHour.getTickKey());
-			// Do delete & insert if exist, or else do insert.
-			if (option.isPresent()) {
-				// Get the current data.
-				TrnFXHour current = option.get();
-				// Adapt all prices data.
-				current.setOpeningPrice(fxHour.getOpeningPrice());
-				current.setHighPrice(fxHour.getHighPrice());
-				current.setLowPrice(fxHour.getLowPrice());
-				current.setFinishPrice(fxHour.getFinishPrice());
-				// Copy all data.
-				BeanUtils.copyProperties(current, fxHour);
-				logger.debug("The updated data is {}", fxHour);
-				// Delete the current weekly data.
-				fxHourService.operation(current, OperationMode.DELETE);
-				// Insert a new weekly data.
-				fxHourService.operation(fxHour, OperationMode.NEW);
-				// Count up the updated rows counter.
-				updatedCnt++;
+			if (fxHour != null) {
+				// Retrieve previous FX Hour data from DB by current key.
+				Optional<TrnFXHour> prevOption = fxHourService.findPrevious(fxHour.getTickKey());
+				// If exists.
+				if (prevOption.isPresent()) {
+					TrnFXHour previous = prevOption.get();
+					fxHour.setAvOpeningPrice((previous.getAvOpeningPrice() + previous.getAvFinishPrice()) / 2);
+					fxHour.setAvFinishPrice((fxHour.getOpeningPrice() + fxHour.getHighPrice() + fxHour.getLowPrice()
+							+ fxHour.getFinishPrice()) / 4);
+				} else {
+					fxHour.setAvOpeningPrice(fxHour.getOpeningPrice());
+					fxHour.setAvFinishPrice(fxHour.getFinishPrice());
+				}
+				// Retrieve FX Hour data from DB by key.
+				Optional<TrnFXHour> option = fxHourService.findOne(fxHour.getTickKey());
+				// Do delete & insert if exist, or else do insert.
+				if (option.isPresent()) {
+					// Get the current data.
+					TrnFXHour current = option.get();
+					// Adapt all prices data.
+					current.setOpeningPrice(fxHour.getOpeningPrice());
+					current.setHighPrice(fxHour.getHighPrice());
+					current.setLowPrice(fxHour.getLowPrice());
+					current.setFinishPrice(fxHour.getFinishPrice());
+					current.setAvOpeningPrice(fxHour.getAvOpeningPrice());
+					current.setAvFinishPrice(fxHour.getAvFinishPrice());
+					// Copy all data.
+					BeanUtils.copyProperties(current, fxHour);
+					logger.debug("The updated data is {}", fxHour);
+					// Delete the current weekly data.
+					fxHourService.operation(current, OperationMode.DELETE);
+					// Insert a new weekly data.
+					fxHourService.operation(fxHour, OperationMode.NEW);
+					// Count up the updated rows counter.
+					updatedCnt++;
+				} else {
+					logger.debug("The inserted data is {}", fxHour);
+					// Insert a new weekly data.
+					fxHourService.operation(fxHour, OperationMode.NEW);
+					// Count up the inserted rows counter.
+					insertedCnt++;
+				}
 			} else {
-				logger.debug("The inserted data is {}", fxHour);
-				// Insert a new weekly data.
-				fxHourService.operation(fxHour, OperationMode.NEW);
-				// Count up the inserted rows counter.
-				insertedCnt++;
+				logger.info("No FX Hour generated at {}", currentDatetime);
 			}
 			// Mark processed.
-//			int markedCnt = fxTickService.markProcessed(currencyPair, currentDatetime);
-//			logger.debug("{} records were processed.", markedCnt);
+			// int markedCnt = fxTickService.markProcessed(currencyPair,
+			// currentDatetime);
+			// logger.debug("{} records were processed.", markedCnt);
 			// Increment with 1 hour.
 			currentDatetime = currentDatetime.plusHours(1);
 		}

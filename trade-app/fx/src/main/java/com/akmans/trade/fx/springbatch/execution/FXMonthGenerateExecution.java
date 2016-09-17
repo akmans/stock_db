@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -73,37 +72,53 @@ public class FXMonthGenerateExecution extends StepExecutionListenerSupport imple
 			TrnFXMonth fxMonth = (TrnFXMonth)fxDayService
 					.generateFXPeriodData(FXType.MONTH, currencyPair, currentDatetime);
 			// Continue to next instrument if no weekly data found.
-			if (fxMonth == null) {
-				continue;
-			}
-			Optional<TrnFXMonth> option = fxMonthService.findOne(fxMonth.getTickKey());
-			// Do delete & insert if exist, or else do insert.
-			if (option.isPresent()) {
-				// Get the current data.
-				TrnFXMonth current = option.get();
-				// Adapt all prices data.
-				current.setOpeningPrice(fxMonth.getOpeningPrice());
-				current.setHighPrice(fxMonth.getHighPrice());
-				current.setLowPrice(fxMonth.getLowPrice());
-				current.setFinishPrice(fxMonth.getFinishPrice());
-				// Copy all data.
-				BeanUtils.copyProperties(current, fxMonth);
-				logger.debug("The updated data is {}", fxMonth);
-				// Delete the current weekly data.
-				fxMonthService.operation(current, OperationMode.DELETE);
-				// Insert a new weekly data.
-				fxMonthService.operation(fxMonth, OperationMode.NEW);
-				// Count up the updated rows counter.
-				updatedCnt++;
+			if (fxMonth != null) {
+				// Retrieve previous FX Month data from DB by current key.
+				Optional<TrnFXMonth> prevOption = fxMonthService.findPrevious(fxMonth.getTickKey());
+				// If exists.
+				if (prevOption.isPresent()) {
+					TrnFXMonth previous = prevOption.get();
+					fxMonth.setAvOpeningPrice((previous.getAvOpeningPrice() + previous.getAvFinishPrice()) / 2);
+					fxMonth.setAvFinishPrice((fxMonth.getOpeningPrice() + fxMonth.getHighPrice() + fxMonth.getLowPrice()
+							+ fxMonth.getFinishPrice()) / 4);
+				} else {
+					fxMonth.setAvOpeningPrice(fxMonth.getOpeningPrice());
+					fxMonth.setAvFinishPrice(fxMonth.getFinishPrice());
+				}
+				// Retrieve FX Month data from DB by key.
+				Optional<TrnFXMonth> option = fxMonthService.findOne(fxMonth.getTickKey());
+				// Do delete & insert if exist, or else do insert.
+				if (option.isPresent()) {
+					// Get the current data.
+					TrnFXMonth current = option.get();
+					// Adapt all prices data.
+					current.setOpeningPrice(fxMonth.getOpeningPrice());
+					current.setHighPrice(fxMonth.getHighPrice());
+					current.setLowPrice(fxMonth.getLowPrice());
+					current.setFinishPrice(fxMonth.getFinishPrice());
+					current.setAvOpeningPrice(fxMonth.getAvOpeningPrice());
+					current.setAvFinishPrice(fxMonth.getAvFinishPrice());
+					// Copy all data.
+					BeanUtils.copyProperties(current, fxMonth);
+					logger.debug("The updated data is {}", fxMonth);
+					// Delete the current weekly data.
+					fxMonthService.operation(current, OperationMode.DELETE);
+					// Insert a new weekly data.
+					fxMonthService.operation(fxMonth, OperationMode.NEW);
+					// Count up the updated rows counter.
+					updatedCnt++;
+				} else {
+					logger.debug("The inserted data is {}", fxMonth);
+					// Insert a new weekly data.
+					fxMonthService.operation(fxMonth, OperationMode.NEW);
+					// Count up the inserted rows counter.
+					insertedCnt++;
+				}
 			} else {
-				logger.debug("The inserted data is {}", fxMonth);
-				// Insert a new weekly data.
-				fxMonthService.operation(fxMonth, OperationMode.NEW);
-				// Count up the inserted rows counter.
-				insertedCnt++;
+				logger.info("No FX Month generated at {}", currentDatetime);
 			}
 			// Increment with 1 day.
-			currentDatetime.plusMonths(1);
+			currentDatetime = currentDatetime.plusMonths(1);
 		}
 		// Save updated rows counter into job execution context.
 		countUpdatedRows(updatedCnt);
@@ -126,6 +141,6 @@ public class FXMonthGenerateExecution extends StepExecutionListenerSupport imple
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse(processedMonth + "01 00:00:00.000", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		return result.truncatedTo(ChronoUnit.MONTHS);
+		return result;
 	}
 }

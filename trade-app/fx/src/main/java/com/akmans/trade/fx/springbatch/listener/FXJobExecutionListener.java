@@ -2,6 +2,7 @@ package com.akmans.trade.fx.springbatch.listener;
 
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import com.akmans.trade.core.utils.MailUtil;
 
 @Component
 public class FXJobExecutionListener implements JobExecutionListener {
+
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXJobExecutionListener.class);
 
 	@Autowired
 	private MailUtil mailUtil;
@@ -29,6 +32,9 @@ public class FXJobExecutionListener implements JobExecutionListener {
 		String currencyPair = jobExecution.getJobParameters().getString("currencyPair");
 		// Get processed month from job parameters.
 		String processedMonth = jobExecution.getJobParameters().getString("processedMonth");
+		logger.debug("The jobId is {}", jobId);
+		logger.debug("The currencyPair is {}", currencyPair);
+		logger.debug("The processedMonth is {}", processedMonth);
 		String subject = FXJob.get(jobId).getLabel() + " : " + jobExecution.getExitStatus().getExitCode() + "["
 				+ currencyPair + "#" + processedMonth + "]";
 		String body = "";
@@ -48,7 +54,11 @@ public class FXJobExecutionListener implements JobExecutionListener {
 			body = body + "Skipped Rows: " + skippedRows + "\n";
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)) {
+		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)
+				|| FXJob.GENERATE_FX_6HOUR_JOB.getValue().equals(jobId)
+				|| FXJob.GENERATE_FX_DAY_JOB.getValue().equals(jobId)
+				|| FXJob.GENERATE_FX_WEEK_JOB.getValue().equals(jobId)
+				|| FXJob.GENERATE_FX_MONTH_JOB.getValue().equals(jobId)) {
 			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
 			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Inserted Rows: " + insertedRows + "\n";

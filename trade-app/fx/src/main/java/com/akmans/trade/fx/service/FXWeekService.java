@@ -11,4 +11,6 @@ public interface FXWeekService {
 	public void operation(TrnFXWeek tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFXWeek> findOne(FXTickKey key);
+
+	public Optional<TrnFXWeek> findPrevious(FXTickKey key);
 }

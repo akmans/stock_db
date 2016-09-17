@@ -62,4 +62,11 @@ public class FXWeekServiceImpl implements FXWeekService {
 	public Optional<TrnFXWeek> findOne(FXTickKey key) {
 		return trnFXWeekRepository.findOne(key);
 	}
+
+	public Optional<TrnFXWeek> findPrevious(FXTickKey key) {
+		if (key == null) {
+			return Optional.empty();
+		}
+		return trnFXWeekRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
+	}
 }

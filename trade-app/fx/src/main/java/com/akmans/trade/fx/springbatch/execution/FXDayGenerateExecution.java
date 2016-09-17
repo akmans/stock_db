@@ -25,6 +25,7 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 
 @Component
 public class FXDayGenerateExecution extends StepExecutionListenerSupport implements Tasklet {
@@ -73,37 +74,53 @@ public class FXDayGenerateExecution extends StepExecutionListenerSupport impleme
 			TrnFXDay fxDay = (TrnFXDay)fxHourService
 					.generateFXPeriodData(FXType.DAY, currencyPair, currentDatetime);
 			// Continue to next instrument if no weekly data found.
-			if (fxDay == null) {
-				continue;
-			}
-			Optional<TrnFXDay> option = fxDayService.findOne(fxDay.getTickKey());
-			// Do delete & insert if exist, or else do insert.
-			if (option.isPresent()) {
-				// Get the current data.
-				TrnFXDay current = option.get();
-				// Adapt all prices data.
-				current.setOpeningPrice(fxDay.getOpeningPrice());
-				current.setHighPrice(fxDay.getHighPrice());
-				current.setLowPrice(fxDay.getLowPrice());
-				current.setFinishPrice(fxDay.getFinishPrice());
-				// Copy all data.
-				BeanUtils.copyProperties(current, fxDay);
-				logger.debug("The updated data is {}", fxDay);
-				// Delete the current weekly data.
-				fxDayService.operation(current, OperationMode.DELETE);
-				// Insert a new weekly data.
-				fxDayService.operation(fxDay, OperationMode.NEW);
-				// Count up the updated rows counter.
-				updatedCnt++;
+			if (fxDay != null) {
+				// Retrieve previous FX Day data from DB by current key.
+				Optional<TrnFXHour> prevOption = fxHourService.findPrevious(fxDay.getTickKey());
+				// If exists.
+				if (prevOption.isPresent()) {
+					TrnFXHour previous = prevOption.get();
+					fxDay.setAvOpeningPrice((previous.getAvOpeningPrice() + previous.getAvFinishPrice()) / 2);
+					fxDay.setAvFinishPrice((fxDay.getOpeningPrice() + fxDay.getHighPrice() + fxDay.getLowPrice()
+							+ fxDay.getFinishPrice()) / 4);
+				} else {
+					fxDay.setAvOpeningPrice(fxDay.getOpeningPrice());
+					fxDay.setAvFinishPrice(fxDay.getFinishPrice());
+				}
+				// Retrieve FX Day data from DB by key.
+				Optional<TrnFXDay> option = fxDayService.findOne(fxDay.getTickKey());
+				// Do delete & insert if exist, or else do insert.
+				if (option.isPresent()) {
+					// Get the current data.
+					TrnFXDay current = option.get();
+					// Adapt all prices data.
+					current.setOpeningPrice(fxDay.getOpeningPrice());
+					current.setHighPrice(fxDay.getHighPrice());
+					current.setLowPrice(fxDay.getLowPrice());
+					current.setFinishPrice(fxDay.getFinishPrice());
+					current.setAvOpeningPrice(fxDay.getAvOpeningPrice());
+					current.setAvFinishPrice(fxDay.getAvFinishPrice());
+					// Copy all data.
+					BeanUtils.copyProperties(current, fxDay);
+					logger.debug("The updated data is {}", fxDay);
+					// Delete the current weekly data.
+					fxDayService.operation(current, OperationMode.DELETE);
+					// Insert a new weekly data.
+					fxDayService.operation(fxDay, OperationMode.NEW);
+					// Count up the updated rows counter.
+					updatedCnt++;
+				} else {
+					logger.debug("The inserted data is {}", fxDay);
+					// Insert a new weekly data.
+					fxDayService.operation(fxDay, OperationMode.NEW);
+					// Count up the inserted rows counter.
+					insertedCnt++;
+				}
 			} else {
-				logger.debug("The inserted data is {}", fxDay);
-				// Insert a new weekly data.
-				fxDayService.operation(fxDay, OperationMode.NEW);
-				// Count up the inserted rows counter.
-				insertedCnt++;
+				logger.info("No FX Day generated at {}", currentDatetime);
 			}
 			// Increment with 1 day.
-			currentDatetime.plusDays(1);
+			currentDatetime = currentDatetime.plusDays(1);
 		}
 		// Save updated rows counter into job execution context.
 		countUpdatedRows(updatedCnt);

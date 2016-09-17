@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,7 @@ import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXDayService;
-import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.service.FXWeekService;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 
 @Component
@@ -75,37 +72,53 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 			TrnFXWeek fxWeek = (TrnFXWeek)fxDayService
 					.generateFXPeriodData(FXType.WEEK, currencyPair, currentDatetime);
 			// Continue to next instrument if no weekly data found.
-			if (fxWeek == null) {
-				continue;
-			}
-			Optional<TrnFXWeek> option = fxWeekService.findOne(fxWeek.getTickKey());
-			// Do delete & insert if exist, or else do insert.
-			if (option.isPresent()) {
-				// Get the current data.
-				TrnFXWeek current = option.get();
-				// Adapt all prices data.
-				current.setOpeningPrice(fxWeek.getOpeningPrice());
-				current.setHighPrice(fxWeek.getHighPrice());
-				current.setLowPrice(fxWeek.getLowPrice());
-				current.setFinishPrice(fxWeek.getFinishPrice());
-				// Copy all data.
-				BeanUtils.copyProperties(current, fxWeek);
-				logger.debug("The updated data is {}", fxWeek);
-				// Delete the current weekly data.
-				fxWeekService.operation(current, OperationMode.DELETE);
-				// Insert a new weekly data.
-				fxWeekService.operation(fxWeek, OperationMode.NEW);
-				// Count up the updated rows counter.
-				updatedCnt++;
+			if (fxWeek != null) {
+				// Retrieve previous FX Week data from DB by current key.
+				Optional<TrnFXWeek> prevOption = fxWeekService.findPrevious(fxWeek.getTickKey());
+				// If exists.
+				if (prevOption.isPresent()) {
+					TrnFXWeek previous = prevOption.get();
+					fxWeek.setAvOpeningPrice((previous.getAvOpeningPrice() + previous.getAvFinishPrice()) / 2);
+					fxWeek.setAvFinishPrice((fxWeek.getOpeningPrice() + fxWeek.getHighPrice() + fxWeek.getLowPrice()
+							+ fxWeek.getFinishPrice()) / 4);
+				} else {
+					fxWeek.setAvOpeningPrice(fxWeek.getOpeningPrice());
+					fxWeek.setAvFinishPrice(fxWeek.getFinishPrice());
+				}
+				// Retrieve FX Week data from DB by key.
+				Optional<TrnFXWeek> option = fxWeekService.findOne(fxWeek.getTickKey());
+				// Do delete & insert if exist, or else do insert.
+				if (option.isPresent()) {
+					// Get the current data.
+					TrnFXWeek current = option.get();
+					// Adapt all prices data.
+					current.setOpeningPrice(fxWeek.getOpeningPrice());
+					current.setHighPrice(fxWeek.getHighPrice());
+					current.setLowPrice(fxWeek.getLowPrice());
+					current.setFinishPrice(fxWeek.getFinishPrice());
+					current.setAvOpeningPrice(fxWeek.getAvOpeningPrice());
+					current.setAvFinishPrice(fxWeek.getAvFinishPrice());
+					// Copy all data.
+					BeanUtils.copyProperties(current, fxWeek);
+					logger.debug("The updated data is {}", fxWeek);
+					// Delete the current weekly data.
+					fxWeekService.operation(current, OperationMode.DELETE);
+					// Insert a new weekly data.
+					fxWeekService.operation(fxWeek, OperationMode.NEW);
+					// Count up the updated rows counter.
+					updatedCnt++;
+				} else {
+					logger.debug("The inserted data is {}", fxWeek);
+					// Insert a new weekly data.
+					fxWeekService.operation(fxWeek, OperationMode.NEW);
+					// Count up the inserted rows counter.
+					insertedCnt++;
+				}
 			} else {
-				logger.debug("The inserted data is {}", fxWeek);
-				// Insert a new weekly data.
-				fxWeekService.operation(fxWeek, OperationMode.NEW);
-				// Count up the inserted rows counter.
-				insertedCnt++;
+				logger.info("No FX Week generated at {}", currentDatetime);
 			}
 			// Increment with 1 day.
-			currentDatetime.plusWeeks(1);
+			currentDatetime = currentDatetime.plusWeeks(1);
 		}
 		// Save updated rows counter into job execution context.
 		countUpdatedRows(updatedCnt);
@@ -128,6 +141,7 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse(processedMonth + "01 00:00:00.000", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		return result.truncatedTo(ChronoUnit.WEEKS);
+		// Return date of Sunday, the first day of week.
+		return result.minusDays(result.getDayOfWeek().getValue());
 	}
 }

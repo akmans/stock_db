@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-02 01:00:00.000" opening_price="200" high_price="400" low_price="100" finish_price="300" av_opening_price="150" av_finish_price="250" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-02 07:00:00.000" opening_price="20" high_price="40" low_price="10" finish_price="30" av_opening_price="15" av_finish_price="25" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-02 13:00:00.000" opening_price="2" high_price="4" low_price="1" finish_price="3" av_opening_price="1.5" av_finish_price="2.5" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
 </dataset>

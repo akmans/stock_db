@@ -69,6 +69,13 @@ public class FXDayServiceImpl implements FXDayService {
 		return trnFXDayRepository.findOne(key);
 	}
 
+	public Optional<TrnFXDay> findPrevious(FXTickKey key) {
+		if (key == null) {
+			return Optional.empty();
+		}
+		return trnFXDayRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
+	}
+
 	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom) {
 		ZonedDateTime dateTimeTo = null;
 		switch (type) {

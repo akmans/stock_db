@@ -15,5 +15,7 @@ public interface FXHourService {
 
 	public Optional<TrnFXHour> findOne(FXTickKey key);
 
+	public Optional<TrnFXHour> findPrevious(FXTickKey key);
+
 	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom);
 }

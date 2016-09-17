@@ -12,6 +12,7 @@ import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.fx.service.FXMonthService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXMonthRepository;
 
@@ -61,5 +62,12 @@ public class FXMonthServiceImpl implements FXMonthService {
 
 	public Optional<TrnFXMonth> findOne(FXTickKey key) {
 		return trnFXMonthRepository.findOne(key);
+	}
+
+	public Optional<TrnFXMonth> findPrevious(FXTickKey key) {
+		if (key == null) {
+			return Optional.empty();
+		}
+		return trnFXMonthRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -37,6 +38,8 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 public class TrnFXMonthRepositoryTest {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXMonthRepositoryTest.class);
+
+	private static final double DELTA = 1e-15;
 
 	@Autowired
 	private TrnFXMonthRepository fxMonthRepository;
@@ -101,6 +104,33 @@ public class TrnFXMonthRepositoryTest {
 		fxMonth = fxMonthRepository.findOne(key);
 		// Check result.
 		assertEquals(false, fxMonth.isPresent());
+
+		// Test findPrevious method.
+		Optional<TrnFXMonth> fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result);
+		// Check result.
+		assertEquals(false, fxPreviousMonth.isPresent());
+		// Next hour.
+		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result.plusMonths(1));
+		// Check result.
+		assertEquals(true, fxPreviousMonth.isPresent());
+		assertEquals("usdjpy", fxPreviousMonth.get().getTickKey().getCurrencyPair());
+		assertEquals(2, fxPreviousMonth.get().getOpeningPrice(), DELTA);
+		assertEquals(4, fxPreviousMonth.get().getHighPrice(), DELTA);
+		assertEquals(1, fxPreviousMonth.get().getLowPrice(), DELTA);
+		assertEquals(3, fxPreviousMonth.get().getFinishPrice(), DELTA);
+		assertEquals(1.5, fxPreviousMonth.get().getAvOpeningPrice(), DELTA);
+		assertEquals(2.5, fxPreviousMonth.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result.plusMonths(2));
+		// Check result.
+		assertEquals(true, fxPreviousMonth.isPresent());
+		assertEquals("usdjpy", fxPreviousMonth.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousMonth.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousMonth.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousMonth.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousMonth.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousMonth.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousMonth.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

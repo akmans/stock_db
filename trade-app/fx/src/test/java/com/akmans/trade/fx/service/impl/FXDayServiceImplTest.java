@@ -24,6 +24,7 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
@@ -69,6 +70,37 @@ public class FXDayServiceImplTest {
 		assertEquals(300, day.get().getFinishPrice(), DELTA);
 		assertEquals(150, day.get().getAvOpeningPrice(), DELTA);
 		assertEquals(250, day.get().getAvFinishPrice(), DELTA);
+
+		// Test findPrevious method.
+		Optional<TrnFXDay> fxPreviousDay = fxDayService.findPrevious(key);
+		// Check result.
+		assertEquals(false, fxPreviousDay.isPresent());
+		// Next hour.
+		key.setRegistDate(key.getRegistDate().plusDays(1));
+		// Do fine.
+		fxPreviousDay = fxDayService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousDay.isPresent());
+		assertEquals("usdjpy", fxPreviousDay.get().getTickKey().getCurrencyPair());
+		assertEquals(200, fxPreviousDay.get().getOpeningPrice(), DELTA);
+		assertEquals(400, fxPreviousDay.get().getHighPrice(), DELTA);
+		assertEquals(100, fxPreviousDay.get().getLowPrice(), DELTA);
+		assertEquals(300, fxPreviousDay.get().getFinishPrice(), DELTA);
+		assertEquals(150, fxPreviousDay.get().getAvOpeningPrice(), DELTA);
+		assertEquals(250, fxPreviousDay.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		key.setRegistDate(key.getRegistDate().plusDays(1));
+		// Do find.
+		fxPreviousDay = fxDayService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousDay.isPresent());
+		assertEquals("usdjpy", fxPreviousDay.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousDay.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousDay.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousDay.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousDay.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousDay.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousDay.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

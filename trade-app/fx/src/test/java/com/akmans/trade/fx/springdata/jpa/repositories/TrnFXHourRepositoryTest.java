@@ -38,6 +38,8 @@ public class TrnFXHourRepositoryTest {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXHourRepositoryTest.class);
 
+	private static final double DELTA = 1e-15;
+
 	@Autowired
 	private TrnFXHourRepository fxHourRepository;
 
@@ -101,6 +103,33 @@ public class TrnFXHourRepositoryTest {
 		fxHour = fxHourRepository.findOne(key);
 		// Check result.
 		assertEquals(false, fxHour.isPresent());
+
+		// Test findPrevious method.
+		Optional<TrnFXHour> fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result);
+		// Check result.
+		assertEquals(false, fxPreviousHour.isPresent());
+		// Next hour.
+		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result.plusHours(1));
+		// Check result.
+		assertEquals(true, fxPreviousHour.isPresent());
+		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
+		assertEquals(2, fxPreviousHour.get().getOpeningPrice(), DELTA);
+		assertEquals(4, fxPreviousHour.get().getHighPrice(), DELTA);
+		assertEquals(1, fxPreviousHour.get().getLowPrice(), DELTA);
+		assertEquals(3, fxPreviousHour.get().getFinishPrice(), DELTA);
+		assertEquals(1.5, fxPreviousHour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(2.5, fxPreviousHour.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result.plusHours(2));
+		// Check result.
+		assertEquals(true, fxPreviousHour.isPresent());
+		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousHour.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousHour.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousHour.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousHour.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousHour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousHour.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test

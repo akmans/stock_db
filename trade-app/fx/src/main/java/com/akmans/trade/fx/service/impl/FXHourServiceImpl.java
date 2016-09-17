@@ -37,38 +37,45 @@ public class FXHourServiceImpl implements FXHourService {
 	@Autowired
 	AuditorAware<String> auditor;
 
-	public void operation(TrnFXHour tick, OperationMode mode) throws TradeException {
-		logger.debug("the tick is {}", tick);
+	public void operation(TrnFXHour fxHour, OperationMode mode) throws TradeException {
+		logger.debug("the FX Hour is {}", fxHour);
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			Optional<TrnFXHour> result = trnFXHourRepository.findOne(tick.getTickKey());
+			Optional<TrnFXHour> result = trnFXHourRepository.findOne(fxHour.getTickKey());
 			if (result.isPresent()) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
 			}
-			trnFXHourRepository.save(tick);
+			trnFXHourRepository.save(fxHour);
 			break;
 		}
 		case EDIT: {
-			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(tick.getTickKey());
-			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(fxHour.getTickKey());
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(fxHour.getUpdatedDate())) {
+				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
 			}
-			trnFXHourRepository.save(tick);
+			trnFXHourRepository.save(fxHour);
 			break;
 		}
 		case DELETE: {
-			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(tick.getTickKey());
-			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(fxHour.getTickKey());
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(fxHour.getUpdatedDate())) {
+				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
 			}
-			trnFXHourRepository.delete(tick);
+			trnFXHourRepository.delete(fxHour);
 		}
 		}
 	}
 
 	public Optional<TrnFXHour> findOne(FXTickKey key) {
 		return trnFXHourRepository.findOne(key);
+	}
+
+	public Optional<TrnFXHour> findPrevious(FXTickKey key) {
+		if (key == null) {
+			return Optional.empty();
+		}
+		return trnFXHourRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
 	}
 
 	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom) {

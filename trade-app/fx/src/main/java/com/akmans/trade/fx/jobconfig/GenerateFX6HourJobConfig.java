@@ -15,7 +15,7 @@ import com.akmans.trade.fx.springbatch.listener.FXJobExecutionListener;
 public class GenerateFX6HourJobConfig {
 
 	@Bean
-	public Job generateJapanStockWeeklyJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
+	public Job generateFX6HourJob(JobBuilderFactory jobs, StepBuilderFactory stepBuilderFactory,
 			FX6HourGenerateExecution generateExecution, FXJobExecutionListener listener) {
 		Step step = stepBuilderFactory.get("step").tasklet(generateExecution).build();
 		return jobs.get(FXJob.GENERATE_FX_6HOUR_JOB.getValue()).start(step).listener(listener).build();

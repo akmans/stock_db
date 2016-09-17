@@ -21,6 +21,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXWeekService;
+import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -65,6 +66,37 @@ public class FXWeekServiceImplTest {
 		assertEquals(300, week.get().getFinishPrice(), DELTA);
 		assertEquals(150, week.get().getAvOpeningPrice(), DELTA);
 		assertEquals(250, week.get().getAvFinishPrice(), DELTA);
+
+		// Test findPrevious method.
+		Optional<TrnFXWeek> fxPreviousWeek = fxWeekService.findPrevious(key);
+		// Check result.
+		assertEquals(false, fxPreviousWeek.isPresent());
+		// Next hour.
+		key.setRegistDate(key.getRegistDate().plusWeeks(1));
+		// Do fine.
+		fxPreviousWeek = fxWeekService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousWeek.isPresent());
+		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
+		assertEquals(200, fxPreviousWeek.get().getOpeningPrice(), DELTA);
+		assertEquals(400, fxPreviousWeek.get().getHighPrice(), DELTA);
+		assertEquals(100, fxPreviousWeek.get().getLowPrice(), DELTA);
+		assertEquals(300, fxPreviousWeek.get().getFinishPrice(), DELTA);
+		assertEquals(150, fxPreviousWeek.get().getAvOpeningPrice(), DELTA);
+		assertEquals(250, fxPreviousWeek.get().getAvFinishPrice(), DELTA);
+		// Another next hour.
+		key.setRegistDate(key.getRegistDate().plusWeeks(1));
+		// Do find.
+		fxPreviousWeek = fxWeekService.findPrevious(key);
+		// Check result.
+		assertEquals(true, fxPreviousWeek.isPresent());
+		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
+		assertEquals(20, fxPreviousWeek.get().getOpeningPrice(), DELTA);
+		assertEquals(40, fxPreviousWeek.get().getHighPrice(), DELTA);
+		assertEquals(10, fxPreviousWeek.get().getLowPrice(), DELTA);
+		assertEquals(30, fxPreviousWeek.get().getFinishPrice(), DELTA);
+		assertEquals(15, fxPreviousWeek.get().getAvOpeningPrice(), DELTA);
+		assertEquals(25, fxPreviousWeek.get().getAvFinishPrice(), DELTA);
 	}
 
 	@Test
