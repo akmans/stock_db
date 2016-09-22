@@ -170,7 +170,7 @@ public class TrnFXDayRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxday/findinperiod/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxday/findinperiod/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testFindFXDayInPeriod() throws Exception {
 		// New FXTickKey

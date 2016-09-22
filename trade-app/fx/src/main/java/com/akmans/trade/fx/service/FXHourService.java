@@ -11,7 +11,7 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 public interface FXHourService {
-	public void operation(TrnFXHour tick, OperationMode mode) throws TradeException;
+	public TrnFXHour operation(TrnFXHour tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFXHour> findOne(FXTickKey key);
 

@@ -88,7 +88,7 @@ public class TrnFX6HourRepositoryTest {
 
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("audjpy");
+		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
 		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
@@ -98,6 +98,14 @@ public class TrnFX6HourRepositoryTest {
 		Optional<TrnFX6Hour> fx6Hour = fx6HourRepository.findOne(key);
 		// Check result.
 		assertEquals(true, fx6Hour.isPresent());
+		assertEquals("usdjpy", fx6Hour.get().getTickKey().getCurrencyPair());
+		assertEquals(2, fx6Hour.get().getOpeningPrice(), DELTA);
+		assertEquals(4, fx6Hour.get().getHighPrice(), DELTA);
+		assertEquals(1, fx6Hour.get().getLowPrice(), DELTA);
+		assertEquals(3, fx6Hour.get().getFinishPrice(), DELTA);
+		assertEquals(1.5, fx6Hour.get().getAvOpeningPrice(), DELTA);
+		assertEquals(2.5, fx6Hour.get().getAvFinishPrice(), DELTA);
+		// Another test.
 		key.setCurrencyPair("nzdjpy");
 		// Get one from DB by key.
 		fx6Hour = fx6HourRepository.findOne(key);

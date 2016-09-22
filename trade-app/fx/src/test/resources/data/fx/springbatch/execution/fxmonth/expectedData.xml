@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- 0 month -->
+	<trn_fx_month currency_pair="usdjpy" regist_date="2015-12-01 00:00:00.000" opening_price="20" high_price="40" low_price="10" finish_price="30" av_opening_price="15" av_finish_price="25" />
+	<!-- 1st month -->
+	<trn_fx_month currency_pair="usdjpy" regist_date="2016-01-01 00:00:00.000" opening_price="11" high_price="22" low_price="9" finish_price="15" av_opening_price="20" av_finish_price="14.25" />
+</dataset>

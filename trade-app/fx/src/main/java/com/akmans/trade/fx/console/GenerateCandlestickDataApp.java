@@ -11,9 +11,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.akmans.trade.core.enums.FXJob;
 import com.akmans.trade.core.console.config.StandaloneConfig;
 
-public class GenerateWeekApp {
+public class GenerateCandlestickDataApp {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(GenerateWeekApp.class);
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(GenerateCandlestickDataApp.class);
 
 	public static void main(String[] args) throws Exception {
 
@@ -28,7 +28,7 @@ public class GenerateWeekApp {
 		context.register(StandaloneConfig.class);
 		context.refresh();
 
-		String jobId = FXJob.GENERATE_FX_WEEK_JOB.getValue();
+		String jobId = FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue();
 		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
 		Job job = (Job) context.getBean(jobId);
 		logger.info("Job Restartable ? : " + job.isRestartable());

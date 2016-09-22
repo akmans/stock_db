@@ -8,7 +8,7 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 public interface FXMonthService {
-	public void operation(TrnFXMonth tick, OperationMode mode) throws TradeException;
+	public TrnFXMonth operation(TrnFXMonth tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFXMonth> findOne(FXTickKey key);
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 01:00:00.000" opening_price="11" high_price="16" low_price="10" finish_price="12.2" av_opening_price="11" av_finish_price="12.2" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 05:00:00.000" opening_price="1" high_price="4" low_price="1" finish_price="3" av_opening_price="11.6" av_finish_price="2.25" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 06:00:00.000" opening_price="20" high_price="40" low_price="10" finish_price="30" av_opening_price="6.925" av_finish_price="25" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-03 01:00:00.000" opening_price="8" high_price="8" low_price="8" finish_price="8" av_opening_price="15.9625" av_finish_price="8" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-10 01:00:00.000" opening_price="200" high_price="400" low_price="100" finish_price="300" av_opening_price="11.98125" av_finish_price="250" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-31 01:00:00.000" opening_price="5" high_price="5" low_price="5" finish_price="5" av_opening_price="130.990625" av_finish_price="5" />
+	<!-- 6hour -->
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-02 00:00:00.000" opening_price="11" high_price="16" low_price="1" finish_price="3" av_opening_price="11" av_finish_price="3" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-02 06:00:00.000" opening_price="20" high_price="40" low_price="10" finish_price="30" av_opening_price="7" av_finish_price="25" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-03 00:00:00.000" opening_price="8" high_price="8" low_price="8" finish_price="8" av_opening_price="16" av_finish_price="8" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-10 00:00:00.000" opening_price="200" high_price="400" low_price="100" finish_price="300" av_opening_price="12" av_finish_price="250" />
+	<trn_fx_6hour currency_pair="usdjpy" regist_date="2016-01-31 00:00:00.000" opening_price="5" high_price="5" low_price="5" finish_price="5" av_opening_price="131" av_finish_price="5" />
+	<!-- day -->
+	<trn_fx_day currency_pair="usdjpy" regist_date="2016-01-02 00:00:00.000" opening_price="11" high_price="40" low_price="1" finish_price="30" av_opening_price="11" av_finish_price="30" />
+	<trn_fx_day currency_pair="usdjpy" regist_date="2016-01-03 00:00:00.000" opening_price="8" high_price="8" low_price="8" finish_price="8" av_opening_price="20.5" av_finish_price="8" />
+	<trn_fx_day currency_pair="usdjpy" regist_date="2016-01-10 00:00:00.000" opening_price="200" high_price="400" low_price="100" finish_price="300" av_opening_price="14.25" av_finish_price="250" />
+	<trn_fx_day currency_pair="usdjpy" regist_date="2016-01-31 00:00:00.000" opening_price="5" high_price="5" low_price="5" finish_price="5" av_opening_price="132.125" av_finish_price="5" />
+	<!-- week -->
+	<trn_fx_week currency_pair="usdjpy" regist_date="2015-12-27 00:00:00.000" opening_price="11" high_price="40" low_price="1" finish_price="30" av_opening_price="11" av_finish_price="30" />
+	<trn_fx_week currency_pair="usdjpy" regist_date="2016-01-03 00:00:00.000" opening_price="8" high_price="8" low_price="8" finish_price="8" av_opening_price="20.5" av_finish_price="8" />
+	<trn_fx_week currency_pair="usdjpy" regist_date="2016-01-10 00:00:00.000" opening_price="200" high_price="400" low_price="100" finish_price="300" av_opening_price="14.25" av_finish_price="250" />
+	<trn_fx_week currency_pair="usdjpy" regist_date="2016-01-31 00:00:00.000" opening_price="5" high_price="5" low_price="5" finish_price="5" av_opening_price="132.125" av_finish_price="5" />
+	<!-- month -->
+	<trn_fx_month currency_pair="usdjpy" regist_date="2016-01-01 00:00:00.000" opening_price="11" high_price="400" low_price="1" finish_price="5" av_opening_price="11" av_finish_price="5" />
+</dataset>

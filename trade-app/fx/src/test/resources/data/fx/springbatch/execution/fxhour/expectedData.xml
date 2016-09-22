@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- 1st hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 01:00:00.000" opening_price="11" high_price="16" low_price="10" finish_price="12.2" av_opening_price="11" av_finish_price="12.2" />
+	<!-- 2nd hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 02:00:00.000" opening_price="1" high_price="2" low_price="1" finish_price="2" av_opening_price="11.6" av_finish_price="1.5" />
+	<!-- 3rd hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-02 04:00:00.000" opening_price="3" high_price="3" low_price="3" finish_price="3" av_opening_price="6.55" av_finish_price="3" />
+	<!-- 4th hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-03 01:00:00.000" opening_price="4" high_price="4" low_price="4" finish_price="4" av_opening_price="4.775" av_finish_price="4" />
+	<!-- 5th hour -->
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-31 01:00:00.000" opening_price="5" high_price="5" low_price="5" finish_price="5" av_opening_price="4.3875" av_finish_price="5" />
+</dataset>

@@ -1,16 +1,24 @@
 package com.akmans.trade.fx.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -21,13 +29,15 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
+import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXDayRepository;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -46,6 +56,74 @@ public class FXDayServiceImplTest {
 
 	@Autowired
 	private FXDayService fxDayService;
+
+	@Test
+	public void testFindOneWithMock() {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test found */
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		// Expected Day data.
+		TrnFXDay day = new TrnFXDay();
+		day.setTickKey(key);
+		Optional<TrnFXDay> option = Optional.of(day);
+
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(option);
+		// Execute the method being tested
+		Optional<TrnFXDay> fxDay = fxDayService.findOne(key);
+		// Validation
+		assertEquals(true, fxDay.isPresent());
+		assertEquals(day, fxDay.get());
+
+		/** 2. Test not found */
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		// Execute the method being tested
+		fxDay = fxDayService.findOne(key);
+		// Validation
+		assertEquals(false, fxDay.isPresent());
+	}
+
+	@Test
+	public void testFindPrevious() {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test when FXTickKey is null */
+		// Execute the method being tested
+		Optional<TrnFXDay> fxDay = fxDayService.findPrevious(null);
+		// Validation
+		assertEquals(false, fxDay.isPresent());
+
+		/** 2. Test found */
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		key.setRegistDate(ZonedDateTime.now());
+		// Expected Day data.
+		TrnFXDay day = new TrnFXDay();
+		day.setTickKey(key);
+		Optional<TrnFXDay> option = Optional.of(day);
+
+		// Mockito expectations
+		when(trnFXDayRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(option);
+		// Execute the method being tested
+		fxDay = fxDayService.findPrevious(key);
+		// Validation
+		assertEquals(true, fxDay.isPresent());
+		assertEquals(day, fxDay.get());
+
+		/** 3. Test not found */
+		// Mockito expectations
+		when(trnFXDayRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(Optional.empty());
+		// Execute the method being tested
+		fxDay = fxDayService.findPrevious(key);
+		// Validation
+		assertEquals(false, fxDay.isPresent());
+	}
 
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxday/find/input.xml")
@@ -104,6 +182,81 @@ public class FXDayServiceImplTest {
 	}
 
 	@Test
+	public void testGenerateFXPeriodDataWithMock() throws Exception {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test FXType is HOUR */
+		AbstractFXEntity entity = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNull(entity);
+
+		/** 2. Test FXType is SIXHOUR */
+		entity = fxDayService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNull(entity);
+
+		/** 3. Test FXType is DAY */
+		entity = fxDayService.generateFXPeriodData(FXType.DAY, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNull(entity);
+
+		/** 4. Test FXType is WEEK */
+		List<TrnFXDay> days = new ArrayList<TrnFXDay>();
+		TrnFXDay day0 = new TrnFXDay();
+		day0.setOpeningPrice(2);
+		day0.setHighPrice(4);
+		day0.setLowPrice(1);
+		day0.setFinishPrice(3);
+		days.add(day0);
+		TrnFXDay day1 = new TrnFXDay();
+		day1.setOpeningPrice(20);
+		day1.setHighPrice(40);
+		day1.setLowPrice(10);
+		day1.setFinishPrice(30);
+		days.add(day1);
+		TrnFXDay day2 = new TrnFXDay();
+		day2.setOpeningPrice(200);
+		day2.setHighPrice(400);
+		day2.setLowPrice(100);
+		day2.setFinishPrice(300);
+		days.add(day2);
+		// Mockito expectations
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
+				any(ZonedDateTime.class))).thenReturn(days);
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNotNull(entity);
+		assertEquals(true, entity instanceof TrnFXWeek);
+		assertEquals(2, entity.getOpeningPrice(), DELTA);
+		assertEquals(400, entity.getHighPrice(), DELTA);
+		assertEquals(1, entity.getLowPrice(), DELTA);
+		assertEquals(300, entity.getFinishPrice(), DELTA);
+
+		/** 5. Test FXType is WEEK */
+		entity = fxDayService.generateFXPeriodData(FXType.MONTH, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNotNull(entity);
+		assertEquals(true, entity instanceof TrnFXMonth);
+		assertEquals(2, entity.getOpeningPrice(), DELTA);
+		assertEquals(400, entity.getHighPrice(), DELTA);
+		assertEquals(1, entity.getLowPrice(), DELTA);
+		assertEquals(300, entity.getFinishPrice(), DELTA);
+
+		/** 6. Test FXDay data not found */
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
+				any(ZonedDateTime.class))).thenReturn(null);
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNull(entity);
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
+				any(ZonedDateTime.class))).thenReturn(new ArrayList<TrnFXDay>());
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		// Validation
+		assertNull(entity);
+	}
+
+	@Test
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxday/generate/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testGenerateFXPeriodData() throws Exception {
@@ -150,6 +303,35 @@ public class FXDayServiceImplTest {
 	}
 
 	@Test
+	public void testOperation4InsertWithMock() throws Exception {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test insert success */
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		// Get TrnFXTick data from DB.
+		TrnFXDay day = new TrnFXDay();
+		day.setTickKey(key);
+
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(trnFXDayRepository.save(any(TrnFXDay.class))).thenReturn(day);
+		// Execute the method being tested
+		TrnFXDay fxDay = fxDayService.operation(day, OperationMode.NEW);
+		// Validation
+		assertEquals(day, fxDay);
+
+		/** 2. Test key duplicated */
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(day));
+		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
+		// Execute the method being tested with validation.
+		assertThatThrownBy(() -> fxDayService.operation(day, OperationMode.NEW)).isInstanceOf(TradeException.class)
+				.hasMessage("Error!");
+	}
+
+	@Test
 	@ExpectedDatabase(value = "/data/fx/service/fxday/operation/expectedData4Insert.xml", table = "trn_fx_day", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Insert() throws Exception {
@@ -172,6 +354,49 @@ public class FXDayServiceImplTest {
 		fxDay.setAvFinishPrice(12);
 		// Do insert.
 		fxDayService.operation(fxDay, OperationMode.NEW);
+	}
+
+	@Test
+	public void testOperation4UpdateWithMock() throws Exception {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test updated data not found */
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		key.setRegistDate(ZonedDateTime.now());
+		// Expected TrnFXTick data.
+		TrnFXDay day = new TrnFXDay();
+		day.setTickKey(key);
+		day.setUpdatedDate(ZonedDateTime.now());
+
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
+		// Execute the method being tested with validation.
+		assertThatThrownBy(() -> fxDayService.operation(day, OperationMode.EDIT)).isInstanceOf(TradeException.class)
+				.hasMessage("Error!");
+
+		/** 2. Test updated data inconsistent */
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(day));
+		// Expected TrnFXTick data.
+		TrnFXDay newSixHour = new TrnFXDay();
+		// Copy all data.
+		BeanUtils.copyProperties(day, newSixHour);
+		newSixHour.setUpdatedDate(ZonedDateTime.now());
+		// Execute the method being tested with validation.
+		assertThatThrownBy(() -> fxDayService.operation(newSixHour, OperationMode.EDIT))
+				.isInstanceOf(TradeException.class).hasMessage("Error!");
+
+		/** 3. Test update success */
+		// Mockito expectations
+		when(trnFXDayRepository.save(any(TrnFXDay.class))).thenReturn(day);
+		// Execute the method being tested
+		TrnFXDay fxDay = fxDayService.operation(day, OperationMode.EDIT);
+		// Validation
+		assertEquals(day, fxDay);
 	}
 
 	@Test
@@ -198,6 +423,49 @@ public class FXDayServiceImplTest {
 		fxDay.setAvFinishPrice(12);
 		// Do insert.
 		fxDayService.operation(fxDay, OperationMode.EDIT);
+	}
+
+	@Test
+	public void testOperation4DeleteWithMock() throws Exception {
+		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
+		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		/** 1. Test deleted data not found */
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		key.setRegistDate(ZonedDateTime.now());
+		// Expected TrnFXTick data.
+		TrnFXDay day = new TrnFXDay();
+		day.setTickKey(key);
+		day.setUpdatedDate(ZonedDateTime.now());
+
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
+		// Execute the method being tested with validation.
+		assertThatThrownBy(() -> fxDayService.operation(day, OperationMode.DELETE)).isInstanceOf(TradeException.class)
+				.hasMessage("Error!");
+
+		/** 2. Test deleted data inconsistent */
+		// Mockito expectations
+		when(trnFXDayRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(day));
+		// Expected TrnFXTick data.
+		TrnFXDay newDay = new TrnFXDay();
+		// Copy all data.
+		BeanUtils.copyProperties(day, newDay);
+		newDay.setUpdatedDate(ZonedDateTime.now());
+		// Execute the method being tested with validation.
+		assertThatThrownBy(() -> fxDayService.operation(newDay, OperationMode.DELETE))
+				.isInstanceOf(TradeException.class).hasMessage("Error!");
+
+		/** 3. Test deleted success */
+		// Mockito expectations
+		doNothing().when(trnFXDayRepository).delete(any(TrnFXDay.class));
+		// Execute the method being tested
+		TrnFXDay fxDay = fxDayService.operation(day, OperationMode.DELETE);
+		// Validation
+		assertNull(fxDay);
 	}
 
 	@Test

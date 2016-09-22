@@ -170,7 +170,7 @@ public class TrnFXHourRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxhour/findinperiod/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxhour/findinperiod/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testFindFXHourInPeriod() throws Exception {
 		// New FXTickKey

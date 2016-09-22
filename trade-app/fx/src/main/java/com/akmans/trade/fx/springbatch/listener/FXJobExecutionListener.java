@@ -17,10 +17,14 @@ public class FXJobExecutionListener implements JobExecutionListener {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXJobExecutionListener.class);
 
-	@Autowired
 	private MailUtil mailUtil;
 
 	private Date beginTime;
+
+	@Autowired
+	FXJobExecutionListener(MailUtil mailUtil) {
+		this.mailUtil = mailUtil;
+	}
 
 	public void beforeJob(JobExecution jobExecution) {
 		beginTime = new Date();
@@ -54,7 +58,7 @@ public class FXJobExecutionListener implements JobExecutionListener {
 			body = body + "Skipped Rows: " + skippedRows + "\n";
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)
+/*		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)
 				|| FXJob.GENERATE_FX_6HOUR_JOB.getValue().equals(jobId)
 				|| FXJob.GENERATE_FX_DAY_JOB.getValue().equals(jobId)
 				|| FXJob.GENERATE_FX_WEEK_JOB.getValue().equals(jobId)
@@ -62,7 +66,33 @@ public class FXJobExecutionListener implements JobExecutionListener {
 			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
 			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Inserted Rows: " + insertedRows + "\n";
-			body = body + "Updated Rows: " + updatedRows + "\n";
+			body = body + "Updated Rows: " + updatedRows + "\n";*/
+		} else if (FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue().equals(jobId)) {
+			int insertedRowsHour = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Hour");
+			int updatedRowsHour = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Hour");
+			int insertedRows6Hour = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "6Hour");
+			int updatedRows6Hour = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "6Hour");
+			int insertedRowsDay = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Day");
+			int updatedRowsDay = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Day");
+			int insertedRowsWeek = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week");
+			int updatedRowsWeek = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Week");
+			int insertedRowsMonth = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Month");
+			int updatedRowsMonth = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month");
+			body = body + "<Hour Data> \n";
+			body = body + "Inserted Rows: " + insertedRowsHour + "\n";
+			body = body + "Updated Rows: " + updatedRowsHour + "\n\n";
+			body = body + "<6Hour Data> \n";
+			body = body + "Inserted Rows: " + insertedRows6Hour + "\n";
+			body = body + "Updated Rows: " + updatedRows6Hour + "\n\n";
+			body = body + "<Day Data> \n";
+			body = body + "Inserted Rows: " + insertedRowsDay + "\n";
+			body = body + "Updated Rows: " + updatedRowsDay + "\n\n";
+			body = body + "<Week Data> \n";
+			body = body + "Inserted Rows: " + insertedRowsWeek + "\n";
+			body = body + "Updated Rows: " + updatedRowsWeek + "\n\n";
+			body = body + "<Month Data> \n";
+			body = body + "Inserted Rows: " + insertedRowsMonth + "\n";
+			body = body + "Updated Rows: " + updatedRowsMonth + "\n\n";
 		}
 		body = body + "------\n";
 		body = body + "Exit Code: " + jobExecution.getExitStatus().getExitCode() + "\n";

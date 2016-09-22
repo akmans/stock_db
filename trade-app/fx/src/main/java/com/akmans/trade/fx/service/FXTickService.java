@@ -10,13 +10,11 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 public interface FXTickService {
-	public void operation(TrnFXTick tick, OperationMode mode) throws TradeException;
+	public TrnFXTick operation(TrnFXTick tick, OperationMode mode) throws TradeException;
 
 	public TrnFXTick findOne(FXTickKey key) throws TradeException;
 
 	public boolean exist(FXTickKey key);
 
 	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom);
-
-	public int markProcessed(String currencyPair, ZonedDateTime dateTime);
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.FXType;
@@ -26,43 +25,43 @@ public class FXDayServiceImpl implements FXDayService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXDayServiceImpl.class);
 
-	@Autowired
 	private MessageService messageService;
 
-	@Autowired
 	private TrnFXDayRepository trnFXDayRepository;
 
 	@Autowired
-	AuditorAware<String> auditor;
+	FXDayServiceImpl(TrnFXDayRepository trnFXDayRepository, MessageService messageService) {
+		this.trnFXDayRepository = trnFXDayRepository;
+		this.messageService = messageService;
+	}
 
-	public void operation(TrnFXDay tick, OperationMode mode) throws TradeException {
+	public TrnFXDay operation(TrnFXDay tick, OperationMode mode) throws TradeException {
 		logger.debug("the tick is {}", tick);
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
 			Optional<TrnFXDay> result = trnFXDayRepository.findOne(tick.getTickKey());
 			if (result.isPresent()) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.alreadyexist", tick.getTickKey()));
 			}
-			trnFXDayRepository.save(tick);
-			break;
+			return trnFXDayRepository.save(tick);
 		}
 		case EDIT: {
 			Optional<TrnFXDay> origin = trnFXDayRepository.findOne(tick.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
 			}
-			trnFXDayRepository.save(tick);
-			break;
+			return trnFXDayRepository.save(tick);
 		}
 		case DELETE: {
 			Optional<TrnFXDay> origin = trnFXDayRepository.findOne(tick.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
 			}
 			trnFXDayRepository.delete(tick);
 		}
 		}
+		return null;
 	}
 
 	public Optional<TrnFXDay> findOne(FXTickKey key) {

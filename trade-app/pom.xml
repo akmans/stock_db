@@ -38,10 +38,11 @@
 		<!-- jackson.version>1.9.7</jackson.version -->
 		<google-collections.version>1.0</google-collections.version>
 		<commons-lang.version>2.2</commons-lang.version>
+		<commons-collections.version>3.2.1</commons-collections.version>
 		<assertj-core.version>3.2.0</assertj-core.version>
 		<dbunit.version>2.5.1</dbunit.version>
 		<spring-test-dbunit.version>1.2.1</spring-test-dbunit.version>
-		<hsqldb.version>2.0.0</hsqldb.version>
+		<mockito-core.version>2.1.0-RC.1</mockito-core.version>
 	</properties>
 
 	<dependencies>
@@ -202,6 +203,7 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-test</artifactId>
 			<version>${spring.batch.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Spring Data -->
@@ -372,6 +374,13 @@
 			<version>${commons-lang.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commons-collections.version}</version>
+		</dependency>
+
 		<!-- AssertJ for ensuring that the tested method returns the correct information. -->
 		<dependency>
 			<groupId>org.assertj</groupId>
@@ -400,6 +409,14 @@
 			<groupId>com.github.springtestdbunit</groupId>
 			<artifactId>spring-test-dbunit</artifactId>
 			<version>${spring-test-dbunit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Integrates DbUnit with the Spring Test framework. -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

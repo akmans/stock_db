@@ -1,18 +1,12 @@
 package com.akmans.trade.fx.service.impl;
 
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
@@ -34,46 +28,43 @@ public class FXTickServiceImpl implements FXTickService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXTickServiceImpl.class);
 
-	@Autowired
 	private MessageService messageService;
 
-	@Autowired
 	private TrnFXTickRepository trnFXTickRepository;
 
 	@Autowired
-	private LocalContainerEntityManagerFactoryBean emf;
+	FXTickServiceImpl(TrnFXTickRepository trnFXTickRepository, MessageService messageService) {
+		this.trnFXTickRepository = trnFXTickRepository;
+		this.messageService = messageService;
+	}
 
-	@Autowired
-	AuditorAware<String> auditor;
-
-	public void operation(TrnFXTick tick, OperationMode mode) throws TradeException {
+	public TrnFXTick operation(TrnFXTick tick, OperationMode mode) throws TradeException {
 		logger.debug("the tick is {}", tick);
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
 			Optional<TrnFXTick> result = trnFXTickRepository.findOne(tick.getTickKey());
 			if (result.isPresent()) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.alreadyexist", tick.getTickKey()));
 			}
-			trnFXTickRepository.save(tick);
-			break;
+			return trnFXTickRepository.save(tick);
 		}
 		case EDIT: {
 			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
 			}
-			trnFXTickRepository.save(tick);
-			break;
+			return trnFXTickRepository.save(tick);
 		}
 		case DELETE: {
 			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
 			}
 			trnFXTickRepository.delete(tick);
 		}
 		}
+		return null;
 	}
 
 	public TrnFXTick findOne(FXTickKey key) throws TradeException {
@@ -81,7 +72,7 @@ public class FXTickServiceImpl implements FXTickService {
 		if (tick.isPresent()) {
 			return tick.get();
 		} else {
-			throw new TradeException(messageService.getMessage("TODO", key.toString()));
+			throw new TradeException(messageService.getMessage("core.service.record.notfound", key.toString()));
 		}
 	}
 
@@ -179,27 +170,4 @@ public class FXTickServiceImpl implements FXTickService {
 			return fxEntity;
 		}
 	}
-
-	@Transactional
-	public int markProcessed(String currencyPair, ZonedDateTime dateTime) {
-		ZonedDateTime dateTimeFrom = dateTime.truncatedTo(ChronoUnit.HOURS);
-		ZonedDateTime dateTimeTo = dateTimeFrom.plusHours(1);
-		// Create entity manager.
-		EntityManager em = emf.getObject().createEntityManager();
-		// Join transaction.
-		em.joinTransaction();
-		int changes = em
-//				.createNativeQuery("update trn_fx_tick set process_flag = :flag, updated_by = :updater, updated_date = :date"
-//						+ " where currency_pair = :currencyPair and regist_date >= :dateFrom and regist_date < :dateTo")
-				.createQuery("update TrnFXTick tick set tick.processedFlag = :flag, tick.updatedBy = :updater, tick.updatedDate = :date"
-						+ " where tick.tickKey.currencyPair = :currencyPair and tick.tickKey.registDate >= :dateFrom and tick.tickKey.registDate < :dateTo")
-				.setParameter("flag", 1).setParameter("updater", auditor.getCurrentAuditor())
-				.setParameter("date", ZonedDateTime.now()).setParameter("currencyPair", currencyPair)
-				.setParameter("dateFrom", dateTimeFrom).setParameter("dateTo", dateTimeTo).executeUpdate();
-		logger.debug("{} records were updated.", changes);
-		// Close entity manager.
-		em.close();
-		// Return numbers of updated records.
-		return changes;
-	};
 }

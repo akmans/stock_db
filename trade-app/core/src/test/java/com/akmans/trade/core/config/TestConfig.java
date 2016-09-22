@@ -19,12 +19,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.akmans.trade.core.Application;
+import com.akmans.trade.core.console.config.LauncherConfig;
 import com.akmans.trade.core.enums.RunningMode;
 
 @Configuration
 @ActiveProfiles("test")
 @PropertySource("classpath:/META-INF/config/test-config.properties")
-@Import({ TradeCoreConfig.class })
+@Import({ LauncherConfig.class })
 public class TestConfig {
 
 	@Autowired

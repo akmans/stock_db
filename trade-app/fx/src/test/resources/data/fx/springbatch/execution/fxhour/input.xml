@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- 1st hour -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.456" bid_price="100" ask_price="200" mid_price="11" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="audjpy" regist_date="2016-01-02 01:02:03.456" bid_price="100" ask_price="200" mid_price="18" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.457" bid_price="100" ask_price="200" mid_price="12" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.458" bid_price="100" ask_price="200" mid_price="13" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.459" bid_price="100" ask_price="200" mid_price="10" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.460" bid_price="100" ask_price="200" mid_price="14" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.460" bid_price="100" ask_price="200" mid_price="15" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.461" bid_price="100" ask_price="200" mid_price="16" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:04.456" bid_price="100" ask_price="200" mid_price="11.5" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:05.456" bid_price="100" ask_price="200" mid_price="10.12" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:06:03.456" bid_price="100" ask_price="200" mid_price="13" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:07:03.456" bid_price="100" ask_price="200" mid_price="12.2" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<!-- 2nd hour -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 02:02:03.456" bid_price="100" ask_price="200" mid_price="1" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 02:03:03.456" bid_price="100" ask_price="200" mid_price="2" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<!-- 3rd hour -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 04:02:03.456" bid_price="100" ask_price="200" mid_price="3" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<!-- 4th hour -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-03 01:02:03.456" bid_price="100" ask_price="200" mid_price="4" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_hour currency_pair="usdjpy" regist_date="2016-01-03 01:00:00.000" opening_price="2" high_price="4" low_price="1" finish_price="3" av_opening_price="5" av_finish_price="6" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<!-- 5th hour -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-31 01:02:03.456" bid_price="100" ask_price="200" mid_price="5" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<!-- 6th hour(Not Processed) -->
+	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-02-02 01:02:03.456" bid_price="100" ask_price="200" mid_price="6" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+</dataset>

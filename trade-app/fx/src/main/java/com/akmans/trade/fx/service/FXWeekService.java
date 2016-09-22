@@ -8,7 +8,7 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 public interface FXWeekService {
-	public void operation(TrnFXWeek tick, OperationMode mode) throws TradeException;
+	public TrnFXWeek operation(TrnFXWeek tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFXWeek> findOne(FXTickKey key);
 

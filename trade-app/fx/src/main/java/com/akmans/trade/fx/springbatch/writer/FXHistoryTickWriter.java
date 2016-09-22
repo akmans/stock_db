@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 @Component
+@StepScope
 public class FXHistoryTickWriter implements ItemWriter<FXTick>, StepExecutionListener {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXHistoryTickWriter.class);

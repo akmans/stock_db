@@ -11,7 +11,7 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 public interface FXDayService {
-	public void operation(TrnFXDay tick, OperationMode mode) throws TradeException;
+	public TrnFXDay operation(TrnFXDay tick, OperationMode mode) throws TradeException;
 
 	public Optional<TrnFXDay> findOne(FXTickKey key);
 

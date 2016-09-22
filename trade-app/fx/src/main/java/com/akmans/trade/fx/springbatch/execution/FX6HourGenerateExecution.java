@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -25,41 +26,41 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FX6HourService;
 import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXHour;
 
 @Component
+@StepScope
 public class FX6HourGenerateExecution extends StepExecutionListenerSupport implements Tasklet {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FX6HourGenerateExecution.class);
 
-	private String currencyPair;
-
-	private String processedMonth;
-
-	@Autowired
 	private FXHourService fxHourService;
 
-	@Autowired
 	private FX6HourService fx6HourService;
 
 	private StepExecution stepExecution;
 
+	@Autowired
+	FX6HourGenerateExecution(FXHourService fxHourService, FX6HourService fx6HourService) {
+		this.fxHourService = fxHourService;
+		this.fx6HourService = fx6HourService;
+	}
+
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
 		// Initialize inserted rows as 0.
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "6Hour", 0);
 		// Initialize updated rows as 0.
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
-		JobParameters jobParameters = stepExecution.getJobParameters();
-		// Get currency pair from job parameters.
-		currencyPair = jobParameters.getString("currencyPair");
-		// Get processed month from job parameters.
-		processedMonth = jobParameters.getString("processedMonth");
-		logger.debug("The currencyPair is {}", currencyPair);
-		logger.debug("The processedMonth is {}", processedMonth);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "6Hour", 0);
 	}
 
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		JobParameters jobParameters = stepExecution.getJobParameters();
+		// Get currency pair from job parameters.
+		String currencyPair = jobParameters.getString("currencyPair");
+		// Get processed month from job parameters.
+		String processedMonth = jobParameters.getString("processedMonth");
+		logger.debug("The currencyPair is {}", currencyPair);
+		logger.debug("The processedMonth is {}", processedMonth);
 		// Get first hour.
 		ZonedDateTime currentDatetime = getFirst6HourOfMonth(processedMonth);
 		// Get end day.
@@ -130,13 +131,13 @@ public class FX6HourGenerateExecution extends StepExecutionListenerSupport imple
 	}
 
 	private void countInsertedRows(int cnt) {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + cnt);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "6Hour",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "6Hour", 0) + cnt);
 	}
 
 	private void countUpdatedRows(int cnt) {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + cnt);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "6Hour",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "6Hour", 0) + cnt);
 	}
 
 	private ZonedDateTime getFirst6HourOfMonth(String processedMonth) {

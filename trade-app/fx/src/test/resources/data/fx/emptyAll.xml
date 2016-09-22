@@ -6,4 +6,10 @@
 	<trn_fx_day />
 	<trn_fx_week />
 	<trn_fx_month />
+	<batch_job_instance />
+	<batch_job_execution />
+	<batch_job_execution_context />
+	<batch_job_execution_params />
+	<batch_step_execution />
+	<batch_step_execution_context />
 </dataset>

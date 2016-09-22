@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Service;
 
 import com.akmans.trade.core.enums.FXType;
@@ -28,43 +27,43 @@ public class FXHourServiceImpl implements FXHourService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXHourServiceImpl.class);
 
-	@Autowired
 	private MessageService messageService;
 
-	@Autowired
 	private TrnFXHourRepository trnFXHourRepository;
 
 	@Autowired
-	AuditorAware<String> auditor;
+	FXHourServiceImpl(TrnFXHourRepository trnFXHourRepository, MessageService messageService) {
+		this.trnFXHourRepository = trnFXHourRepository;
+		this.messageService = messageService;
+	}
 
-	public void operation(TrnFXHour fxHour, OperationMode mode) throws TradeException {
+	public TrnFXHour operation(TrnFXHour fxHour, OperationMode mode) throws TradeException {
 		logger.debug("the FX Hour is {}", fxHour);
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
 			Optional<TrnFXHour> result = trnFXHourRepository.findOne(fxHour.getTickKey());
 			if (result.isPresent()) {
-				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.alreadyexist", fxHour.getTickKey()));
 			}
-			trnFXHourRepository.save(fxHour);
-			break;
+			return trnFXHourRepository.save(fxHour);
 		}
 		case EDIT: {
 			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(fxHour.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(fxHour.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", fxHour.getTickKey()));
 			}
-			trnFXHourRepository.save(fxHour);
-			break;
+			return trnFXHourRepository.save(fxHour);
 		}
 		case DELETE: {
 			Optional<TrnFXHour> origin = trnFXHourRepository.findOne(fxHour.getTickKey());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(fxHour.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("TODO", fxHour.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", fxHour.getTickKey()));
 			}
 			trnFXHourRepository.delete(fxHour);
 		}
 		}
+		return null;
 	}
 
 	public Optional<TrnFXHour> findOne(FXTickKey key) {
