@@ -1,8 +1,6 @@
 package com.akmans.trade.fx.springbatch.processor;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,8 +54,7 @@ public class HistoryTickConvertProcessor implements ItemProcessor<CsvHistoryTick
 			if (!StringUtils.isBlank(item.getRegistDate())) {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 				LocalDateTime dateTime = LocalDateTime.parse(item.getRegistDate(), formatter);
-				ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-				tick.setRegistDate(result);
+				tick.setRegistDate(dateTime);
 			} else {
 				logger.warn("The regist date is empty! item = {}", item);
 				failed = true;

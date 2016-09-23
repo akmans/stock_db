@@ -1,7 +1,7 @@
 package com.akmans.trade.fx.springdata.jpa.keys;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,8 +17,8 @@ public class FXTickKey implements Serializable {
 	private String currencyPair;
 
 	@Column(name = "regist_date", nullable = false)
-	@Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentZonedDateTime")
-	private ZonedDateTime registDate;
+	@Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+	private LocalDateTime registDate;
 
 	public void setCurrencyPair(String currencyPair) {
 		this.currencyPair = currencyPair;
@@ -28,11 +28,11 @@ public class FXTickKey implements Serializable {
 		return this.currencyPair;
 	}
 
-	public void setRegistDate(ZonedDateTime registDate) {
+	public void setRegistDate(LocalDateTime registDate) {
 		this.registDate = registDate;
 	}
 
-	public ZonedDateTime getRegistDate() {
+	public LocalDateTime getRegistDate() {
 		return this.registDate;
 	}
 

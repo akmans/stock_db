@@ -1,8 +1,6 @@
 package com.akmans.trade.fx.springbatch.execution;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -62,9 +60,9 @@ public class FX6HourGenerateExecution extends StepExecutionListenerSupport imple
 		logger.debug("The currencyPair is {}", currencyPair);
 		logger.debug("The processedMonth is {}", processedMonth);
 		// Get first hour.
-		ZonedDateTime currentDatetime = getFirst6HourOfMonth(processedMonth);
+		LocalDateTime currentDatetime = getFirst6HourOfMonth(processedMonth);
 		// Get end day.
-		ZonedDateTime endDay = currentDatetime.plusMonths(1);
+		LocalDateTime endDay = currentDatetime.plusMonths(1);
 		// Inserted rows counter.
 		int insertedCnt = 0;
 		// updated rows counter.
@@ -140,10 +138,9 @@ public class FX6HourGenerateExecution extends StepExecutionListenerSupport imple
 				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "6Hour", 0) + cnt);
 	}
 
-	private ZonedDateTime getFirst6HourOfMonth(String processedMonth) {
+	private LocalDateTime getFirst6HourOfMonth(String processedMonth) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse(processedMonth + "01 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		return result.truncatedTo(ChronoUnit.HOURS);
+		return dateTime.truncatedTo(ChronoUnit.HOURS);
 	}
 }

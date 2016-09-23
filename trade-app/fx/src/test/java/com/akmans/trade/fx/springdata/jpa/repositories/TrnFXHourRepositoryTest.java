@@ -3,8 +3,6 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +51,7 @@ public class TrnFXHourRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New Calendar data.
 		Optional<TrnFXHour> fxHour = fxHourRepository.findOne(key);
 		logger.debug("The FXHour is {}.", fxHour.get());
@@ -91,9 +87,7 @@ public class TrnFXHourRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXHour> fxHour = fxHourRepository.findOne(key);
 		// Check result.
@@ -105,11 +99,11 @@ public class TrnFXHourRepositoryTest {
 		assertEquals(false, fxHour.isPresent());
 
 		// Test findPrevious method.
-		Optional<TrnFXHour> fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result);
+		Optional<TrnFXHour> fxPreviousHour = fxHourRepository.findPrevious("usdjpy", dateTime);
 		// Check result.
 		assertEquals(false, fxPreviousHour.isPresent());
 		// Next hour.
-		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result.plusHours(1));
+		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", dateTime.plusHours(1));
 		// Check result.
 		assertEquals(true, fxPreviousHour.isPresent());
 		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
@@ -120,7 +114,7 @@ public class TrnFXHourRepositoryTest {
 		assertEquals(1.5, fxPreviousHour.get().getAvOpeningPrice(), DELTA);
 		assertEquals(2.5, fxPreviousHour.get().getAvFinishPrice(), DELTA);
 		// Another next hour.
-		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", result.plusHours(2));
+		fxPreviousHour = fxHourRepository.findPrevious("usdjpy", dateTime.plusHours(2));
 		// Check result.
 		assertEquals(true, fxPreviousHour.isPresent());
 		assertEquals("usdjpy", fxPreviousHour.get().getTickKey().getCurrencyPair());
@@ -141,9 +135,7 @@ public class TrnFXHourRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXHour data.
 		TrnFXHour fxHour = new TrnFXHour();
 		fxHour.setTickKey(key);
@@ -178,27 +170,25 @@ public class TrnFXHourRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB.
-		List<TrnFXHour> ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusHours(1));
+		List<TrnFXHour> ticks = fxHourRepository.findFXHourInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
 		// Check result.
 		assertEquals(4, ticks.size());
 		// Get one from DB.
-		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusHours(6));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
 		// Check result.
 		assertEquals(6, ticks.size());
 		// Get one from DB.
-		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusDays(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
 		// Check result.
 		assertEquals(8, ticks.size());
 		// Get one from DB.
-		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusWeeks(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
 		// Check result.
 		assertEquals(10, ticks.size());
 		// Get one from DB.
-		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", result, result.plusMonths(1));
+		ticks = fxHourRepository.findFXHourInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
 		// Check result.
 		assertEquals(12, ticks.size());
 	}

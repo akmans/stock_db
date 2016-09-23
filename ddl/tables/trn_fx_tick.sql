@@ -4,6 +4,7 @@
 
 CREATE TABLE trn_fx_tick
 (
+  code serial NOT NULL,
   currency_pair char(6) NOT NULL,
   regist_date timestamp without time zone NOT NULL,
   bid_price numeric(10, 6) NOT NULL,
@@ -14,6 +15,6 @@ CREATE TABLE trn_fx_tick
   updated_date timestamp with time zone default current_timestamp,
   created_by character varying(20) default 'default',
   updated_by character varying(20) default 'default'
---  ,CONSTRAINT trn_fx_tick_pkey PRIMARY KEY (currency_pair, regist_date)
+  ,CONSTRAINT trn_fx_tick_pkey PRIMARY KEY (code)
 );
 CREATE INDEX idx_fx_tick ON trn_fx_tick (currency_pair, regist_date);

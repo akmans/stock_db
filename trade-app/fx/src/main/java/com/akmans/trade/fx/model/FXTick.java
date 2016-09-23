@@ -1,12 +1,12 @@
 package com.akmans.trade.fx.model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class FXTick {
 
 	private String currencyPair;
 
-	private ZonedDateTime registDate;
+	private LocalDateTime registDate;
 
 	private double bidPrice;
 
@@ -22,11 +22,11 @@ public class FXTick {
 		return this.currencyPair;
 	}
 
-	public void setRegistDate(ZonedDateTime registDate) {
+	public void setRegistDate(LocalDateTime registDate) {
 		this.registDate = registDate;
 	}
 
-	public ZonedDateTime getRegistDate() {
+	public LocalDateTime getRegistDate() {
 		return this.registDate;
 	}
 

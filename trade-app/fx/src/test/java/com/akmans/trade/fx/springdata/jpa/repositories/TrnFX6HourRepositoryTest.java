@@ -3,8 +3,6 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +51,7 @@ public class TrnFX6HourRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New Calendar data.
 		Optional<TrnFX6Hour> fx6Hour = fx6HourRepository.findOne(key);
 		logger.debug("The FX6Hour is {}.", fx6Hour.get());
@@ -91,9 +87,7 @@ public class TrnFX6HourRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFX6Hour> fx6Hour = fx6HourRepository.findOne(key);
 		// Check result.
@@ -113,11 +107,11 @@ public class TrnFX6HourRepositoryTest {
 		assertEquals(false, fx6Hour.isPresent());
 
 		// Test findPrevious method.
-		Optional<TrnFX6Hour> fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result);
+		Optional<TrnFX6Hour> fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", dateTime);
 		// Check result.
 		assertEquals(false, fxPrevious6Hour.isPresent());
 		// Next 6hour.
-		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result.plusHours(6));
+		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", dateTime.plusHours(6));
 		// Check result.
 		assertEquals(true, fxPrevious6Hour.isPresent());
 		assertEquals("usdjpy", fxPrevious6Hour.get().getTickKey().getCurrencyPair());
@@ -128,7 +122,7 @@ public class TrnFX6HourRepositoryTest {
 		assertEquals(1.5, fxPrevious6Hour.get().getAvOpeningPrice(), DELTA);
 		assertEquals(2.5, fxPrevious6Hour.get().getAvFinishPrice(), DELTA);
 		// Another next 6hour.
-		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", result.plusHours(12));
+		fxPrevious6Hour = fx6HourRepository.findPrevious("usdjpy", dateTime.plusHours(12));
 		// Check result.
 		assertEquals(true, fxPrevious6Hour.isPresent());
 		assertEquals("usdjpy", fxPrevious6Hour.get().getTickKey().getCurrencyPair());
@@ -149,9 +143,7 @@ public class TrnFX6HourRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFX6Hour data.
 		TrnFX6Hour fx6Hour = new TrnFX6Hour();
 		fx6Hour.setTickKey(key);

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -49,8 +47,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class FXDayServiceImplTest {
-
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXDayServiceImplTest.class);
 
 	private static final double DELTA = 1e-15;
 
@@ -102,14 +98,14 @@ public class FXDayServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected Day data.
 		TrnFXDay day = new TrnFXDay();
 		day.setTickKey(key);
 		Optional<TrnFXDay> option = Optional.of(day);
 
 		// Mockito expectations
-		when(trnFXDayRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(option);
+		when(trnFXDayRepository.findPrevious(any(String.class), any(LocalDateTime.class))).thenReturn(option);
 		// Execute the method being tested
 		fxDay = fxDayService.findPrevious(key);
 		// Validation
@@ -118,7 +114,7 @@ public class FXDayServiceImplTest {
 
 		/** 3. Test not found */
 		// Mockito expectations
-		when(trnFXDayRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(Optional.empty());
+		when(trnFXDayRepository.findPrevious(any(String.class), any(LocalDateTime.class))).thenReturn(Optional.empty());
 		// Execute the method being tested
 		fxDay = fxDayService.findPrevious(key);
 		// Validation
@@ -134,9 +130,7 @@ public class FXDayServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXDay> day = fxDayService.findOne(key);
 		// Check result.
@@ -187,17 +181,17 @@ public class FXDayServiceImplTest {
 		MessageService messageService = Mockito.mock(MessageService.class);
 		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
 		/** 1. Test FXType is HOUR */
-		AbstractFXEntity entity = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", ZonedDateTime.now());
+		AbstractFXEntity entity = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
 
 		/** 2. Test FXType is SIXHOUR */
-		entity = fxDayService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", ZonedDateTime.now());
+		entity = fxDayService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
 
 		/** 3. Test FXType is DAY */
-		entity = fxDayService.generateFXPeriodData(FXType.DAY, "usdjpy", ZonedDateTime.now());
+		entity = fxDayService.generateFXPeriodData(FXType.DAY, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
 
@@ -222,9 +216,9 @@ public class FXDayServiceImplTest {
 		day2.setFinishPrice(300);
 		days.add(day2);
 		// Mockito expectations
-		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(days);
-		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(days);
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXWeek);
@@ -234,7 +228,7 @@ public class FXDayServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 5. Test FXType is WEEK */
-		entity = fxDayService.generateFXPeriodData(FXType.MONTH, "usdjpy", ZonedDateTime.now());
+		entity = fxDayService.generateFXPeriodData(FXType.MONTH, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXMonth);
@@ -244,14 +238,14 @@ public class FXDayServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 6. Test FXDay data not found */
-		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(null);
-		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(null);
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
-		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(new ArrayList<TrnFXDay>());
-		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		when(trnFXDayRepository.findFXDayInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(new ArrayList<TrnFXDay>());
+		entity = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
 	}
@@ -260,31 +254,26 @@ public class FXDayServiceImplTest {
 	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxday/generate/input.xml")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testGenerateFXPeriodData() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
+		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160103 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// Get one from DB.
-		AbstractFXEntity hour = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", result);
+		AbstractFXEntity hour = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", dateTime);
 		// Check result.
 		assertNull(hour);
 
 		// Get one from DB.
-		AbstractFXEntity sixHour = fxDayService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", result);
+		AbstractFXEntity sixHour = fxDayService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", dateTime);
 		// Check result.
 		assertNull(sixHour);
 
 		// Get one from DB.
-		AbstractFXEntity day = fxDayService.generateFXPeriodData(FXType.DAY, "usdjpy", result);
+		AbstractFXEntity day = fxDayService.generateFXPeriodData(FXType.DAY, "usdjpy", dateTime);
 		// Check result.
 		assertNull(day);
 
 		// Get one from DB.
-		AbstractFXEntity week = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", result);
+		AbstractFXEntity week = fxDayService.generateFXPeriodData(FXType.WEEK, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, week instanceof TrnFXWeek);
 		assertEquals(12, week.getOpeningPrice(), DELTA);
@@ -293,7 +282,7 @@ public class FXDayServiceImplTest {
 		assertEquals(36, week.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity month = fxDayService.generateFXPeriodData(FXType.MONTH, "usdjpy", result);
+		AbstractFXEntity month = fxDayService.generateFXPeriodData(FXType.MONTH, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, month instanceof TrnFXMonth);
 		assertEquals(12, month.getOpeningPrice(), DELTA);
@@ -340,9 +329,7 @@ public class FXDayServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFXDay fxDay = new TrnFXDay();
 		fxDay.setTickKey(key);
@@ -365,7 +352,7 @@ public class FXDayServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXDay day = new TrnFXDay();
 		day.setTickKey(key);
@@ -409,9 +396,7 @@ public class FXDayServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFXDay fxDay = fxDayService.findOne(key).get();
 		fxDay.setTickKey(key);
@@ -434,7 +419,7 @@ public class FXDayServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXDay day = new TrnFXDay();
 		day.setTickKey(key);
@@ -478,9 +463,7 @@ public class FXDayServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXTick data.
 		Optional<TrnFXDay> fxDay = fxDayService.findOne(key);
 		// Delete one from DB.

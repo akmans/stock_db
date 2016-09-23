@@ -17,6 +17,7 @@ CLASSPATH="${CLASSPATH}:classes"
 
 echo "-------- Starting ... --------"
 
-java -Dlogback.configurationFile="${HOME}/classes/resources/logback.xml" -cp $CLASSPATH com.akmans.trade.standalone.console.GenerateJapanStockWeeklyApp 1991
+java -Dlogback.configurationFile="${HOME}/classes/resources/logback.xml" \
+    -cp $CLASSPATH com.akmans.trade.fx.console.GenerateCandlestickDataApp $1 $2
 
 echo "-------- Finished ! ----------"

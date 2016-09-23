@@ -3,8 +3,6 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +51,7 @@ public class TrnFXDayRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New Calendar data.
 		Optional<TrnFXDay> fxDay = fxDayRepository.findOne(key);
 		logger.debug("The FXDay is {}.", fxDay.get());
@@ -91,9 +87,7 @@ public class TrnFXDayRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXDay> fxDay = fxDayRepository.findOne(key);
 		// Check result.
@@ -105,11 +99,11 @@ public class TrnFXDayRepositoryTest {
 		assertEquals(false, fxDay.isPresent());
 
 		// Test findPrevious method.
-		Optional<TrnFXDay> fxPreviousDay = fxDayRepository.findPrevious("usdjpy", result);
+		Optional<TrnFXDay> fxPreviousDay = fxDayRepository.findPrevious("usdjpy", dateTime);
 		// Check result.
 		assertEquals(false, fxPreviousDay.isPresent());
 		// Next day.
-		fxPreviousDay = fxDayRepository.findPrevious("usdjpy", result.plusDays(1));
+		fxPreviousDay = fxDayRepository.findPrevious("usdjpy", dateTime.plusDays(1));
 		// Check result.
 		assertEquals(true, fxPreviousDay.isPresent());
 		assertEquals("usdjpy", fxPreviousDay.get().getTickKey().getCurrencyPair());
@@ -120,7 +114,7 @@ public class TrnFXDayRepositoryTest {
 		assertEquals(1.5, fxPreviousDay.get().getAvOpeningPrice(), DELTA);
 		assertEquals(2.5, fxPreviousDay.get().getAvFinishPrice(), DELTA);
 		// Another next day.
-		fxPreviousDay = fxDayRepository.findPrevious("usdjpy", result.plusDays(2));
+		fxPreviousDay = fxDayRepository.findPrevious("usdjpy", dateTime.plusDays(2));
 		// Check result.
 		assertEquals(true, fxPreviousDay.isPresent());
 		assertEquals("usdjpy", fxPreviousDay.get().getTickKey().getCurrencyPair());
@@ -141,9 +135,7 @@ public class TrnFXDayRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXDay data.
 		TrnFXDay fxDay = new TrnFXDay();
 		fxDay.setTickKey(key);
@@ -178,19 +170,17 @@ public class TrnFXDayRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB.
-		List<TrnFXDay> ticks = fxDayRepository.findFXDayInPeriod("usdjpy", result, result.plusDays(1));
+		List<TrnFXDay> ticks = fxDayRepository.findFXDayInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
 		// Check result.
 		assertEquals(1, ticks.size());
 		// Get one from DB.
-		ticks = fxDayRepository.findFXDayInPeriod("usdjpy", result, result.plusWeeks(1));
+		ticks = fxDayRepository.findFXDayInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
 		// Check result.
 		assertEquals(7, ticks.size());
 		// Get one from DB.
-		ticks = fxDayRepository.findFXDayInPeriod("usdjpy", result, result.plusMonths(1));
+		ticks = fxDayRepository.findFXDayInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
 		// Check result.
 		assertEquals(11, ticks.size());
 	}

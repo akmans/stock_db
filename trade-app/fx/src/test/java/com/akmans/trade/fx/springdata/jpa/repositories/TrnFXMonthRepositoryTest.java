@@ -3,8 +3,6 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +21,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -54,9 +51,7 @@ public class TrnFXMonthRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160101 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New Calendar data.
 		Optional<TrnFXMonth> fxMonth = fxMonthRepository.findOne(key);
 		logger.debug("The FXMonth is {}.", fxMonth.get());
@@ -92,9 +87,7 @@ public class TrnFXMonthRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160101 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXMonth> fxMonth = fxMonthRepository.findOne(key);
 		// Check result.
@@ -106,11 +99,11 @@ public class TrnFXMonthRepositoryTest {
 		assertEquals(false, fxMonth.isPresent());
 
 		// Test findPrevious method.
-		Optional<TrnFXMonth> fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result);
+		Optional<TrnFXMonth> fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", dateTime);
 		// Check result.
 		assertEquals(false, fxPreviousMonth.isPresent());
 		// Next hour.
-		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result.plusMonths(1));
+		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", dateTime.plusMonths(1));
 		// Check result.
 		assertEquals(true, fxPreviousMonth.isPresent());
 		assertEquals("usdjpy", fxPreviousMonth.get().getTickKey().getCurrencyPair());
@@ -121,7 +114,7 @@ public class TrnFXMonthRepositoryTest {
 		assertEquals(1.5, fxPreviousMonth.get().getAvOpeningPrice(), DELTA);
 		assertEquals(2.5, fxPreviousMonth.get().getAvFinishPrice(), DELTA);
 		// Another next hour.
-		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", result.plusMonths(2));
+		fxPreviousMonth = fxMonthRepository.findPrevious("usdjpy", dateTime.plusMonths(2));
 		// Check result.
 		assertEquals(true, fxPreviousMonth.isPresent());
 		assertEquals("usdjpy", fxPreviousMonth.get().getTickKey().getCurrencyPair());
@@ -142,9 +135,7 @@ public class TrnFXMonthRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160101 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXMonth data.
 		TrnFXMonth fxMonth = new TrnFXMonth();
 		fxMonth.setTickKey(key);

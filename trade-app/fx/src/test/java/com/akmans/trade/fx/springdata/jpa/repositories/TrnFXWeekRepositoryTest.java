@@ -3,8 +3,6 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +51,7 @@ public class TrnFXWeekRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New Calendar data.
 		Optional<TrnFXWeek> fxWeek = fxWeekRepository.findOne(key);
 		logger.debug("The FXWeek is {}.", fxWeek.get());
@@ -91,9 +87,7 @@ public class TrnFXWeekRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXWeek> fxWeek = fxWeekRepository.findOne(key);
 		// Check result.
@@ -105,11 +99,11 @@ public class TrnFXWeekRepositoryTest {
 		assertEquals(false, fxWeek.isPresent());
 
 		// Test findPrevious method.
-		Optional<TrnFXWeek> fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result);
+		Optional<TrnFXWeek> fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", dateTime);
 		// Check result.
 		assertEquals(false, fxPreviousWeek.isPresent());
 		// Next hour.
-		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result.plusWeeks(1));
+		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", dateTime.plusWeeks(1));
 		// Check result.
 		assertEquals(true, fxPreviousWeek.isPresent());
 		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
@@ -120,7 +114,7 @@ public class TrnFXWeekRepositoryTest {
 		assertEquals(1.5, fxPreviousWeek.get().getAvOpeningPrice(), DELTA);
 		assertEquals(2.5, fxPreviousWeek.get().getAvFinishPrice(), DELTA);
 		// Another next hour.
-		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", result.plusWeeks(2));
+		fxPreviousWeek = fxWeekRepository.findPrevious("usdjpy", dateTime.plusWeeks(2));
 		// Check result.
 		assertEquals(true, fxPreviousWeek.isPresent());
 		assertEquals("usdjpy", fxPreviousWeek.get().getTickKey().getCurrencyPair());
@@ -141,9 +135,7 @@ public class TrnFXWeekRepositoryTest {
 		key.setCurrencyPair("audjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXWeek data.
 		TrnFXWeek fxWeek = new TrnFXWeek();
 		fxWeek.setTickKey(key);

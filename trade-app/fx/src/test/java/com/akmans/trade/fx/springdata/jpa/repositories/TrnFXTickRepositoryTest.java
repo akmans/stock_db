@@ -3,15 +3,12 @@ package com.akmans.trade.fx.springdata.jpa.repositories;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +33,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class TrnFXTickRepositoryTest {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXTickRepositoryTest.class);
-
 	@Autowired
 	private TrnFXTickRepository fxTickRepository;
 
@@ -46,16 +41,8 @@ public class TrnFXTickRepositoryTest {
 	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/delete/expectedData.xml", table = "trn_fx_tick")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("audjpy");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
-		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
-		// New Calendar data.
-		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(key);
+		// New FXTick data.
+		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(1001L);
 		// New Calendar data.
 		fxTickRepository.delete(fxTick.get());
 	}
@@ -83,21 +70,12 @@ public class TrnFXTickRepositoryTest {
 		Long count = fxTickRepository.count();
 		assertEquals(18, count.longValue());
 
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("audjpy");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
-		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// Get one from DB by key.
-		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(key);
+		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(1007L);
 		// Check result.
 		assertEquals(true, fxTick.isPresent());
-		key.setCurrencyPair("nzdjpy");
 		// Get one from DB by key.
-		fxTick = fxTickRepository.findOne(key);
+		fxTick = fxTickRepository.findOne(1018L);
 		// Check result.
 		assertEquals(false, fxTick.isPresent());
 	}
@@ -106,17 +84,13 @@ public class TrnFXTickRepositoryTest {
 	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/save/expectedData.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
+		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// New TrnFXTick data.
 		TrnFXTick fxTick = new TrnFXTick();
-		fxTick.setTickKey(key);
+		fxTick.setCurrencyPair("usdjpy");
+		fxTick.setRegistDate(dateTime);
 		fxTick.setAskPrice(1000);
 		fxTick.setBidPrice(2000);
 		fxTick.setMidPrice(1500);
@@ -144,27 +118,24 @@ public class TrnFXTickRepositoryTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// Get one from DB.
-		List<TrnFXTick> ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusHours(1));
+		List<TrnFXTick> ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
 		// Check result.
 		assertEquals(4, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusHours(6));
+		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
 		// Check result.
 		assertEquals(6, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusDays(1));
+		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
 		// Check result.
 		assertEquals(8, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusWeeks(1));
+		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
 		// Check result.
 		assertEquals(10, ticks.size());
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", result, result.plusMonths(1));
+		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
 		// Check result.
 		assertEquals(12, ticks.size());
 	}

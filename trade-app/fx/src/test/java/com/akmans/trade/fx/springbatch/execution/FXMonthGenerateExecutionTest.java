@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,7 +78,7 @@ public class FXMonthGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month"));
 		// Verify
 		verify(mockDayService, times(1)).generateFXPeriodData(eq(FXType.MONTH), eq("usdjpy"),
-				any(ZonedDateTime.class));
+				any(LocalDateTime.class));
 		verify(mockMonthService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mockMonthService, times(0)).findOne(any(FXTickKey.class));
 		verify(mockMonthService, times(0)).operation(any(TrnFXMonth.class), eq(OperationMode.DELETE));

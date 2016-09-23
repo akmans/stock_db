@@ -1,6 +1,6 @@
 package com.akmans.trade.fx.service.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,23 +43,19 @@ public class FXTickServiceImpl implements FXTickService {
 		logger.debug("the mode is {}", mode);
 		switch (mode) {
 		case NEW: {
-			Optional<TrnFXTick> result = trnFXTickRepository.findOne(tick.getTickKey());
-			if (result.isPresent()) {
-				throw new TradeException(messageService.getMessage("core.service.record.alreadyexist", tick.getTickKey()));
-			}
 			return trnFXTickRepository.save(tick);
 		}
 		case EDIT: {
-			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getTickKey());
+			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getCode());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getCode()));
 			}
 			return trnFXTickRepository.save(tick);
 		}
 		case DELETE: {
-			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getTickKey());
+			Optional<TrnFXTick> origin = trnFXTickRepository.findOne(tick.getCode());
 			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(tick.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getTickKey()));
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent", tick.getCode()));
 			}
 			trnFXTickRepository.delete(tick);
 		}
@@ -67,21 +63,12 @@ public class FXTickServiceImpl implements FXTickService {
 		return null;
 	}
 
-	public TrnFXTick findOne(FXTickKey key) throws TradeException {
-		Optional<TrnFXTick> tick = trnFXTickRepository.findOne(key);
-		if (tick.isPresent()) {
-			return tick.get();
-		} else {
-			throw new TradeException(messageService.getMessage("core.service.record.notfound", key.toString()));
-		}
+	public Optional<TrnFXTick> findOne(Long code) throws TradeException {
+		return trnFXTickRepository.findOne(code);
 	}
 
-	public boolean exist(FXTickKey key) {
-		return trnFXTickRepository.findOne(key).isPresent();
-	}
-
-	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom) {
-		ZonedDateTime dateTimeTo = null;
+	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, LocalDateTime dateTimeFrom) {
+		LocalDateTime dateTimeTo = null;
 		switch (type) {
 		case HOUR: {
 			dateTimeTo = dateTimeFrom.plusHours(1);

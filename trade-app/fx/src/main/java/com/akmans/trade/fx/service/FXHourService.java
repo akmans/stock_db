@@ -1,6 +1,6 @@
 package com.akmans.trade.fx.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.akmans.trade.core.enums.FXType;
@@ -17,5 +17,5 @@ public interface FXHourService {
 
 	public Optional<TrnFXHour> findPrevious(FXTickKey key);
 
-	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom);
+	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, LocalDateTime dateTimeFrom);
 }

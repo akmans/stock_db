@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,8 +41,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class FXWeekServiceImplTest {
-
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXWeekServiceImplTest.class);
 
 	private static final double DELTA = 1e-15;
 
@@ -96,14 +92,14 @@ public class FXWeekServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected Week data.
 		TrnFXWeek sixHour = new TrnFXWeek();
 		sixHour.setTickKey(key);
 		Optional<TrnFXWeek> option = Optional.of(sixHour);
 
 		// Mockito expectations
-		when(trnFXWeekRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(option);
+		when(trnFXWeekRepository.findPrevious(any(String.class), any(LocalDateTime.class))).thenReturn(option);
 		// Execute the method being tested
 		fxWeek = fxWeekService.findPrevious(key);
 		// Validation
@@ -112,7 +108,7 @@ public class FXWeekServiceImplTest {
 
 		/** 3. Test not found */
 		// Mockito expectations
-		when(trnFXWeekRepository.findPrevious(any(String.class), any(ZonedDateTime.class)))
+		when(trnFXWeekRepository.findPrevious(any(String.class), any(LocalDateTime.class)))
 				.thenReturn(Optional.empty());
 		// Execute the method being tested
 		fxWeek = fxWeekService.findPrevious(key);
@@ -129,9 +125,7 @@ public class FXWeekServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFXWeek> week = fxWeekService.findOne(key);
 		// Check result.
@@ -201,8 +195,8 @@ public class FXWeekServiceImplTest {
 		when(trnFXWeekRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(sixHour));
 		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
 		// Execute the method being tested with validation.
-		assertThatThrownBy(() -> fxWeekService.operation(sixHour, OperationMode.NEW))
-				.isInstanceOf(TradeException.class).hasMessage("Error!");
+		assertThatThrownBy(() -> fxWeekService.operation(sixHour, OperationMode.NEW)).isInstanceOf(TradeException.class)
+				.hasMessage("Error!");
 	}
 
 	@Test
@@ -214,9 +208,7 @@ public class FXWeekServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFXWeek fxWeek = new TrnFXWeek();
 		fxWeek.setTickKey(key);
@@ -239,7 +231,7 @@ public class FXWeekServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXWeek sixHour = new TrnFXWeek();
 		sixHour.setTickKey(key);
@@ -283,9 +275,7 @@ public class FXWeekServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFXWeek fxWeek = fxWeekService.findOne(key).get();
 		fxWeek.setTickKey(key);
@@ -308,7 +298,7 @@ public class FXWeekServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXWeek sixHour = new TrnFXWeek();
 		sixHour.setTickKey(key);
@@ -352,9 +342,7 @@ public class FXWeekServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXTick data.
 		Optional<TrnFXWeek> fxWeek = fxWeekService.findOne(key);
 		// Delete one from DB.

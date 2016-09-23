@@ -1,6 +1,6 @@
 package com.akmans.trade.fx.service.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,8 +75,8 @@ public class FXDayServiceImpl implements FXDayService {
 		return trnFXDayRepository.findPrevious(key.getCurrencyPair(), key.getRegistDate());
 	}
 
-	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, ZonedDateTime dateTimeFrom) {
-		ZonedDateTime dateTimeTo = null;
+	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, LocalDateTime dateTimeFrom) {
+		LocalDateTime dateTimeTo = null;
 		switch (type) {
 		case HOUR: case SIXHOUR: case DAY: {
 			return null;

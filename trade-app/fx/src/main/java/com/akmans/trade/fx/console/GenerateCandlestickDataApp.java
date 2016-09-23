@@ -35,7 +35,8 @@ public class GenerateCandlestickDataApp {
 
 		try {
 			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
-					.addString("currencyPair", args[0]).addString("processedMonth", args[1]).toJobParameters();
+					.addString("currencyPair", args[0].toLowerCase()).addString("processedMonth", args[1])
+					.toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 

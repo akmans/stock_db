@@ -1,8 +1,6 @@
 package com.akmans.trade.fx.springbatch.execution;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -61,11 +59,11 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 		logger.debug("The currencyPair is {}", currencyPair);
 		logger.debug("The processedMonth is {}", processedMonth);
 		// Get first hour.
-		ZonedDateTime firstDatetime = getFirstDayOfMonth(processedMonth);
+		LocalDateTime firstDatetime = getFirstDayOfMonth(processedMonth);
 		// Date of Sunday, the first day of week.
-		ZonedDateTime currentDatetime = firstDatetime.minusDays(firstDatetime.getDayOfWeek().getValue());
+		LocalDateTime currentDatetime = firstDatetime.minusDays(firstDatetime.getDayOfWeek().getValue());
 		// Get end day.
-		ZonedDateTime endDay = firstDatetime.plusMonths(1);
+		LocalDateTime endDay = firstDatetime.plusMonths(1);
 		logger.debug("The begin Day is {}", currentDatetime);
 		logger.debug("The endDay is {}", endDay);
 		// Inserted rows counter.
@@ -143,11 +141,9 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Week", 0) + cnt);
 	}
 
-	private ZonedDateTime getFirstDayOfMonth(String processedMonth) {
+	private LocalDateTime getFirstDayOfMonth(String processedMonth) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse(processedMonth + "01 00:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		// Return.
-		return result;
+		return dateTime;
 	}
 }

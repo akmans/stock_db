@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,7 +39,6 @@ import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXTickRepository;
-import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXTickRepositoryTest;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -54,8 +51,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class FXTickServiceImplTest {
 
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(TrnFXTickRepositoryTest.class);
-
 	private static final double DELTA = 1e-15;
 
 	@Autowired
@@ -63,53 +58,30 @@ public class FXTickServiceImplTest {
 
 	@Test
 	public void testFindOneWithMock() throws Exception {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
+		TrnFXTickRepository trnFXTickRepository = Mockito.mock(TrnFXTickRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test found */
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
 		// Expected Tick data.
 		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
+		tick.setCode(1L);
 		Optional<TrnFXTick> option = Optional.of(tick);
 
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(option);
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(option);
 		// Execute the method being tested
-		TrnFXTick fxTick = fxTickService.findOne(key);
+		Optional<TrnFXTick> fxTick = fxTickService.findOne(1L);
 		// Validation
-		assertEquals(tick, fxTick);
+		assertEquals(tick, fxTick.get());
 
 		/** 2. Test not found */
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.empty());
 		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
-		// Execute the method being tested with validation.
-		assertThatThrownBy(() -> fxTickService.findOne(key)).isInstanceOf(TradeException.class)
-				.hasMessage("Error!");
-	}
-
-	@Test
-	public void testExistWithMock() {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
-		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
-		/** 1. Test not exist */
-		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
 		// Execute the method being tested
-		boolean fxTick = fxTickService.exist(new FXTickKey());
+		fxTick = fxTickService.findOne(1L);
 		// Validation
-		assertEquals(false, fxTick);
-
-		/** 2. Test found */
-		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(new TrnFXTick()));
-		// Execute the method being tested
-		fxTick = fxTickService.exist(new FXTickKey());
-		// Validation
-		assertEquals(true, fxTick);
+		assertEquals(false, fxTick.isPresent());
 	}
 
 	@Test
@@ -117,37 +89,23 @@ public class FXTickServiceImplTest {
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testFind() throws Exception {
 		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// Get one from DB by key.
-		TrnFXTick tick = fxTickService.findOne(key);
+		TrnFXTick tick = fxTickService.findOne(1000L).get();
 		// Check result.
-		assertEquals("usdjpy", tick.getTickKey().getCurrencyPair());
+		assertEquals("usdjpy", tick.getCurrencyPair());
+		assertEquals(dateTime, tick.getRegistDate());
 		assertEquals(100, tick.getBidPrice(), DELTA);
 		assertEquals(200, tick.getAskPrice(), DELTA);
 		assertEquals(150, tick.getMidPrice(), DELTA);
 		assertEquals(0, tick.getProcessedFlag(), DELTA);
-
-		// Exist from DB by key.
-		boolean exist = fxTickService.exist(key);
-		// Check result.
-		assertTrue(exist);
-		key.setCurrencyPair("nzdjpy");
-		// Exist from DB by key.
-		exist = fxTickService.exist(key);
-		// Check result.
-		assertEquals(false, exist);
 	}
 
 	@Test
 	public void testGenerateFXPeriodDataWithMock() throws Exception {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
+		TrnFXTickRepository trnFXTickRepository = Mockito.mock(TrnFXTickRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test FXType is HOUR */
 		List<TrnFXTick> ticks = new ArrayList<TrnFXTick>();
@@ -172,9 +130,9 @@ public class FXTickServiceImplTest {
 		tick2.setMidPrice(300);
 		ticks.add(tick2);
 		// Mockito expectations
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(ticks);
-		AbstractFXEntity entity = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", ZonedDateTime.now());
+		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(ticks);
+		AbstractFXEntity entity = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXHour);
@@ -184,7 +142,7 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 2. Test FXType is SIXHOUR */
-		entity = fxTickService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", ZonedDateTime.now());
+		entity = fxTickService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFX6Hour);
@@ -194,7 +152,7 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 3. Test FXType is DAY */
-		entity = fxTickService.generateFXPeriodData(FXType.DAY, "usdjpy", ZonedDateTime.now());
+		entity = fxTickService.generateFXPeriodData(FXType.DAY, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXDay);
@@ -204,7 +162,7 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 4. Test FXType is WEEK */
-		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXWeek);
@@ -214,7 +172,7 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 5. Test FXType is WEEK */
-		entity = fxTickService.generateFXPeriodData(FXType.MONTH, "usdjpy", ZonedDateTime.now());
+		entity = fxTickService.generateFXPeriodData(FXType.MONTH, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
 		assertEquals(true, entity instanceof TrnFXMonth);
@@ -224,14 +182,14 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 6. Test FXTick data not found */
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(null);
-		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(null);
+		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(ZonedDateTime.class),
-				any(ZonedDateTime.class))).thenReturn(new ArrayList<TrnFXTick>());
-		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", ZonedDateTime.now());
+		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(new ArrayList<TrnFXTick>());
+		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
 	}
@@ -245,11 +203,9 @@ public class FXTickServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB.
-		AbstractFXEntity hour = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", result);
+		AbstractFXEntity hour = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, hour instanceof TrnFXHour);
 		assertEquals(100, hour.getOpeningPrice(), DELTA);
@@ -258,7 +214,7 @@ public class FXTickServiceImplTest {
 		assertEquals(111, hour.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity sixHour = fxTickService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", result);
+		AbstractFXEntity sixHour = fxTickService.generateFXPeriodData(FXType.SIXHOUR, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, sixHour instanceof TrnFX6Hour);
 		assertEquals(100, sixHour.getOpeningPrice(), DELTA);
@@ -267,7 +223,7 @@ public class FXTickServiceImplTest {
 		assertEquals(98, sixHour.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity day = fxTickService.generateFXPeriodData(FXType.DAY, "usdjpy", result);
+		AbstractFXEntity day = fxTickService.generateFXPeriodData(FXType.DAY, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, day instanceof TrnFXDay);
 		assertEquals(100, day.getOpeningPrice(), DELTA);
@@ -276,7 +232,7 @@ public class FXTickServiceImplTest {
 		assertEquals(97, day.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity week = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", result);
+		AbstractFXEntity week = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, week instanceof TrnFXWeek);
 		assertEquals(100, week.getOpeningPrice(), DELTA);
@@ -285,7 +241,7 @@ public class FXTickServiceImplTest {
 		assertEquals(96, week.getFinishPrice(), DELTA);
 
 		// Get one from DB.
-		AbstractFXEntity month = fxTickService.generateFXPeriodData(FXType.MONTH, "usdjpy", result);
+		AbstractFXEntity month = fxTickService.generateFXPeriodData(FXType.MONTH, "usdjpy", dateTime);
 		// Check result.
 		assertEquals(true, month instanceof TrnFXMonth);
 		assertEquals(100, month.getOpeningPrice(), DELTA);
@@ -296,48 +252,34 @@ public class FXTickServiceImplTest {
 
 	@Test
 	public void testOperation4InsertWithMock() throws Exception {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
+		TrnFXTickRepository trnFXTickRepository = Mockito.mock(TrnFXTickRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test insert success */
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
 		// Get TrnFXTick data from DB.
 		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
+		tick.setCode(1L);
 
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.empty());
 		when(trnFXTickRepository.save(any(TrnFXTick.class))).thenReturn(tick);
 		// Execute the method being tested
 		TrnFXTick fxTick = fxTickService.operation(tick, OperationMode.NEW);
 		// Validation
 		assertEquals(tick, fxTick);
-
-		/** 2. Test key duplicated */
-		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(tick));
-		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
-		// Execute the method being tested with validation.
-		assertThatThrownBy(() -> fxTickService.operation(tick, OperationMode.NEW)).isInstanceOf(TradeException.class)
-				.hasMessage("Error!");
 	}
 
 	@Test
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Insert.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Insert() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
+		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// Get TrnFXTick data from DB.
 		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
+		tick.setCurrencyPair("usdjpy");
+		tick.setRegistDate(dateTime);
 		tick.setBidPrice(10);
 		tick.setAskPrice(20);
 		tick.setMidPrice(100);
@@ -348,21 +290,17 @@ public class FXTickServiceImplTest {
 
 	@Test
 	public void testOperation4UpdateWithMock() throws Exception {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
+		TrnFXTickRepository trnFXTickRepository = Mockito.mock(TrnFXTickRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test updated data not found */
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
+		tick.setCode(1L);
 		tick.setUpdatedDate(ZonedDateTime.now());
 
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.empty());
 		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxTickService.operation(tick, OperationMode.EDIT)).isInstanceOf(TradeException.class)
@@ -370,7 +308,7 @@ public class FXTickServiceImplTest {
 
 		/** 2. Test updated data inconsistent */
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(tick));
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.of(tick));
 		// Expected TrnFXTick data.
 		TrnFXTick newSixTick = new TrnFXTick();
 		// Copy all data.
@@ -394,16 +332,13 @@ public class FXTickServiceImplTest {
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Update.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Update() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
+		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// New TrnFXTick data.
-		TrnFXTick tick = fxTickService.findOne(key);
+		TrnFXTick tick = fxTickService.findOne(1000L).get();
+		tick.setCurrencyPair("usdjpy");
+		tick.setRegistDate(dateTime);
 		tick.setBidPrice(1);
 		tick.setAskPrice(2);
 		tick.setMidPrice(10);
@@ -414,21 +349,17 @@ public class FXTickServiceImplTest {
 
 	@Test
 	public void testOperation4DeleteWithMock() throws Exception {
-		TrnFXTickRepository trnFXTickRepository= Mockito.mock(TrnFXTickRepository.class);
-		MessageService messageService= Mockito.mock(MessageService.class);
+		TrnFXTickRepository trnFXTickRepository = Mockito.mock(TrnFXTickRepository.class);
+		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test deleted data not found */
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFXTick tick = new TrnFXTick();
-		tick.setTickKey(key);
+		tick.setCode(1L);
 		tick.setUpdatedDate(ZonedDateTime.now());
 
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.empty());
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.empty());
 		when(messageService.getMessage(any(String.class), any(Object.class))).thenReturn("Error!");
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxTickService.operation(tick, OperationMode.DELETE)).isInstanceOf(TradeException.class)
@@ -436,7 +367,7 @@ public class FXTickServiceImplTest {
 
 		/** 2. Test deleted data inconsistent */
 		// Mockito expectations
-		when(trnFXTickRepository.findOne(any(FXTickKey.class))).thenReturn(Optional.of(tick));
+		when(trnFXTickRepository.findOne(any(Long.class))).thenReturn(Optional.of(tick));
 		// Expected TrnFXTick data.
 		TrnFXTick newTick = new TrnFXTick();
 		// Copy all data.
@@ -460,16 +391,8 @@ public class FXTickServiceImplTest {
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Delete.xml", table = "trn_fx_tick")
 	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Delete() throws Exception {
-		// New FXTickKey
-		FXTickKey key = new FXTickKey();
-		key.setCurrencyPair("usdjpy");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
-		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
 		// New TrnFXTick data.
-		TrnFXTick tick = fxTickService.findOne(key);
+		TrnFXTick tick = fxTickService.findOne(1000L).get();
 		// Delete one from DB.
 		fxTickService.operation(tick, OperationMode.DELETE);
 	}

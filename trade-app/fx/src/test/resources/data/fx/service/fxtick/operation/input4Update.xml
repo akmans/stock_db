@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<trn_fx_tick currency_pair="usdjpy" regist_date="2016-01-02 01:02:03.456" bid_price="10" ask_price="20" mid_price="100" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
+	<trn_fx_tick code="1000" currency_pair="audjpy" regist_date="2016-02-02 01:02:03.456" bid_price="10" ask_price="20" mid_price="100" processed_flag="0" created_by="user1" created_date="2016-01-01" updated_by="user2" updated_date="2016-01-02" />
 </dataset>

@@ -16,7 +16,6 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.model.FXTick;
 import com.akmans.trade.fx.service.FXTickService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXTick;
-import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 @Component
 @StepScope
@@ -33,25 +32,14 @@ public class FXHistoryTickWriter implements ItemWriter<FXTick>, StepExecutionLis
 	public void write(List<? extends FXTick> ticks) throws Exception {
 		for(FXTick tick : ticks) {
 			logger.debug("FXTick = {}", tick);
-			FXTickKey key = new FXTickKey();
-			key.setCurrencyPair(tick.getCurrencyPair());
-			key.setRegistDate(tick.getRegistDate());
-			if (fxTickService.exist(key)) {
-				TrnFXTick origin = fxTickService.findOne(key);
-				origin.setBidPrice(tick.getBidPrice());
-				origin.setAskPrice(tick.getAskPrice());
-				origin.setMidPrice(tick.getMidPrice());
-				fxTickService.operation(origin, OperationMode.EDIT);
-				countUpdatedRows();
-			} else {
-				TrnFXTick newTick = new TrnFXTick();
-				newTick.setTickKey(key);
-				newTick.setBidPrice(tick.getBidPrice());
-				newTick.setAskPrice(tick.getAskPrice());
-				newTick.setMidPrice(tick.getMidPrice());
-				fxTickService.operation(newTick, OperationMode.NEW);
-				countInsertedRows();
-			}
+			TrnFXTick newTick = new TrnFXTick();
+			newTick.setCurrencyPair(tick.getCurrencyPair());
+			newTick.setRegistDate(tick.getRegistDate());
+			newTick.setBidPrice(tick.getBidPrice());
+			newTick.setAskPrice(tick.getAskPrice());
+			newTick.setMidPrice(tick.getMidPrice());
+			fxTickService.operation(newTick, OperationMode.NEW);
+			countInsertedRows();
 		}
 	}
 
@@ -59,7 +47,6 @@ public class FXHistoryTickWriter implements ItemWriter<FXTick>, StepExecutionLis
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
 		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
 	}
 
 	@Override
@@ -71,10 +58,5 @@ public class FXHistoryTickWriter implements ItemWriter<FXTick>, StepExecutionLis
 	private void countInsertedRows() {
 		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
 				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + 1);
-	}
-
-	private void countUpdatedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + 1);
 	}
 }

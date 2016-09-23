@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,8 +41,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class FX6HourServiceImplTest {
-
-	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FX6HourServiceImplTest.class);
 
 	private static final double DELTA = 1e-15;
 
@@ -96,14 +92,14 @@ public class FX6HourServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected 6Hour data.
 		TrnFX6Hour sixHour = new TrnFX6Hour();
 		sixHour.setTickKey(key);
 		Optional<TrnFX6Hour> option = Optional.of(sixHour);
 
 		// Mockito expectations
-		when(trnFX6HourRepository.findPrevious(any(String.class), any(ZonedDateTime.class))).thenReturn(option);
+		when(trnFX6HourRepository.findPrevious(any(String.class), any(LocalDateTime.class))).thenReturn(option);
 		// Execute the method being tested
 		fx6Hour = fx6HourService.findPrevious(key);
 		// Validation
@@ -112,7 +108,7 @@ public class FX6HourServiceImplTest {
 
 		/** 3. Test not found */
 		// Mockito expectations
-		when(trnFX6HourRepository.findPrevious(any(String.class), any(ZonedDateTime.class)))
+		when(trnFX6HourRepository.findPrevious(any(String.class), any(LocalDateTime.class)))
 				.thenReturn(Optional.empty());
 		// Execute the method being tested
 		fx6Hour = fx6HourService.findPrevious(key);
@@ -129,9 +125,7 @@ public class FX6HourServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get one from DB by key.
 		Optional<TrnFX6Hour> sixhour = fx6HourService.findOne(key);
 		// Check result.
@@ -214,9 +208,7 @@ public class FX6HourServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFX6Hour fx6Hour = new TrnFX6Hour();
 		fx6Hour.setTickKey(key);
@@ -239,7 +231,7 @@ public class FX6HourServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFX6Hour sixHour = new TrnFX6Hour();
 		sixHour.setTickKey(key);
@@ -283,9 +275,7 @@ public class FX6HourServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// Get TrnFXTick data from DB.
 		TrnFX6Hour fx6Hour = fx6HourService.findOne(key).get();
 		fx6Hour.setTickKey(key);
@@ -308,7 +298,7 @@ public class FX6HourServiceImplTest {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
-		key.setRegistDate(ZonedDateTime.now());
+		key.setRegistDate(LocalDateTime.now());
 		// Expected TrnFXTick data.
 		TrnFX6Hour sixHour = new TrnFX6Hour();
 		sixHour.setTickKey(key);
@@ -352,9 +342,7 @@ public class FX6HourServiceImplTest {
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:00:00.000", formatter);
-		ZonedDateTime result = dateTime.atZone(ZoneId.of("GMT"));
-		logger.debug("The DateTime is {}.", result);
-		key.setRegistDate(result);
+		key.setRegistDate(dateTime);
 		// New TrnFXTick data.
 		Optional<TrnFX6Hour> fx6Hour = fx6HourService.findOne(key);
 		// Delete one from DB.

@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,7 +78,7 @@ public class FX6HourGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "6Hour"));
 		// Verify
 		verify(mockHourService, times(4 * 31)).generateFXPeriodData(eq(FXType.SIXHOUR), eq("usdjpy"),
-				any(ZonedDateTime.class));
+				any(LocalDateTime.class));
 		verify(mock6HourService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mock6HourService, times(0)).findOne(any(FXTickKey.class));
 		verify(mock6HourService, times(0)).operation(any(TrnFX6Hour.class), eq(OperationMode.DELETE));

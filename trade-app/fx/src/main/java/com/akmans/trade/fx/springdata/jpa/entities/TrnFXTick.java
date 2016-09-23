@@ -1,18 +1,32 @@
 package com.akmans.trade.fx.springdata.jpa.entities;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.akmans.trade.core.springdata.jpa.entities.AbstractEntity;
-import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 
 @Entity
 @Table(name = "trn_fx_tick")
 public class TrnFXTick extends AbstractEntity {
-	@EmbeddedId
-	private FXTickKey tickKey;
+	@Id
+	@Column(name="code", nullable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long code;
+
+	@Column(name = "currency_pair", nullable = false)
+	private String currencyPair;
+
+	@Column(name = "regist_date", nullable = false)
+	@Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentLocalDateTime")
+	private LocalDateTime registDate;
 
 	@Column(name = "bid_price")
 	private double bidPrice;
@@ -26,12 +40,28 @@ public class TrnFXTick extends AbstractEntity {
 	@Column(name = "processed_flag")
 	private int processedFlag;
 
-	public void setTickKey(FXTickKey tickKey) {
-		this.tickKey = tickKey;
+	public void setCode(Long code) {
+		this.code = code;
 	}
 
-	public FXTickKey getTickKey() {
-		return this.tickKey;
+	public Long getCode() {
+		return this.code;
+	}
+
+	public void setCurrencyPair(String currencyPair) {
+		this.currencyPair = currencyPair;
+	}
+
+	public String getCurrencyPair() {
+		return this.currencyPair;
+	}
+
+	public void setRegistDate(LocalDateTime registDate) {
+		this.registDate = registDate;
+	}
+
+	public LocalDateTime getRegistDate() {
+		return this.registDate;
 	}
 
 	public void setBidPrice(double bidPrice) {
@@ -68,8 +98,8 @@ public class TrnFXTick extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return this.getClass().getAnnotation(Table.class).name() + " [tickKey=[" + tickKey.toString() + "], bidPrice="
-				+ bidPrice + ", askPrice=" + askPrice + ", midPrice=" + midPrice + ", processedFlag=" + processedFlag
-				+ super.toString() + "]";
+		return this.getClass().getAnnotation(Table.class).name() + " [code=" + code + ", currencyPair=" + currencyPair
+				+ ", registDate=" + registDate + ", bidPrice=" + bidPrice + ", askPrice=" + askPrice + ", midPrice="
+				+ midPrice + ", processedFlag=" + processedFlag + super.toString() + "]";
 	}
 }
