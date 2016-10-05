@@ -24,14 +24,14 @@ public class GenerateCandlestickDataApp {
 		// Initialize application context
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		// Enable a "development" profile
-		context.getEnvironment().setActiveProfiles("development");
+		context.getEnvironment().setActiveProfiles("production");
 		context.register(StandaloneConfig.class);
 		context.refresh();
 
 		String jobId = FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue();
 		JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
 		Job job = (Job) context.getBean(jobId);
-		logger.info("Job Restartable ? : " + job.isRestartable());
+		logger.info("Job Parameters : {}", (Object[])args);
 
 		try {
 			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
@@ -41,12 +41,13 @@ public class GenerateCandlestickDataApp {
 			logger.info("Exit Status : " + execution.getStatus());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Job Failed", e);
+			System.exit(1);
 		}
 
 		context.close();
 
-		System.out.println("Done");
-
+		logger.info("Done!");
+		System.exit(0);
 	}
 }

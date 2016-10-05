@@ -41,7 +41,6 @@ import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXHourRepository;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -125,8 +124,8 @@ public class FXHourServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxhour/find/input.xml")
 	public void testFind() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -267,8 +266,8 @@ public class FXHourServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/generate/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxhour/generate/input.xml")
 	public void testGenerateFXPeriodData() throws Exception {
 		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
@@ -345,8 +344,8 @@ public class FXHourServiceImplTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Insert.xml", table = "trn_fx_hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Insert() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -396,7 +395,7 @@ public class FXHourServiceImplTest {
 		TrnFXHour newSixHour = new TrnFXHour();
 		// Copy all data.
 		BeanUtils.copyProperties(hour, newSixHour);
-		newSixHour.setUpdatedDate(ZonedDateTime.now());
+		newSixHour.setUpdatedDate(ZonedDateTime.now().plusHours(1l));
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxHourService.operation(newSixHour, OperationMode.EDIT))
 				.isInstanceOf(TradeException.class).hasMessage("Error!");
@@ -411,9 +410,9 @@ public class FXHourServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/operation/input4Update.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxhour/operation/input4Update.xml")
 	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Update.xml", table = "trn_fx_hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Update() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -463,7 +462,7 @@ public class FXHourServiceImplTest {
 		TrnFXHour newHour = new TrnFXHour();
 		// Copy all data.
 		BeanUtils.copyProperties(hour, newHour);
-		newHour.setUpdatedDate(ZonedDateTime.now());
+		newHour.setUpdatedDate(ZonedDateTime.now().plusHours(1l));
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxHourService.operation(newHour, OperationMode.DELETE))
 				.isInstanceOf(TradeException.class).hasMessage("Error!");
@@ -478,9 +477,9 @@ public class FXHourServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxhour/operation/input4Delete.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxhour/operation/input4Delete.xml")
 	@ExpectedDatabase(value = "/data/fx/service/fxhour/operation/expectedData4Delete.xml", table = "trn_fx_hour")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Delete() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

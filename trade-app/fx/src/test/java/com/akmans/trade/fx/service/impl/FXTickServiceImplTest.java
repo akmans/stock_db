@@ -42,7 +42,6 @@ import com.akmans.trade.fx.springdata.jpa.repositories.TrnFXTickRepository;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -85,8 +84,8 @@ public class FXTickServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxtick/find/input.xml")
 	public void testFind() throws Exception {
 		// New FXTickKey
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
@@ -195,8 +194,8 @@ public class FXTickServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/generate/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxtick/generate/input.xml")
 	public void testGenerateFXPeriodData() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -270,8 +269,8 @@ public class FXTickServiceImplTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Insert.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Insert() throws Exception {
 		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
@@ -313,7 +312,7 @@ public class FXTickServiceImplTest {
 		TrnFXTick newSixTick = new TrnFXTick();
 		// Copy all data.
 		BeanUtils.copyProperties(tick, newSixTick);
-		newSixTick.setUpdatedDate(ZonedDateTime.now());
+		newSixTick.setUpdatedDate(ZonedDateTime.now().plusHours(1l));
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxTickService.operation(newSixTick, OperationMode.EDIT))
 				.isInstanceOf(TradeException.class).hasMessage("Error!");
@@ -328,9 +327,9 @@ public class FXTickServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/operation/input4Update.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxtick/operation/input4Update.xml")
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Update.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Update() throws Exception {
 		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
@@ -372,7 +371,7 @@ public class FXTickServiceImplTest {
 		TrnFXTick newTick = new TrnFXTick();
 		// Copy all data.
 		BeanUtils.copyProperties(tick, newTick);
-		newTick.setUpdatedDate(ZonedDateTime.now());
+		newTick.setUpdatedDate(ZonedDateTime.now().plusHours(1l));
 		// Execute the method being tested with validation.
 		assertThatThrownBy(() -> fxTickService.operation(newTick, OperationMode.DELETE))
 				.isInstanceOf(TradeException.class).hasMessage("Error!");
@@ -387,9 +386,9 @@ public class FXTickServiceImplTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/service/fxtick/operation/input4Delete.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/service/fxtick/operation/input4Delete.xml")
 	@ExpectedDatabase(value = "/data/fx/service/fxtick/operation/expectedData4Delete.xml", table = "trn_fx_tick")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testOperation4Delete() throws Exception {
 		// New TrnFXTick data.
 		TrnFXTick tick = fxTickService.findOne(1000L).get();

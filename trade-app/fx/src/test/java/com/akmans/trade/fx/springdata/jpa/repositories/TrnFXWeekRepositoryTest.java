@@ -25,7 +25,6 @@ import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -42,9 +41,9 @@ public class TrnFXWeekRepositoryTest {
 	private TrnFXWeekRepository fxWeekRepository;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxweek/delete/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxweek/delete/input.xml")
 	@ExpectedDatabase(value = "/data/fx/repositories/fxweek/delete/expectedData.xml", table = "trn_fx_week")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
 		// New FXWeekKey
 		FXTickKey key = new FXTickKey();
@@ -60,8 +59,8 @@ public class TrnFXWeekRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxweek/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxweek/find/input.xml")
 	public void testFind() throws Exception {
 		// Retrieve first page data from DB.
 		Page<TrnFXWeek> fxWeeks1 = fxWeekRepository.findAll(new PageRequest(0, 10));
@@ -127,8 +126,8 @@ public class TrnFXWeekRepositoryTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/repositories/fxweek/save/expectedData.xml", table = "trn_fx_week", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

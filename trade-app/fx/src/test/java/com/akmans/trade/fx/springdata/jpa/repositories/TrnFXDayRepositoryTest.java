@@ -25,7 +25,6 @@ import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -42,9 +41,9 @@ public class TrnFXDayRepositoryTest {
 	private TrnFXDayRepository fxDayRepository;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxday/delete/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxday/delete/input.xml")
 	@ExpectedDatabase(value = "/data/fx/repositories/fxday/delete/expectedData.xml", table = "trn_fx_day")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
 		// New FXDayKey
 		FXTickKey key = new FXTickKey();
@@ -60,8 +59,8 @@ public class TrnFXDayRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxday/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxday/find/input.xml")
 	public void testFind() throws Exception {
 		// Retrieve first page data from DB.
 		Page<TrnFXDay> fxDays1 = fxDayRepository.findAll(new PageRequest(0, 10));
@@ -127,8 +126,8 @@ public class TrnFXDayRepositoryTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/repositories/fxday/save/expectedData.xml", table = "trn_fx_day", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -162,8 +161,8 @@ public class TrnFXDayRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxday/findinperiod/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxday/findinperiod/input.xml")
 	public void testFindFXDayInPeriod() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

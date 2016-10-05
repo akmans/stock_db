@@ -24,7 +24,6 @@ import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -37,9 +36,9 @@ public class TrnFXTickRepositoryTest {
 	private TrnFXTickRepository fxTickRepository;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxTick/delete/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxTick/delete/input.xml")
 	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/delete/expectedData.xml", table = "trn_fx_tick")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
 		// New FXTick data.
 		Optional<TrnFXTick> fxTick = fxTickRepository.findOne(1001L);
@@ -48,8 +47,8 @@ public class TrnFXTickRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxTick/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxTick/find/input.xml")
 	public void testFind() throws Exception {
 		// Retrieve first page data from DB.
 		Page<TrnFXTick> fxTicks1 = fxTickRepository.findAll(new PageRequest(0, 10));
@@ -81,8 +80,8 @@ public class TrnFXTickRepositoryTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/repositories/fxTick/save/expectedData.xml", table = "trn_fx_tick", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
 		// New DateTime
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
@@ -110,8 +109,8 @@ public class TrnFXTickRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
 	public void testFindFXTickInPeriod() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

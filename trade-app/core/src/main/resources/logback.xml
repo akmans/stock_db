@@ -8,20 +8,21 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>/Users/owner99/log/trade-console.log</file>
+		<!-- file>/Users/owner99/log/trade-console.log</file -->
+		<file>${logback.file}</file>
 		<encoder>
 			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
 		</encoder>
 	</appender>
 
-	<logger name="com.akmans.trade" level="debug" additivity="false">
-		<appender-ref ref="STDOUT" />
+	<logger name="com.akmans.trade" level="info" additivity="false">
+		<!-- appender-ref ref="STDOUT" /-->
 		<appender-ref ref="FILE" />
 	</logger>
 
 	<logger
 		name="org.springframework.aop.interceptor.CustomizableTraceInterceptor"
-		level="trace" additivity="false">
+		level="info" additivity="false">
 		<!-- appender-ref ref="STDOUT" /-->
 		<appender-ref ref="FILE" />
 	</logger>

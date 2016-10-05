@@ -17,7 +17,13 @@ CLASSPATH="${CLASSPATH}:classes"
 
 echo "-------- Starting ... --------"
 
-java -Dlogback.configurationFile="${HOME}/classes/resources/logback.xml" \
+export JVM_ARGS="-Xms1024m -Xmx2048m"
+
+java -Dlogback.configurationFile="/logback.xml" \
     -cp $CLASSPATH com.akmans.trade.fx.console.GenerateCandlestickDataApp $1 $2
 
+STATUS=$?
+
 echo "-------- Finished ! ----------"
+
+exit $STATUS

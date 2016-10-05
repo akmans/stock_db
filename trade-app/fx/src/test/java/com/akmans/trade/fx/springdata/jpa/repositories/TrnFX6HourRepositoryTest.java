@@ -25,7 +25,6 @@ import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -42,9 +41,9 @@ public class TrnFX6HourRepositoryTest {
 	private TrnFX6HourRepository fx6HourRepository;
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fx6hour/delete/input.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fx6hour/delete/input.xml")
 	@ExpectedDatabase(value = "/data/fx/repositories/fx6hour/delete/expectedData.xml", table = "trn_fx_6hour")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testDelete() throws Exception {
 		// New FX6HourKey
 		FXTickKey key = new FXTickKey();
@@ -60,8 +59,8 @@ public class TrnFX6HourRepositoryTest {
 	}
 
 	@Test
-	@DatabaseSetup(type = DatabaseOperation.CLEAN_INSERT, value = "/data/fx/repositories/fx6hour/find/input.xml")
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fx6hour/find/input.xml")
 	public void testFind() throws Exception {
 		// Retrieve first page data from DB.
 		Page<TrnFX6Hour> fx6Hours1 = fx6HourRepository.findAll(new PageRequest(0, 10));
@@ -135,8 +134,8 @@ public class TrnFX6HourRepositoryTest {
 	}
 
 	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@ExpectedDatabase(value = "/data/fx/repositories/fx6hour/save/expectedData.xml", table = "trn_fx_6hour", assertionMode = DatabaseAssertionMode.NON_STRICT)
-	@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = "/data/fx/emptyAll.xml")
 	public void testSave() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

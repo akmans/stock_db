@@ -47,6 +47,7 @@
 					<plugin><!-- don't pack the war -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
+						<version>3.0.0</version>
 						<executions>
 							<execution>
 								<id>default-war</id>
@@ -103,6 +104,7 @@
 					<plugin><!-- don't pack the war -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
+						<version>3.0.0</version>
 						<executions>
 							<execution>
 								<id>default-war</id>

@@ -28,7 +28,7 @@ public class GenerateFXCandlestickDataJobConfig {
 		Step step3 = stepBuilderFactory.get("step3").tasklet(generateDayExecution).build();
 		Step step4 = stepBuilderFactory.get("step4").tasklet(generateWeekExecution).build();
 		Step step5 = stepBuilderFactory.get("step5").tasklet(generateMonthExecution).build();
-		return jobs.get(FXJob.GENERATE_FX_WEEK_JOB.getValue()).start(step1).next(step2).next(step3).next(step4)
+		return jobs.get(FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue()).start(step1).next(step2).next(step3).next(step4)
 				.next(step5).listener(listener).build();
 	}
 }

@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -18,21 +17,16 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import com.akmans.trade.core.Constants;
-import com.akmans.trade.core.springdata.jpa.config.RepositoryConfig;
 
 @Configuration
 @Profile("production")
-@PropertySources({ @PropertySource(Constants.JDBC_PROPERITES_FILE_PATH),
-		@PropertySource(Constants.PRODUCTION_PROPERITES_FILE_PATH),
-		@PropertySource(Constants.HIBERNATE_PROPERITES_FILE_PATH),
-		@PropertySource(Constants.SMTP_PROPERITES_FILE_PATH)})
-@Import({ AopConfiguration.class, RepositoryConfig.class })
+@PropertySources({ @PropertySource(Constants.SYSTEM_PROPERITES_FILE_PATH)})
 public class Production {
 
 	@Autowired
 	private Environment env;
 
-	@Bean//(destroyMethod = "close")
+	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSourceConfig = new DriverManagerDataSource();
 		dataSourceConfig.setDriverClassName(env.getRequiredProperty("db.driver"));

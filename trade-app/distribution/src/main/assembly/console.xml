@@ -24,7 +24,7 @@
 			<directory>src/main/bin</directory>
 			<outputDirectory>console/bin</outputDirectory>
 		</fileSet>
-		<fileSet>
+<!-- 		<fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory>console/classes</outputDirectory>
 		</fileSet>
@@ -43,6 +43,6 @@
 		<fileSet>
 			<directory>../cashing/src/main/resources</directory>
 			<outputDirectory>console/classes</outputDirectory>
-		</fileSet>
+		</fileSet> -->
 	</fileSets>
 </assembly>

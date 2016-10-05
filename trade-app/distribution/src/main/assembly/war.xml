@@ -40,7 +40,7 @@
 			<directory>../cashing/src/main/webapp</directory>
 			<outputDirectory>.</outputDirectory>
 		</fileSet>
-		<fileSet>
+<!-- 		<fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory>WEB-INF/classes</outputDirectory>
 		</fileSet>
@@ -59,6 +59,6 @@
 		<fileSet>
 			<directory>../cashing/src/main/resources</directory>
 			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet>
+		</fileSet> -->
 	</fileSets>
 </assembly>
