@@ -71,7 +71,7 @@ public class JapanStockLogServiceImplTest {
 		temp.set(2015, 0, 1, 0, 0, 0);
 		key.setProcessDate(temp.getTime());
 		// Get one from DB by key.
-		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key);
+		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key).get();
 		// Check result.
 		assertEquals("COMPLETED", japanStockLog.getStatus());
 		assertEquals("user1", japanStockLog.getCreatedBy());
@@ -114,7 +114,7 @@ public class JapanStockLogServiceImplTest {
 		temp.set(2015, 0, 1, 0, 0, 0);
 		key.setProcessDate(temp.getTime());
 		// Get one from DB by code = 10.
-		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key);
+		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key).get();
 		// Update data.
 		japanStockLog.setStatus("COMPLETED");
 		// Do update.
@@ -132,7 +132,7 @@ public class JapanStockLogServiceImplTest {
 		temp.set(2015, 0, 2, 0, 0, 0);
 		key.setProcessDate(temp.getTime());
 		// New TrnJapanStock data.
-		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key);
+		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key).get();
 		// Delete one from DB by key.
 		japanStockLogService.operation(japanStockLog, OperationMode.DELETE);
 	}

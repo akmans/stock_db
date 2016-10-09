@@ -1,4 +1,4 @@
-package com.akmans.trade.stock.console.springbatch.execution;
+package com.akmans.trade.stock.springbatch.execution;
 
 import java.util.Date;
 import java.util.List;

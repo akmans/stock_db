@@ -49,7 +49,7 @@ public class TrnJapanStockLogRepositoryTest {
 		temp.set(2015, 0, 2, 0, 0, 0);
 		key.setProcessDate(temp.getTime());
 		// New JapanStockLog data.
-		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key);
+		TrnJapanStockLog japanStockLog = japanStockLogService.findOne(key).get();
 		// New JapanStockLog data.
 		japanStockLogRepository.delete(japanStockLog);
 	}

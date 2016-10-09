@@ -75,52 +75,52 @@ public class JapanStockLogServiceImpl implements JapanStockLogService {
 				: new PageImpl<TrnJapanStockLog>(new ArrayList<TrnJapanStockLog>(), dto.getPageable(), 0);
 	}
 
-	public TrnJapanStockLog findOne(JapanStockLogKey key) throws TradeException {
-		Optional<TrnJapanStockLog> japanStockLog = trnJapanStockLogRepository.findOne(key);
-		if (japanStockLog.isPresent()) {
-			return japanStockLog.get();
-		} else {
-			throw new TradeException(
-					messageService.getMessage("core.service.japanstocklog.record.notfound", key.toString()));
-		}
+	public Optional<TrnJapanStockLog> findOne(JapanStockLogKey key) {
+//		Optional<TrnJapanStockLog> japanStockLog = trnJapanStockLogRepository.findOne(key);
+//		if (japanStockLog.isPresent()) {
+//			return japanStockLog.get();
+//		} else {
+//			throw new TradeException(
+//					messageService.getMessage("core.service.japanstocklog.record.notfound", key.toString()));
+//		}
+		return trnJapanStockLogRepository.findOne(key);
 	}
 
-	public void operation(TrnJapanStockLog log, OperationMode mode) throws TradeException {
+	public TrnJapanStockLog operation(TrnJapanStockLog log, OperationMode mode) throws TradeException {
 		logger.debug("the calendar is {}", log);
 		logger.debug("the mode is {}", mode);
+		Optional<TrnJapanStockLog> origin = findOne(log.getJapanStockLogKey());
 		switch (mode) {
 		case NEW: {
-			Optional<TrnJapanStockLog> japanStockLog = trnJapanStockLogRepository.findOne(log.getJapanStockLogKey());
-			if (japanStockLog.isPresent()) {
-				throw new TradeException(messageService.getMessage("core.service.japanstocklog.record.alreadyexist",
+//			Optional<TrnJapanStockLog> japanStockLog = trnJapanStockLogRepository.findOne(log.getJapanStockLogKey());
+			if (origin.isPresent()) {
+				throw new TradeException(messageService.getMessage("core.service.record.alreadyexist",
 						log.getJapanStockLogKey().toString()));
 			}
-			trnJapanStockLogRepository.save(log);
-			break;
+			return trnJapanStockLogRepository.save(log);
 		}
 		case EDIT: {
-			TrnJapanStockLog origin = findOne(log.getJapanStockLogKey());
-			if (!origin.getUpdatedDate().equals(log.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.calendar.record.inconsistent",
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(log.getUpdatedDate())) {
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent",
 						log.getJapanStockLogKey().toString()));
 			}
-			trnJapanStockLogRepository.save(log);
-			break;
+			return trnJapanStockLogRepository.save(log);
 		}
 		case DELETE: {
-			TrnJapanStockLog origin = findOne(log.getJapanStockLogKey());
-			if (!origin.getUpdatedDate().equals(log.getUpdatedDate())) {
-				throw new TradeException(messageService.getMessage("core.service.calendar.record.inconsistent",
+//			TrnJapanStockLog origin = findOne(log.getJapanStockLogKey());
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(log.getUpdatedDate())) {
+				throw new TradeException(messageService.getMessage("core.service.record.inconsistent",
 						log.getJapanStockLogKey().toString()));
 			}
 			trnJapanStockLogRepository.delete(log);
 		}
 		}
+		return null;
 	}
 
-	public boolean exist(JapanStockLogKey key) {
-		return trnJapanStockLogRepository.findOne(key).isPresent();
-	}
+//	public boolean exist(JapanStockLogKey key) {
+//		return trnJapanStockLogRepository.findOne(key).isPresent();
+//	}
 
 	public TrnJapanStockLog findMaxRegistDate(String jobId, Date processDate) {
 		return trnJapanStockLogRepository.findMaxRegistDate(jobId, processDate);

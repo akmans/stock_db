@@ -1,4 +1,4 @@
-package com.akmans.trade.stock.console.jobconfig;
+package com.akmans.trade.stock.jobconfig;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -19,10 +19,10 @@ import org.springframework.core.io.FileSystemResource;
 import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.stock.dto.CsvJapanStockDto;
 import com.akmans.trade.stock.springdata.jpa.entities.TrnJapanStock;
-import com.akmans.trade.stock.console.springbatch.execution.JapanStockDownloadExecution;
-import com.akmans.trade.stock.console.springbatch.listener.JapanStockJobExecutionListener;
-import com.akmans.trade.stock.console.springbatch.processor.JapanStockConvertProcessor;
-import com.akmans.trade.stock.console.springbatch.writer.JapanStockWriter;
+import com.akmans.trade.stock.springbatch.execution.JapanStockDownloadExecution;
+import com.akmans.trade.stock.springbatch.listener.JapanStockJobExecutionListener;
+import com.akmans.trade.stock.springbatch.processor.JapanStockConvertProcessor;
+import com.akmans.trade.stock.springbatch.writer.JapanStockWriter;
 
 @Configuration
 public class ImportJapanStockJobConfig {

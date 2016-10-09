@@ -1,6 +1,7 @@
-package com.akmans.trade.stock.console.springbatch.listener;
+package com.akmans.trade.stock.springbatch.listener;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
@@ -12,6 +13,7 @@ import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.enums.JapanStockJob;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.utils.DateUtil;
 import com.akmans.trade.core.utils.MailUtil;
 import com.akmans.trade.stock.service.JapanStockLogService;
@@ -20,6 +22,9 @@ import com.akmans.trade.stock.springdata.jpa.keys.JapanStockLogKey;
 
 @Component
 public class JapanStockJobExecutionListener implements JobExecutionListener {
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private JapanStockLogService japanStockLogService;
@@ -77,7 +82,11 @@ public class JapanStockJobExecutionListener implements JobExecutionListener {
 		japanStockLogKey.setJobId(jobId);
 		japanStockLogKey.setProcessDate(processDate);
 		try {
-			TrnJapanStockLog japanStockLog = japanStockLogService.findOne(japanStockLogKey);
+			Optional<TrnJapanStockLog> optional = japanStockLogService.findOne(japanStockLogKey);
+			if (!optional.isPresent()) {
+				throw new TradeException(messageService.getMessage("core.service.record.notfound", japanStockLogKey));
+			}
+			TrnJapanStockLog japanStockLog = optional.get();
 			japanStockLog.setStatus(status);
 			japanStockLogService.operation(japanStockLog, OperationMode.EDIT);
 		} catch (TradeException te) {

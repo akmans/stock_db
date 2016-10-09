@@ -1,4 +1,4 @@
-package com.akmans.trade.stock.console.springbatch.writer;
+package com.akmans.trade.stock.springbatch.writer;
 
 import java.util.List;
 

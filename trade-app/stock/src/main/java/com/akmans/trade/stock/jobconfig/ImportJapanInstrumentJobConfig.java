@@ -1,4 +1,4 @@
-package com.akmans.trade.stock.console.jobconfig;
+package com.akmans.trade.stock.jobconfig;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.akmans.trade.core.enums.JapanStockJob;
-import com.akmans.trade.stock.console.springbatch.execution.JapanInstrumentDownloadExecution;
-import com.akmans.trade.stock.console.springbatch.execution.JapanInstrumentImportExecution;
-import com.akmans.trade.stock.console.springbatch.listener.JapanStockJobExecutionListener;
+import com.akmans.trade.stock.springbatch.execution.JapanInstrumentDownloadExecution;
+import com.akmans.trade.stock.springbatch.execution.JapanInstrumentImportExecution;
+import com.akmans.trade.stock.springbatch.listener.JapanStockJobExecutionListener;
 
 @Configuration
 public class ImportJapanInstrumentJobConfig {

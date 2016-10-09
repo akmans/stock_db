@@ -1,6 +1,7 @@
 package com.akmans.trade.stock.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -14,9 +15,9 @@ public interface InstrumentService {
 
 	public Page<MstInstrument> findPage(InstrumentQueryDto dto);
 
-	public MstInstrument findOne(Long code) throws TradeException;
+	public Optional<MstInstrument> findOne(Long code);
 
-	public void operation(MstInstrument scale, OperationMode mode) throws TradeException;
+	public MstInstrument operation(MstInstrument scale, OperationMode mode) throws TradeException;
 
-	public MstInstrument findOneEager(Long code) throws TradeException;
+//	public MstInstrument findOneEager(Long code);
 }

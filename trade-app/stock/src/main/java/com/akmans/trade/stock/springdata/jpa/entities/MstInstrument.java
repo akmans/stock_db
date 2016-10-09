@@ -21,19 +21,19 @@ public class MstInstrument extends AbstractEntity {
 	@Column(name = "name", length = 100)
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne//(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sector33_code")
 	private MstSector33 sector33;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne//(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sector17_code")
 	private MstSector17 sector17;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne//(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scale_code")
 	private MstScale scale;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne//(fetch = FetchType.LAZY)
 	@JoinColumn(name = "market_code")
 	private MstMarket market;
 

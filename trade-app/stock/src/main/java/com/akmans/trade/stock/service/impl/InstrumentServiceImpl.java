@@ -31,14 +31,19 @@ public class InstrumentServiceImpl implements InstrumentService {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(ScaleServiceImpl.class);
 
-	@Autowired
 	private MessageService messageService;
 
-	@Autowired
 	private LocalContainerEntityManagerFactoryBean emf;
 
-	@Autowired
 	private MstInstrumentRepository mstInstrumentRepository;
+
+	@Autowired
+	InstrumentServiceImpl(MstInstrumentRepository mstInstrumentRepository, MessageService messageService,
+			LocalContainerEntityManagerFactoryBean emf) {
+		this.mstInstrumentRepository = mstInstrumentRepository;
+		this.messageService = messageService;
+		this.emf = emf;
+	}
 
 	/**
 	 * Find data for display on screen by specified query criteria.<br/>
@@ -182,57 +187,50 @@ public class InstrumentServiceImpl implements InstrumentService {
 		return mstInstrumentRepository.findAll();
 	}
 
-	public MstInstrument findOne(Long code) throws TradeException {
-		Optional<MstInstrument> instrument = mstInstrumentRepository.findOne(code);
-		if (instrument.isPresent()) {
-			return instrument.get();
-		} else {
-			throw new TradeException(messageService.getMessage("core.service.instrument.record.notfound", code));
-		}
+	public Optional<MstInstrument> findOne(Long code) {
+		return mstInstrumentRepository.findOne(code);
 	}
 
-	public void operation(MstInstrument instrument, OperationMode mode) throws TradeException {
+	public MstInstrument operation(MstInstrument instrument, OperationMode mode) throws TradeException {
 		logger.debug("the scale is {}", instrument);
 		logger.debug("the mode is {}", mode);
+		Optional<MstInstrument> origin = findOne(instrument.getCode());
 		switch (mode) {
 		case NEW: {
-			if (mstInstrumentRepository.findOne(instrument.getCode()).isPresent()) {
+			if (origin.isPresent()) {
 				throw new TradeException(
-						messageService.getMessage("core.service.instrument.record.alreadyexist", instrument.getCode()));
+						messageService.getMessage("core.service.record.alreadyexist", instrument.getCode()));
 			}
-			mstInstrumentRepository.save(instrument);
-			break;
+			return mstInstrumentRepository.save(instrument);
 		}
 		case EDIT: {
-			MstInstrument origin = findOne(instrument.getCode());
-			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(instrument.getUpdatedDate())) {
 				throw new TradeException(
-						messageService.getMessage("core.service.instrument.record.inconsistent", instrument.getCode()));
+						messageService.getMessage("core.service.record.inconsistent", instrument.getCode()));
 			}
-			mstInstrumentRepository.save(instrument);
-			break;
+			return mstInstrumentRepository.save(instrument);
 		}
 		case DELETE: {
-			MstInstrument origin = findOne(instrument.getCode());
-			if (!origin.getUpdatedDate().equals(instrument.getUpdatedDate())) {
+			if (!origin.isPresent() || !origin.get().getUpdatedDate().equals(instrument.getUpdatedDate())) {
 				throw new TradeException(
-						messageService.getMessage("core.service.instrument.record.inconsistent", instrument.getCode()));
+						messageService.getMessage("core.service.record.inconsistent", instrument.getCode()));
 			}
 			mstInstrumentRepository.delete(instrument);
 		}
 		}
+		return null;
 	}
 
-	public MstInstrument findOneEager(Long code) throws TradeException {
-		List<Object[]> list = mstInstrumentRepository.findOneEager(code);
-		MstInstrument instrument = null;
-		for (Object[] item : list) {
-			instrument = (MstInstrument) item[0];
-			instrument.setScale((MstScale) item[1]);
-			instrument.setMarket((MstMarket) item[2]);
-			instrument.setSector33((MstSector33) item[3]);
-			instrument.setSector17((MstSector17) item[4]);
-		}
-		return instrument;
-	}
+//	public MstInstrument findOneEager(Long code) {
+//		List<Object[]> list = mstInstrumentRepository.findOneEager(code);
+//		MstInstrument instrument = null;
+//		for (Object[] item : list) {
+//			instrument = (MstInstrument) item[0];
+//			instrument.setScale((MstScale) item[1]);
+//			instrument.setMarket((MstMarket) item[2]);
+//			instrument.setSector33((MstSector33) item[3]);
+//			instrument.setSector17((MstSector17) item[4]);
+//		}
+//		return instrument;
+//	}
 }

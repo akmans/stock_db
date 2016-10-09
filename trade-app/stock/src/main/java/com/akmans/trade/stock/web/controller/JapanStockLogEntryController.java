@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -116,9 +117,10 @@ public class JapanStockLogEntryController extends AbstractController {
 							new Object[] { japanStockLogKey }, locale);
 					throw new TradeException(message);
 				}
-				if (japanStockLogService.exist(japanStockLogKey)) {
-					japanStockLog = japanStockLogService.findOne(japanStockLogKey);
-					if (ExitStatus.COMPLETED.getExitCode().equals(japanStockLog.getStatus())) {
+				Optional<TrnJapanStockLog> optional = japanStockLogService.findOne(japanStockLogKey);
+				if (optional.isPresent()) {
+//					japanStockLog = japanStockLogService.findOne(japanStockLogKey);
+					if (ExitStatus.COMPLETED.getExitCode().equals(optional.get().getStatus())) {
 						// get message.
 						message = messageSource.getMessage("controller.japanstocklog.job.already.completed",
 								new Object[] { japanStockLogKey }, locale);

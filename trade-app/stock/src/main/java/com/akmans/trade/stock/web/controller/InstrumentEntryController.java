@@ -1,6 +1,7 @@
 package com.akmans.trade.stock.web.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.akmans.trade.core.exception.TradeException;
+import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.core.web.controller.AbstractEntryController;
 import com.akmans.trade.stock.service.InstrumentService;
 import com.akmans.trade.stock.service.MarketService;
@@ -34,6 +36,9 @@ public class InstrumentEntryController extends AbstractEntryController<Instrumen
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(InstrumentEntryController.class);
 
 	@Autowired
+	private MessageService messageService;
+
+	@Autowired
 	private InstrumentService instrumentService;
 
 	@Autowired
@@ -55,7 +60,11 @@ public class InstrumentEntryController extends AbstractEntryController<Instrumen
 	public void initCommandForm(ModelMap model, Long code, InstrumentEntryForm instrumentEntryForm)
 			throws TradeException {
 		logger.debug("instrumentEntryForm = {}", instrumentEntryForm);
-		MstInstrument entity = instrumentService.findOneEager(code);
+		Optional<MstInstrument> optional = instrumentService.findOne(code);
+		if (!optional.isPresent()) {
+			throw new TradeException(messageService.getMessage("core.service.record.notfound", code));
+		}
+		MstInstrument entity = optional.get();
 		BeanUtils.copyProperties(entity, instrumentEntryForm);
 		if (entity.getScale() != null) {
 			instrumentEntryForm.setScale(entity.getScale().getCode());

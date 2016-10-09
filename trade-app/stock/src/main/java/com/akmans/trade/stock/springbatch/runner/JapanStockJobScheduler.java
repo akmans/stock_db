@@ -1,10 +1,11 @@
-package com.akmans.trade.stock.console.springbatch.runner;
+package com.akmans.trade.stock.springbatch.runner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.LoggerFactory;
@@ -148,9 +149,10 @@ public class JapanStockJobScheduler {
 		japanStockLogKey.setJobId(jobId);
 		japanStockLogKey.setProcessDate(processDate);
 		TrnJapanStockLog japanStockLog = null;
-		if (japanStockLogService.exist(japanStockLogKey)) {
-			japanStockLog = japanStockLogService.findOne(japanStockLogKey);
-			if (ExitStatus.COMPLETED.getExitCode().equals(japanStockLog.getStatus())) {
+		Optional<TrnJapanStockLog> optional = japanStockLogService.findOne(japanStockLogKey);
+		if (optional.isPresent()) {
+//			japanStockLog = japanStockLogService.findOne(japanStockLogKey);
+			if (ExitStatus.COMPLETED.getExitCode().equals(optional.get().getStatus())) {
 				// get message.
 				String message = messageSource.getMessage("controller.japanstocklog.job.already.completed",
 						new Object[] { japanStockLogKey }, Locale.ENGLISH); // TODO locale

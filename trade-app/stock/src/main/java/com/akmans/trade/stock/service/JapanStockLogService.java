@@ -1,6 +1,7 @@
 package com.akmans.trade.stock.service;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -13,11 +14,11 @@ import com.akmans.trade.stock.springdata.jpa.keys.JapanStockLogKey;
 public interface JapanStockLogService {
 	public Page<TrnJapanStockLog> findPage(JapanStockLogQueryDto criteria);
 
-	public TrnJapanStockLog findOne(JapanStockLogKey key) throws TradeException;
+	public Optional<TrnJapanStockLog> findOne(JapanStockLogKey key);
 
-	public void operation(TrnJapanStockLog japanStockLog, OperationMode mode) throws TradeException;
+	public TrnJapanStockLog operation(TrnJapanStockLog japanStockLog, OperationMode mode) throws TradeException;
 
-	public boolean exist(JapanStockLogKey key);
+//	public boolean exist(JapanStockLogKey key);
 
 	public TrnJapanStockLog findMaxRegistDate(String jobId, Date processDate);
 }

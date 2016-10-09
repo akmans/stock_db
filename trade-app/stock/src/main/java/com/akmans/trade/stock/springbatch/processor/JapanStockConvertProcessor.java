@@ -1,8 +1,9 @@
-package com.akmans.trade.stock.console.springbatch.processor;
+package com.akmans.trade.stock.springbatch.processor;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -16,6 +17,7 @@ import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.stock.service.InstrumentService;
 import com.akmans.trade.stock.service.JapanStockService;
+import com.akmans.trade.stock.springdata.jpa.entities.MstInstrument;
 import com.akmans.trade.stock.springdata.jpa.entities.TrnJapanStock;
 import com.akmans.trade.stock.springdata.jpa.keys.JapanStockKey;
 import com.akmans.trade.stock.dto.CsvJapanStockDto;
@@ -47,21 +49,29 @@ public class JapanStockConvertProcessor
 			return null;
 		}
 
+		// Process stock code.
+		String codes[] = item.getCode().split("-");
+		Optional<MstInstrument> optional = instrumentService.findOne(Long.valueOf(codes[0]));
 		// Skip record not match those in MstInstrument.
-		try {
-			// Process stock code.
-			String codes[] = item.getCode().split("-");
-			instrumentService.findOne(Long.valueOf(codes[0]));
-		} catch (TradeException te) {
-			logger.warn("The item is {}", item);
-			logger.warn(te.getMessage());
+		if (!optional.isPresent()) {
+			logger.warn("The skipped item is {}", item);
 			countSkippedRows();
 			return null;
 		}
+//		try {
+//			// Process stock code.
+//			String codes[] = item.getCode().split("-");
+//			instrumentService.findOne(Long.valueOf(codes[0]));
+//		} catch (TradeException te) {
+//			logger.warn("The item is {}", item);
+//			logger.warn(te.getMessage());
+//			countSkippedRows();
+//			return null;
+//		}
 
 		TrnJapanStock stock = new TrnJapanStock();
 		// Process stock code.
-		String codes[] = item.getCode().split("-");
+//		String codes[] = item.getCode().split("-");
 		// Primary key.
 		JapanStockKey japanStockKey = new JapanStockKey();
 		japanStockKey.setCode(Integer.valueOf(codes[0]));

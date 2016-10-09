@@ -1,9 +1,10 @@
-package com.akmans.trade.stock.console.springbatch.execution;
+package com.akmans.trade.stock.springbatch.execution;
 
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -99,11 +100,14 @@ public class JapanInstrumentImportExecution implements Tasklet {
 				// logger.debug("dto = {}", dto);
 				OperationMode om = OperationMode.EDIT;
 				// Get current value from database.
-				MstInstrument instrument = instrumentService.findOneEager(Long.valueOf(dto.getCode()));
+				Optional<MstInstrument> optional = instrumentService.findOne(Long.valueOf(dto.getCode()));
+				MstInstrument instrument = null;
 				// Mark new if not found.
-				if (instrument == null || instrument.getCode() == null) {
+				if (!optional.isPresent()) {
 					instrument = new MstInstrument();
 					om = OperationMode.NEW;
+				} else {
+					instrument = optional.get();
 				}
 
 				// Set instrument code.
