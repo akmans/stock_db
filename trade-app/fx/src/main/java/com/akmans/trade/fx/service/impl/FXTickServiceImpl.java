@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
@@ -38,6 +39,7 @@ public class FXTickServiceImpl implements FXTickService {
 		this.messageService = messageService;
 	}
 
+	@Transactional
 	public TrnFXTick operation(TrnFXTick tick, OperationMode mode) throws TradeException {
 		logger.debug("the tick is {}", tick);
 		logger.debug("the mode is {}", mode);
@@ -94,8 +96,9 @@ public class FXTickServiceImpl implements FXTickService {
 		logger.debug("Currency pair is {}.", currencyPair);
 		logger.debug("Date from is {}.", dateTimeFrom);
 		logger.debug("Date to is {}.", dateTimeTo);
-		List<TrnFXTick> fxTicks = trnFXTickRepository.findFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
-		if (fxTicks == null || fxTicks.size() == 0) {
+//		List<TrnFXTick> fxTicks = trnFXTickRepository.findFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
+//		if (fxTicks == null || fxTicks.size() == 0) {
+		if (trnFXTickRepository.countFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo) <= 0) {
 			logger.debug("No records found.");
 			return null;
 		} else {
@@ -129,7 +132,7 @@ public class FXTickServiceImpl implements FXTickService {
 			}
 			// Set Key.
 			fxEntity.setTickKey(tickKey);
-			double highPrice = 0;
+/*			double highPrice = 0;
 			double lowPrice = 0;
 			for (int i = 0; i < fxTicks.size(); i++) {
 				TrnFXTick tick = fxTicks.get(i);
@@ -149,11 +152,21 @@ public class FXTickServiceImpl implements FXTickService {
 				if (i == fxTicks.size() - 1) {
 					fxEntity.setFinishPrice(tick.getMidPrice());
 				}
-			}
+			}*/
+			// Set opening price.
+			List<TrnFXTick> ticks = trnFXTickRepository.findFirstFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
+			fxEntity.setOpeningPrice(ticks.get(0).getMidPrice());
 			// Set high price.
-			fxEntity.setHighPrice(highPrice);
+//			fxEntity.setHighPrice(highPrice);
+			ticks = trnFXTickRepository.findHighestFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
+			fxEntity.setHighPrice(ticks.get(0).getMidPrice());
 			// Set low price.
-			fxEntity.setLowPrice(lowPrice);
+//			fxEntity.setLowPrice(lowPrice);
+			ticks = trnFXTickRepository.findLowestFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
+			fxEntity.setLowPrice(ticks.get(0).getMidPrice());
+			// Set finish price.
+			ticks = trnFXTickRepository.findLastFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
+			fxEntity.setFinishPrice(ticks.get(0).getMidPrice());
 			return fxEntity;
 		}
 	}

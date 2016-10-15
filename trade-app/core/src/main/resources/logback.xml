@@ -15,8 +15,8 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.akmans.trade" level="info" additivity="false">
-		<!-- appender-ref ref="STDOUT" /-->
+	<logger name="com.akmans.trade" level="debug" additivity="false">
+		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</logger>
 

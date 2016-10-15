@@ -12,6 +12,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.akmans.trade.core.config.TestConfig;
+import com.akmans.trade.fx.springbatch.runner.TrueFXRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
@@ -19,7 +20,7 @@ import com.akmans.trade.core.config.TestConfig;
 public class TrueFXTest {
 
 	@Autowired
-	private TrueFX trueFx;
+	private TrueFXRunner trueFx;
 
 	@Test
 	public void testTicker() throws Exception {

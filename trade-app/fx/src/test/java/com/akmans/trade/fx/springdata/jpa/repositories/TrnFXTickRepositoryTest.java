@@ -32,6 +32,8 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class TrnFXTickRepositoryTest {
 
+	private static final double DELTA = 1e-15;
+
 	@Autowired
 	private TrnFXTickRepository fxTickRepository;
 
@@ -111,31 +113,155 @@ public class TrnFXTickRepositoryTest {
 	@Test
 	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
 	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
-	public void testFindFXTickInPeriod() throws Exception {
+	public void testCountFXTickInPeriod() throws Exception {
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
 		key.setCurrencyPair("usdjpy");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
 		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
 		// Get one from DB.
-		List<TrnFXTick> ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
+		int count = fxTickRepository.countFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
 		// Check result.
-		assertEquals(4, ticks.size());
+		assertEquals(4, count);
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
+		count = fxTickRepository.countFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
 		// Check result.
-		assertEquals(6, ticks.size());
+		assertEquals(6, count);
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
+		count = fxTickRepository.countFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
 		// Check result.
-		assertEquals(8, ticks.size());
+		assertEquals(8, count);
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
+		count = fxTickRepository.countFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
 		// Check result.
-		assertEquals(10, ticks.size());
+		assertEquals(10, count);
 		// Get one from DB.
-		ticks = fxTickRepository.findFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
+		count = fxTickRepository.countFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
 		// Check result.
-		assertEquals(12, ticks.size());
+		assertEquals(12, count);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
+	public void testFindFirstFXTickInPeriod() throws Exception {
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
+		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
+		// Get one from DB.
+		List<TrnFXTick> ticks = fxTickRepository.findFirstFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
+		// Check result.
+		assertEquals(100, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findFirstFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
+		// Check result.
+		assertEquals(100, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findFirstFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
+		// Check result.
+		assertEquals(100, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findFirstFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
+		// Check result.
+		assertEquals(100, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findFirstFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
+		// Check result.
+		assertEquals(100, ticks.get(0).getMidPrice(), DELTA);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
+	public void testFindLastFXTickInPeriod() throws Exception {
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
+		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
+		// Get one from DB.
+		List<TrnFXTick> ticks = fxTickRepository.findLastFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
+		// Check result.
+		assertEquals(111, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLastFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
+		// Check result.
+		assertEquals(103, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLastFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
+		// Check result.
+		assertEquals(105, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLastFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
+		// Check result.
+		assertEquals(107, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLastFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
+		// Check result.
+		assertEquals(109, ticks.get(0).getMidPrice(), DELTA);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
+	public void testFindHighestFXTickInPeriod() throws Exception {
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
+		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
+		// Get one from DB.
+		List<TrnFXTick> ticks = fxTickRepository.findHighestFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
+		// Check result.
+		assertEquals(112, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findHighestFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
+		// Check result.
+		assertEquals(112, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findHighestFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
+		// Check result.
+		assertEquals(112, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findHighestFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
+		// Check result.
+		assertEquals(112, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findHighestFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
+		// Check result.
+		assertEquals(112, ticks.get(0).getMidPrice(), DELTA);
+	}
+
+	@Test
+	@DatabaseSetup(type = DatabaseOperation.DELETE_ALL, value = {"/data/fx/emptyAll.xml"})
+	@DatabaseSetup(type = DatabaseOperation.INSERT, value = "/data/fx/repositories/fxtick/findinperiod/input.xml")
+	public void testFindLowestFXTickInPeriod() throws Exception {
+		// New FXTickKey
+		FXTickKey key = new FXTickKey();
+		key.setCurrencyPair("usdjpy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss.SSS");
+		LocalDateTime dateTime = LocalDateTime.parse("20160102 01:02:03.456", formatter);
+		// Get one from DB.
+		List<TrnFXTick> ticks = fxTickRepository.findLowestFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(1));
+		// Check result.
+		assertEquals(99, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLowestFXTickInPeriod("usdjpy", dateTime, dateTime.plusHours(6));
+		// Check result.
+		assertEquals(99, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLowestFXTickInPeriod("usdjpy", dateTime, dateTime.plusDays(1));
+		// Check result.
+		assertEquals(99, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLowestFXTickInPeriod("usdjpy", dateTime, dateTime.plusWeeks(1));
+		// Check result.
+		assertEquals(99, ticks.get(0).getMidPrice(), DELTA);
+		// Get one from DB.
+		ticks = fxTickRepository.findLowestFXTickInPeriod("usdjpy", dateTime, dateTime.plusMonths(1));
+		// Check result.
+		assertEquals(98, ticks.get(0).getMidPrice(), DELTA);
 	}
 }

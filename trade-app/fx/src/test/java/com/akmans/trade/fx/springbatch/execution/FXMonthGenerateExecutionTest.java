@@ -64,7 +64,7 @@ public class FXMonthGenerateExecutionTest {
 		FXMonthService mockMonthService = Mockito.mock(FXMonthService.class);
 		FXMonthGenerateExecution execution = new FXMonthGenerateExecution(mockDayService, mockMonthService);
 		// New job parameters.
-		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_MONTH_JOB.getValue())
+		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "200905").toJobParameters();
 		// New step execution.
 		StepExecution stepExecution = new StepExecution("Test Step",
@@ -91,7 +91,7 @@ public class FXMonthGenerateExecutionTest {
 	@ExpectedDatabase(value = "/data/fx/springbatch/execution/fxmonth/expectedData.xml", table = "trn_fx_month", assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void testStepExecution() throws Exception {
 		// New job parameters.
-		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_MONTH_JOB.getValue())
+		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "201601").toJobParameters();
 		// New step execution.
 		StepExecution stepExecution = new StepExecution("Test Step",

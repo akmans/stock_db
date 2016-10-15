@@ -107,30 +107,43 @@ public class FXTickServiceImplTest {
 		MessageService messageService = Mockito.mock(MessageService.class);
 		FXTickService fxTickService = new FXTickServiceImpl(trnFXTickRepository, messageService);
 		/** 1. Test FXType is HOUR */
-		List<TrnFXTick> ticks = new ArrayList<TrnFXTick>();
+		List<TrnFXTick> openingTicks = new ArrayList<TrnFXTick>();
+		List<TrnFXTick> highestTicks = new ArrayList<TrnFXTick>();
+		List<TrnFXTick> lowestTicks = new ArrayList<TrnFXTick>();
+		List<TrnFXTick> finishTicks = new ArrayList<TrnFXTick>();
 		TrnFXTick tick0 = new TrnFXTick();
 		tick0.setAskPrice(1);
 		tick0.setBidPrice(3);
 		tick0.setMidPrice(2);
-		ticks.add(tick0);
+		openingTicks.add(tick0);
 		TrnFXTick tick00 = new TrnFXTick();
 		tick00.setAskPrice(1);
 		tick00.setBidPrice(1);
 		tick00.setMidPrice(1);
-		ticks.add(tick00);
+		lowestTicks.add(tick00);
 		TrnFXTick tick1 = new TrnFXTick();
 		tick1.setAskPrice(300);
 		tick1.setBidPrice(500);
 		tick1.setMidPrice(400);
-		ticks.add(tick1);
+		highestTicks.add(tick1);
 		TrnFXTick tick2 = new TrnFXTick();
 		tick2.setAskPrice(200);
 		tick2.setBidPrice(400);
 		tick2.setMidPrice(300);
-		ticks.add(tick2);
+		finishTicks.add(tick2);
 		// Mockito expectations
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
-				any(LocalDateTime.class))).thenReturn(ticks);
+//		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+//				any(LocalDateTime.class))).thenReturn(ticks);
+		when(trnFXTickRepository.countFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(1);
+		when(trnFXTickRepository.findFirstFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(openingTicks);
+		when(trnFXTickRepository.findLastFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(finishTicks);
+		when(trnFXTickRepository.findHighestFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(highestTicks);
+		when(trnFXTickRepository.findLowestFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(lowestTicks);
 		AbstractFXEntity entity = fxTickService.generateFXPeriodData(FXType.HOUR, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNotNull(entity);
@@ -181,16 +194,16 @@ public class FXTickServiceImplTest {
 		assertEquals(300, entity.getFinishPrice(), DELTA);
 
 		/** 6. Test FXTick data not found */
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
-				any(LocalDateTime.class))).thenReturn(null);
+		when(trnFXTickRepository.countFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+				any(LocalDateTime.class))).thenReturn(0);
 		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
-		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
-				any(LocalDateTime.class))).thenReturn(new ArrayList<TrnFXTick>());
-		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
-		// Validation
-		assertNull(entity);
+//		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
+//				any(LocalDateTime.class))).thenReturn(new ArrayList<TrnFXTick>());
+//		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
+//		// Validation
+//		assertNull(entity);
 	}
 
 	@Test

@@ -17,9 +17,10 @@ CLASSPATH="${CLASSPATH}:classes"
 
 echo "-------- Starting ... --------"
 
-export JVM_ARGS="-Xms1024m -Xmx2048m"
+#export JVM_ARGS="-Xms1024m -Xmx2048m"
 
-java -Dlogback.configurationFile="/logback.xml" \
+java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/share/log/ \
+    -XX:+UseG1GC -Xms2g -Xmx4g -Dlogback.configurationFile="/logback.xml" \
     -cp $CLASSPATH com.akmans.trade.fx.console.GenerateCandlestickDataApp $1 $2
 
 STATUS=$?

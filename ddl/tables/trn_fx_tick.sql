@@ -4,7 +4,7 @@
 
 CREATE TABLE trn_fx_tick
 (
-  code serial NOT NULL,
+  code bigserial NOT NULL,
   currency_pair char(6) NOT NULL,
   regist_date timestamp without time zone NOT NULL,
   bid_price numeric(10, 6) NOT NULL,
