@@ -56,21 +56,32 @@ public class JapanStockJobExecutionListener implements JobExecutionListener {
 				+ " seconds \n";
 		body = body + "------\n";
 		if (JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue().equals(jobId)) {
-			int processedRows = jobExecution.getExecutionContext().getInt(Constants.PROCESSED_ROWS);
-			int skippedRows = jobExecution.getExecutionContext().getInt(Constants.SKIPPED_ROWS);
-			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
-			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
+			int processedRows = jobExecution.getExecutionContext().getInt(Constants.PROCESSED_ROWS + "Day");
+			int skippedRows = jobExecution.getExecutionContext().getInt(Constants.SKIPPED_ROWS + "Day");
+			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Day");
+			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Day");
+			int insertedWeekRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week");
+			int updatedWeekRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Week");
+			int insertedMonthRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Month");
+			int updatedMonthRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month");
+			body = body + "<Day Data> \n";
 			body = body + "Processed Rows: " + processedRows + "\n";
 			body = body + "Skipped Rows: " + skippedRows + "\n";
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else if (JapanStockJob.GENERATE_JAPAN_STOCK_WEEKLY_JOB.getValue().equals(jobId)
+			body = body + "<Week Data> \n";
+			body = body + "Inserted Rows: " + insertedWeekRows + "\n";
+			body = body + "Updated Rows: " + updatedWeekRows + "\n";
+			body = body + "<Month Data> \n";
+			body = body + "Inserted Rows: " + insertedMonthRows + "\n";
+			body = body + "Updated Rows: " + updatedMonthRows + "\n";
+		}/* else if (JapanStockJob.GENERATE_JAPAN_STOCK_WEEKLY_JOB.getValue().equals(jobId)
 				|| JapanStockJob.GENERATE_JAPAN_STOCK_MONTHLY_JOB.getValue().equals(jobId)) {
 			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
 			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
 			body = body + "Inserted Rows: " + insertedRows + "\n";
 			body = body + "Updated Rows: " + updatedRows + "\n";
-		}
+		}*/
 		body = body + "------\n";
 		body = body + "Exit Code: " + jobExecution.getExitStatus().getExitCode() + "\n";
 		body = body + "Exit Description: " + jobExecution.getExitStatus().getExitDescription() + "\n";

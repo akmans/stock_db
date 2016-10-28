@@ -21,7 +21,7 @@ import org.springframework.web.servlet.support.RequestDataValueProcessor;
 import com.akmans.trade.core.Application;
 import com.akmans.trade.core.enums.RunningMode;
 import com.akmans.trade.core.spring.BaseReloadableResourceBundleMessageSource;
-import com.akmans.trade.core.console.config.LauncherConfig;
+import com.akmans.trade.core.config.LauncherConfig;
 import com.akmans.trade.core.web.config.csrf2conversationsupport.CSRFHandlerInterceptor;
 import com.akmans.trade.core.web.config.csrf2conversationsupport.CustomRequestDataValueProcessor;
 import com.akmans.trade.core.web.config.SpringSecurityConfig;

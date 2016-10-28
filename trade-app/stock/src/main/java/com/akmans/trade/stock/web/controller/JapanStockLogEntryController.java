@@ -71,7 +71,10 @@ public class JapanStockLogEntryController extends AbstractController {
 		cal1.set(2099, 11, 31); // 20991231
 		TrnJapanStockLog log = japanStockLogService.findMaxRegistDate(jobId, cal1.getTime());
 		logger.debug("JapanStockLogEntryController log is !!!" + log);
-		Date currentDate = log.getJapanStockLogKey().getProcessDate();
+		Date currentDate = Calendar.getInstance().getTime();
+		if (log != null) {
+			currentDate = log.getJapanStockLogKey().getProcessDate();
+		}
 		logger.debug("JapanStockLogEntryController !!!" + currentDate);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(currentDate);
@@ -127,7 +130,7 @@ public class JapanStockLogEntryController extends AbstractController {
 						throw new TradeException(message);
 					}
 					// do confirm operation.
-					japanStockLogService.operation(japanStockLog, OperationMode.EDIT);
+					japanStockLogService.operation(optional.get(), OperationMode.EDIT);
 				} else {
 					japanStockLog = new TrnJapanStockLog();
 					japanStockLog.setJapanStockLogKey(japanStockLogKey);

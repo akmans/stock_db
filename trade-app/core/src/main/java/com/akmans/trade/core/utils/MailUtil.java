@@ -31,6 +31,7 @@ public class MailUtil {
 	public void sendMail(String subject, String body) {
 		Properties props = new Properties();
 		props.put("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
+		props.put("mail.smtp.ssl.trust", env.getRequiredProperty("mail.smtp.ssl.trust"));
 		props.put("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
 		props.put("mail.smtp.host", env.getRequiredProperty("mail.smtp.host"));
 		props.put("mail.smtp.port", env.getRequiredProperty("mail.smtp.port"));

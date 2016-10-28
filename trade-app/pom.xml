@@ -419,6 +419,22 @@
 			<version>${mockito-core.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- [Command To Install 3rd Party Jar to local repository] mvn install:install-file 
+			"-Dpackaging=jar" "-Dfile=/Users/owner99/Documents/workspace2/stock_db/dde-app/lib/com.pretty-tools-2.0.3.jar" 
+			"-DgroupId=JDDE" "-DartifactId=com.pretty-tools" "-Dversion=2.0.3" "-DgeneratePom=true" -->
+		<dependency>
+			<artifactId>com.pretty-tools</artifactId>
+			<groupId>JDDE</groupId>
+			<version>2.0.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.mchange/c3p0 For Connection Pool -->
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+		</dependency>
 	</dependencies>
 
 	<modules>

@@ -45,9 +45,9 @@ public class JapanStockWeeklyGenerateExecution extends StepExecutionListenerSupp
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
 		// Initialize inserted rows as 0.
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Week", 0);
 		// Initialize updated rows as 0.
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "Week", 0);
 		JobParameters jobParameters = stepExecution.getJobParameters();
 		// Get application date from job parameters.
 		applicationDate = jobParameters.getDate("processDate");
@@ -110,12 +110,13 @@ public class JapanStockWeeklyGenerateExecution extends StepExecutionListenerSupp
 	}
 
 	private void countInsertedRows(int cnt) {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + cnt);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Week",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week", 0)
+						+ cnt);
 	}
 
 	private void countUpdatedRows(int cnt) {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + cnt);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "Week",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Week", 0) + cnt);
 	}
 }

@@ -1,5 +1,6 @@
 package com.akmans.trade.core.config;
 
+import java.beans.PropertyVetoException;
 import java.util.Collections;
 
 import javax.sql.DataSource;
@@ -17,6 +18,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import com.akmans.trade.core.Constants;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @Profile("production")
@@ -27,18 +29,29 @@ public class Production {
 	private Environment env;
 
 	@Bean
-	public DataSource dataSource() {
-		DriverManagerDataSource dataSourceConfig = new DriverManagerDataSource();
-		dataSourceConfig.setDriverClassName(env.getRequiredProperty("db.driver"));
-		dataSourceConfig.setUrl(env.getRequiredProperty("db.url"));
-		dataSourceConfig.setUsername(env.getRequiredProperty("db.username"));
+	public DataSource dataSource() throws PropertyVetoException {
+//		DriverManagerDataSource dataSourceConfig = new DriverManagerDataSource();
+//		dataSourceConfig.setDriverClassName(env.getRequiredProperty("db.driver"));
+//		dataSourceConfig.setUrl(env.getRequiredProperty("db.url"));
+//		dataSourceConfig.setUsername(env.getRequiredProperty("db.username"));
+//		dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
+		ComboPooledDataSource dataSourceConfig = new ComboPooledDataSource();
+		dataSourceConfig.setDriverClass(env.getRequiredProperty("db.driver"));
+		dataSourceConfig.setJdbcUrl(env.getRequiredProperty("db.url"));
+		dataSourceConfig.setUser(env.getRequiredProperty("db.username"));
 		dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
+
+        // the settings below are optional -- c3p0 can work with defaults
+		dataSourceConfig.setMinPoolSize(5);
+		dataSourceConfig.setAcquireIncrement(5);
+		dataSourceConfig.setMaxPoolSize(20);
+		dataSourceConfig.setMaxStatements(180);
 
 		return dataSourceConfig;
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws PropertyVetoException {
 
 		HibernateJpaVendorAdapter hibernateJpa = new HibernateJpaVendorAdapter();
 		hibernateJpa.setDatabasePlatform(env.getProperty("hibernate.dialect"));
@@ -53,7 +66,7 @@ public class Production {
 	}
 
 	@Bean
-	public JpaTransactionManager transactionManager() {
+	public JpaTransactionManager transactionManager() throws PropertyVetoException {
 		JpaTransactionManager txnMgr = new JpaTransactionManager();
 		txnMgr.setEntityManagerFactory(entityManagerFactory().getObject());
 		return txnMgr;

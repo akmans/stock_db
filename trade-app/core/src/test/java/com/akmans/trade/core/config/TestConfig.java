@@ -19,7 +19,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.akmans.trade.core.Application;
-import com.akmans.trade.core.console.config.LauncherConfig;
+import com.akmans.trade.core.config.LauncherConfig;
 import com.akmans.trade.core.enums.RunningMode;
 
 @Configuration

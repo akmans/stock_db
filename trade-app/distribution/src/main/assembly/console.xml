@@ -24,6 +24,13 @@
 			<directory>src/main/bin</directory>
 			<outputDirectory>console/bin</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/src/main/lib</directory>
+			<outputDirectory>console/classes</outputDirectory>
+			<includes>
+				<include>*.dll</include>
+			</includes>
+		</fileSet>
 <!-- 		<fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory>console/classes</outputDirectory>

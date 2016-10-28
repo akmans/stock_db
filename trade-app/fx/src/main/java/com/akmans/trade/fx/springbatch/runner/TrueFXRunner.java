@@ -272,11 +272,16 @@ public class TrueFXRunner {
 					}
 					in.close();
 
-					System.out.println("Here2!" + response.toString());
+//					System.out.println("Here2!" + response.toString());
 					// None content, skip to next loop.
 					if (response.toString().length() == 0) {
 						retryCnt++;
+						logger.info("No data received!" + retryCnt);
+						Thread.sleep(retryCnt * 1000l);
 						continue;
+					} else {
+						// Reset count.
+						retryCnt = 0;
 					}
 					List<String> ticks = parseResponse(response.toString());
 					// result.Ex.USD/JPY,1472849100026,103.,992,104.,000,103.837,104.091,103.945
@@ -298,8 +303,8 @@ public class TrueFXRunner {
 					// Some error occurred.
 					logger.error("GET request not worked, Response Code =[" + responseCode + "]");
 				}
-			} catch (IOException e) {
-				logger.error("An IOException occurred.", e);
+			} catch (IOException | InterruptedException e) {
+				logger.error("An Exception occurred.", e);
 			} finally {
 				if (connection != null) {
 					connection.disconnect();
@@ -311,7 +316,8 @@ public class TrueFXRunner {
 		closeSession(sessionId);
 	}
 
-	@Scheduled(fixedDelay = 3600000)
+//	@Scheduled(fixedDelay = 3600000)
+//	@Scheduled(cron = "0 0 8 * * TUE")
 	public void run() {
 		logger.info("TrueFXRunner start!!!");
 		try {

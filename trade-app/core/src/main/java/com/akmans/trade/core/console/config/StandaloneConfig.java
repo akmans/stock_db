@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.akmans.trade.core.Application;
+import com.akmans.trade.core.config.LauncherConfig;
 import com.akmans.trade.core.enums.RunningMode;
 
 @Configuration

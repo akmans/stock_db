@@ -1,4 +1,4 @@
-package com.akmans.trade.core.console.config;
+package com.akmans.trade.core.config;
 
 import javax.sql.DataSource;
 
@@ -19,21 +19,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.akmans.trade.core.Application;
 import com.akmans.trade.core.config.TradeCoreConfig;
-import com.akmans.trade.core.console.springbatch.CustomAsyncTaskExecutor;
+import com.akmans.trade.core.springbatch.CustomAsyncTaskExecutor;
 import com.akmans.trade.core.enums.RunningMode;
 
 @Configuration
 @EnableBatchProcessing
-@ComponentScan(basePackages = { "com.akmans.trade.*.console.springbatch.execution",
-		"com.akmans.trade.*.console.springbatch.listener", "com.akmans.trade.*.console.springbatch.processor",
-		"com.akmans.trade.*.console.springbatch.writer", "com.akmans.trade.*.console.springbatch.runner",
-		"com.akmans.trade.*.console.jobconfig",
-		// new class path
-		"com.akmans.trade.*.springbatch.execution",
-		"com.akmans.trade.*.springbatch.listener", "com.akmans.trade.*.springbatch.processor",
-		"com.akmans.trade.*.springbatch.writer", "com.akmans.trade.*.springbatch.runner",
-		"com.akmans.trade.*.jobconfig"})
-@Import({TradeCoreConfig.class })
+@ComponentScan(basePackages = { "com.akmans.trade.*.springbatch.execution", "com.akmans.trade.*.springbatch.listener",
+		"com.akmans.trade.*.springbatch.processor", "com.akmans.trade.*.springbatch.writer",
+		"com.akmans.trade.*.springbatch.runner", "com.akmans.trade.*.jobconfig" })
+@Import({ TradeCoreConfig.class })
 @EnableScheduling
 public class LauncherConfig {
 

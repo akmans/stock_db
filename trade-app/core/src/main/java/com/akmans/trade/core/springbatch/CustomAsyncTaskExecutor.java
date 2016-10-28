@@ -1,4 +1,4 @@
-package com.akmans.trade.core.console.springbatch;
+package com.akmans.trade.core.springbatch;
 
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.security.core.Authentication;

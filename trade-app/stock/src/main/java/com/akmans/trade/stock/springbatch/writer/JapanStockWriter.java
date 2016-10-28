@@ -49,8 +49,8 @@ public class JapanStockWriter implements ItemWriter<TrnJapanStock>, StepExecutio
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS, 0);
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Day", 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "Day", 0);
 	}
 
 	@Override
@@ -60,12 +60,12 @@ public class JapanStockWriter implements ItemWriter<TrnJapanStock>, StepExecutio
 	}
 
 	private void countInsertedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS, 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Day",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Day", 0) + 1);
 	}
 
 	private void countUpdatedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS, 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "Day",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Day", 0) + 1);
 	}
 }

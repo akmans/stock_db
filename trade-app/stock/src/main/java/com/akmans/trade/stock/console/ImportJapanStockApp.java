@@ -1,7 +1,6 @@
 package com.akmans.trade.stock.console;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -32,8 +31,8 @@ public class ImportJapanStockApp {
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		try {
-			JobParameters params = new JobParametersBuilder().addString("jobId", jobId).addDate("processDate", applicationDate)
-					.addString("uuid", UUID.randomUUID().toString()).toJobParameters();
+			JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
+					.addDate("processDate", applicationDate).toJobParameters();
 			JobExecution execution = jobLauncher.run(job, params);
 			logger.info("Exit Status : " + execution.getStatus());
 

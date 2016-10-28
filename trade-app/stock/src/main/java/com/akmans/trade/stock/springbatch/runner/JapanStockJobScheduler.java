@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
@@ -76,7 +77,7 @@ public class JapanStockJobScheduler {
 	private ApplicationContext appContext;
 
 //	@Scheduled(initialDelay = 60000, fixedDelay = 120000)
-	public void run() {
+	public void bulkRun() {
 		logger.debug("JapanStockJobScheduler start!!!");
 		try {
 			SecurityContext ctx = SecurityContextHolder.createEmptyContext();
@@ -85,11 +86,47 @@ public class JapanStockJobScheduler {
 			String jobId = JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue();
 			// Rescue uncompleted job.
 			if (!rescue(jobId)) {
+				Calendar cal1 = Calendar.getInstance();
+				cal1.set(2099, 11, 31); // 20991231
+				TrnJapanStockLog log = japanStockLogService
+						.findMaxRegistDate(jobId, cal1.getTime());
+				logger.debug("JapanStockJobScheduler log is !!!" + log);
+				Date currentDate = log.getJapanStockLogKey().getProcessDate();
+				logger.debug("JapanStockJobScheduler !!!" + currentDate);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(currentDate);
+				do {
+					cal.add(Calendar.DAY_OF_MONTH, 1);
+					logger.debug("JapanStockJobScheduler cal is !!!" + cal.getTime());
+				} while (!calendarService.isJapanBusinessDay(cal.getTime()) && cal.getTime().compareTo(new Date()) < 0);
+
+				Date processDate = cal.getTime();
 				// launch new job.
-				launch(jobId);
+				launch(jobId, processDate);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Some error occurred!", e);
+//			e.printStackTrace();
+		} finally {
+			SecurityContextHolder.clearContext();
+		}
+		logger.debug("JapanStockJobScheduler end!!!");
+	}
+
+//	@Scheduled(cron = "0 0 20 * * MON-FRI")
+	public void run() {
+		logger.debug("JapanStockJobScheduler start!!!");
+		try {
+			SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+			ctx.setAuthentication(authenticate());
+			SecurityContextHolder.setContext(ctx);
+			String jobId = JapanStockJob.IMPORT_JAPAN_STOCK_JOB.getValue();
+			Date processDate = DateUtils.truncate(Calendar.getInstance().getTime(), Calendar.DAY_OF_MONTH);
+			// launch new job.
+			launch(jobId, processDate);
+		} catch (Exception e) {
+			logger.error("Some error occurred!", e);
+//			e.printStackTrace();
 		} finally {
 			SecurityContextHolder.clearContext();
 		}
@@ -129,22 +166,7 @@ public class JapanStockJobScheduler {
 		return false;
 	}
 
-	private void launch(String jobId) throws TradeException, Exception{
-		Calendar cal1 = Calendar.getInstance();
-		cal1.set(2099, 11, 31); // 20991231
-		TrnJapanStockLog log = japanStockLogService
-				.findMaxRegistDate(jobId, cal1.getTime());
-		logger.debug("JapanStockJobScheduler log is !!!" + log);
-		Date currentDate = log.getJapanStockLogKey().getProcessDate();
-		logger.debug("JapanStockJobScheduler !!!" + currentDate);
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(currentDate);
-		do {
-			cal.add(Calendar.DAY_OF_MONTH, 1);
-			logger.debug("JapanStockJobScheduler cal is !!!" + cal.getTime());
-		} while (!calendarService.isJapanBusinessDay(cal.getTime()) && cal.getTime().compareTo(new Date()) < 0);
-
-		Date processDate = cal.getTime();
+	private void launch(String jobId, Date processDate) throws TradeException, Exception{
 		JapanStockLogKey japanStockLogKey = new JapanStockLogKey();
 		japanStockLogKey.setJobId(jobId);
 		japanStockLogKey.setProcessDate(processDate);

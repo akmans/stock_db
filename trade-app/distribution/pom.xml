@@ -81,7 +81,7 @@
 						<configuration>
 							<!-- Set to true if you want the deployment to be skipped, otherwise 
 								false(default). -->
-							<skip>false</skip>
+							<skip>true</skip>
 						</configuration>
 						<executions>
 							<execution>

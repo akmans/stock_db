@@ -112,8 +112,8 @@ public class JapanStockConvertProcessor
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
 		this.stepExecution = stepExecution;
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS, 0);
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS, 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS + "Day", 0);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS + "Day", 0);
 	}
 
 	@Override
@@ -123,12 +123,12 @@ public class JapanStockConvertProcessor
 	}
 
 	private void countSkippedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.SKIPPED_ROWS, 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.SKIPPED_ROWS + "Day",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.SKIPPED_ROWS + "Day", 0) + 1);
 	}
 
 	private void countProcessedRows() {
-		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.PROCESSED_ROWS, 0) + 1);
+		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.PROCESSED_ROWS + "Day",
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.PROCESSED_ROWS + "Day", 0) + 1);
 	}
 }
