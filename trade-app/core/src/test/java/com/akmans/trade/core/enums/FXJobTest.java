@@ -8,15 +8,9 @@ public class FXJobTest {
 	@Test
 	public void testFXJob() {
 		// Test value.
-		assertEquals(FXJob.GENERATE_FX_TICK_JOB.toString(), "generateFXTickJob");
-		// Test Label.
-		assertEquals(FXJob.GENERATE_FX_TICK_JOB.getLabel(), "0 : 為替データ導入処理");
-		// Test lookup(get).
-		assertEquals(FXJob.get("generateFXTickJob"), FXJob.GENERATE_FX_TICK_JOB);
-		// Test value.
 		assertEquals(FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.toString(), "generateFXCandlestickDataJob");
 		// Test Label.
-		assertEquals(FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getLabel(), "6 : ローソク足データ生成処理");
+		assertEquals(FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getLabel(), "ローソク足データ生成処理");
 		// Test lookup(get).
 		assertEquals(FXJob.get("generateFXCandlestickDataJob"), FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB);
 	}

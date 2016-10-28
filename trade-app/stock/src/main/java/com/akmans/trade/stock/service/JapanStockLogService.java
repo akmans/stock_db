@@ -18,7 +18,5 @@ public interface JapanStockLogService {
 
 	public TrnJapanStockLog operation(TrnJapanStockLog japanStockLog, OperationMode mode) throws TradeException;
 
-//	public boolean exist(JapanStockLogKey key);
-
 	public TrnJapanStockLog findMaxRegistDate(String jobId, Date processDate);
 }

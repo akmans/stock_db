@@ -220,17 +220,4 @@ public class InstrumentServiceImpl implements InstrumentService {
 		}
 		return null;
 	}
-
-//	public MstInstrument findOneEager(Long code) {
-//		List<Object[]> list = mstInstrumentRepository.findOneEager(code);
-//		MstInstrument instrument = null;
-//		for (Object[] item : list) {
-//			instrument = (MstInstrument) item[0];
-//			instrument.setScale((MstScale) item[1]);
-//			instrument.setMarket((MstMarket) item[2]);
-//			instrument.setSector33((MstSector33) item[3]);
-//			instrument.setSector17((MstSector17) item[4]);
-//		}
-//		return instrument;
-//	}
 }

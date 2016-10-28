@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.Constants;
-import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.stock.service.InstrumentService;
 import com.akmans.trade.stock.service.JapanStockService;
 import com.akmans.trade.stock.springdata.jpa.entities.MstInstrument;
@@ -58,20 +57,8 @@ public class JapanStockConvertProcessor
 			countSkippedRows();
 			return null;
 		}
-//		try {
-//			// Process stock code.
-//			String codes[] = item.getCode().split("-");
-//			instrumentService.findOne(Long.valueOf(codes[0]));
-//		} catch (TradeException te) {
-//			logger.warn("The item is {}", item);
-//			logger.warn(te.getMessage());
-//			countSkippedRows();
-//			return null;
-//		}
 
 		TrnJapanStock stock = new TrnJapanStock();
-		// Process stock code.
-//		String codes[] = item.getCode().split("-");
 		// Primary key.
 		JapanStockKey japanStockKey = new JapanStockKey();
 		japanStockKey.setCode(Integer.valueOf(codes[0]));
@@ -105,7 +92,6 @@ public class JapanStockConvertProcessor
 		stock.setTurnover(Long.valueOf(item.getTurnover()));
 		stock.setTradingValue(Long.valueOf(item.getTradingValue()));
 		// logger.info("stock = {}", stock);
-		// System.out.println("Processing..." + item);
 		return stock;
 	}
 

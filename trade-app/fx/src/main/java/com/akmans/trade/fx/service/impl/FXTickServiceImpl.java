@@ -96,8 +96,6 @@ public class FXTickServiceImpl implements FXTickService {
 		logger.debug("Currency pair is {}.", currencyPair);
 		logger.debug("Date from is {}.", dateTimeFrom);
 		logger.debug("Date to is {}.", dateTimeTo);
-//		List<TrnFXTick> fxTicks = trnFXTickRepository.findFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
-//		if (fxTicks == null || fxTicks.size() == 0) {
 		if (trnFXTickRepository.countFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo) <= 0) {
 			logger.debug("No records found.");
 			return null;
@@ -132,36 +130,13 @@ public class FXTickServiceImpl implements FXTickService {
 			}
 			// Set Key.
 			fxEntity.setTickKey(tickKey);
-/*			double highPrice = 0;
-			double lowPrice = 0;
-			for (int i = 0; i < fxTicks.size(); i++) {
-				TrnFXTick tick = fxTicks.get(i);
-				// Set opening price, the first tick price is opening price.
-				if (i == 0) {
-					fxEntity.setOpeningPrice(tick.getMidPrice());
-				}
-				// Refresh high price when necessary.
-				if (highPrice < tick.getMidPrice()) {
-					highPrice = tick.getMidPrice();
-				}
-				// Get low price when necessary.(MUST: refresh lowPrice when is 0.)
-				if (lowPrice == 0 || lowPrice > tick.getMidPrice()) {
-					lowPrice = tick.getMidPrice();
-				}
-				// Set finish price.
-				if (i == fxTicks.size() - 1) {
-					fxEntity.setFinishPrice(tick.getMidPrice());
-				}
-			}*/
 			// Set opening price.
 			List<TrnFXTick> ticks = trnFXTickRepository.findFirstFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
 			fxEntity.setOpeningPrice(ticks.get(0).getMidPrice());
 			// Set high price.
-//			fxEntity.setHighPrice(highPrice);
 			ticks = trnFXTickRepository.findHighestFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
 			fxEntity.setHighPrice(ticks.get(0).getMidPrice());
 			// Set low price.
-//			fxEntity.setLowPrice(lowPrice);
 			ticks = trnFXTickRepository.findLowestFXTickInPeriod(currencyPair, dateTimeFrom, dateTimeTo);
 			fxEntity.setLowPrice(ticks.get(0).getMidPrice());
 			// Set finish price.

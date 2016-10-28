@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,12 +95,6 @@ public class MstInstrumentRepositoryTest {
 		instrument = instrumentRepository.findOne(1016L);
 		// Check result.
 		assertEquals(false, instrument.isPresent());
-
-		// Get one eager from DB by code = 1000L.
-//		List<Object[]> object = instrumentRepository.findOneEager(1000L);
-		// Check result.
-//		assertNotNull(object);
-//		assertEquals(true, object.size() > 0);
 	}
 
 	@Test

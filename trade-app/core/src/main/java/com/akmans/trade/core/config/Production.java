@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -22,7 +21,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @Profile("production")
-@PropertySources({ @PropertySource(Constants.SYSTEM_PROPERITES_FILE_PATH)})
+@PropertySources({ @PropertySource(Constants.SYSTEM_PROPERITES_FILE_PATH) })
 public class Production {
 
 	@Autowired
@@ -30,18 +29,13 @@ public class Production {
 
 	@Bean
 	public DataSource dataSource() throws PropertyVetoException {
-//		DriverManagerDataSource dataSourceConfig = new DriverManagerDataSource();
-//		dataSourceConfig.setDriverClassName(env.getRequiredProperty("db.driver"));
-//		dataSourceConfig.setUrl(env.getRequiredProperty("db.url"));
-//		dataSourceConfig.setUsername(env.getRequiredProperty("db.username"));
-//		dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
 		ComboPooledDataSource dataSourceConfig = new ComboPooledDataSource();
 		dataSourceConfig.setDriverClass(env.getRequiredProperty("db.driver"));
 		dataSourceConfig.setJdbcUrl(env.getRequiredProperty("db.url"));
 		dataSourceConfig.setUser(env.getRequiredProperty("db.username"));
 		dataSourceConfig.setPassword(env.getRequiredProperty("db.password"));
 
-        // the settings below are optional -- c3p0 can work with defaults
+		// the settings below are optional -- c3p0 can work with defaults
 		dataSourceConfig.setMinPoolSize(5);
 		dataSourceConfig.setAcquireIncrement(5);
 		dataSourceConfig.setMaxPoolSize(20);

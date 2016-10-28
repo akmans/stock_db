@@ -73,7 +73,7 @@ public class FXJobExecutionListenerTest {
 		jobExecution.setExitStatus(ExitStatus.COMPLETED);
 		listener.afterJob(jobExecution);
 		assertNotNull(map.get("subject"));
-		assertEquals("6 : ローソク足データ生成処理 : COMPLETED[usdjpy#200905]", map.get("subject"));
+		assertEquals("ローソク足データ生成処理 : COMPLETED[usdjpy#200905]", map.get("subject"));
 		assertNotNull(map.get("body"));
 		assertThat(map.get("body"), containsString("<Hour Data>"));
 		assertThat(map.get("body"), containsString("<6Hour Data>"));

@@ -67,16 +67,10 @@ public class JapanStockJobScheduler {
 	@Autowired
 	private JobOperator jobOperator;
 
-	// @Autowired
-	// private JobLauncher jobLauncher;
-
-	// @Autowired
-	// private Job job;
-
 	@Autowired
 	private ApplicationContext appContext;
 
-//	@Scheduled(initialDelay = 60000, fixedDelay = 120000)
+	// @Scheduled(initialDelay = 60000, fixedDelay = 120000)
 	public void bulkRun() {
 		logger.debug("JapanStockJobScheduler start!!!");
 		try {
@@ -88,8 +82,7 @@ public class JapanStockJobScheduler {
 			if (!rescue(jobId)) {
 				Calendar cal1 = Calendar.getInstance();
 				cal1.set(2099, 11, 31); // 20991231
-				TrnJapanStockLog log = japanStockLogService
-						.findMaxRegistDate(jobId, cal1.getTime());
+				TrnJapanStockLog log = japanStockLogService.findMaxRegistDate(jobId, cal1.getTime());
 				logger.debug("JapanStockJobScheduler log is !!!" + log);
 				Date currentDate = log.getJapanStockLogKey().getProcessDate();
 				logger.debug("JapanStockJobScheduler !!!" + currentDate);
@@ -106,14 +99,13 @@ public class JapanStockJobScheduler {
 			}
 		} catch (Exception e) {
 			logger.error("Some error occurred!", e);
-//			e.printStackTrace();
 		} finally {
 			SecurityContextHolder.clearContext();
 		}
 		logger.debug("JapanStockJobScheduler end!!!");
 	}
 
-//	@Scheduled(cron = "0 0 20 * * MON-FRI")
+	// @Scheduled(cron = "0 0 20 * * MON-FRI")
 	public void run() {
 		logger.debug("JapanStockJobScheduler start!!!");
 		try {
@@ -126,7 +118,6 @@ public class JapanStockJobScheduler {
 			launch(jobId, processDate);
 		} catch (Exception e) {
 			logger.error("Some error occurred!", e);
-//			e.printStackTrace();
 		} finally {
 			SecurityContextHolder.clearContext();
 		}
@@ -166,18 +157,18 @@ public class JapanStockJobScheduler {
 		return false;
 	}
 
-	private void launch(String jobId, Date processDate) throws TradeException, Exception{
+	private void launch(String jobId, Date processDate) throws TradeException, Exception {
 		JapanStockLogKey japanStockLogKey = new JapanStockLogKey();
 		japanStockLogKey.setJobId(jobId);
 		japanStockLogKey.setProcessDate(processDate);
 		TrnJapanStockLog japanStockLog = null;
 		Optional<TrnJapanStockLog> optional = japanStockLogService.findOne(japanStockLogKey);
 		if (optional.isPresent()) {
-//			japanStockLog = japanStockLogService.findOne(japanStockLogKey);
 			if (ExitStatus.COMPLETED.getExitCode().equals(optional.get().getStatus())) {
 				// get message.
 				String message = messageSource.getMessage("controller.japanstocklog.job.already.completed",
-						new Object[] { japanStockLogKey }, Locale.ENGLISH); // TODO locale
+						new Object[] { japanStockLogKey }, Locale.ENGLISH); // TODO
+																			// locale
 				throw new TradeException(message);
 			}
 			// do confirm operation.
@@ -189,11 +180,10 @@ public class JapanStockJobScheduler {
 			japanStockLogService.operation(japanStockLog, OperationMode.NEW);
 		}
 
-//		JobLauncher jobLauncher = (JobLauncher) appContext.getBean("jobLauncher");
 		Job job = (Job) appContext.getBean(jobId);
 		logger.info("Job Restartable ? : " + job.isRestartable());
-		JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
-				.addDate("processDate", processDate).toJobParameters();
+		JobParameters params = new JobParametersBuilder().addString("jobId", jobId).addDate("processDate", processDate)
+				.toJobParameters();
 		JobExecution execution = jobLauncher.run(job, params);
 		logger.info("Status : [" + execution.getStatus() + "] Eixt Code: [" + execution.getExitStatus() + "]");
 	}

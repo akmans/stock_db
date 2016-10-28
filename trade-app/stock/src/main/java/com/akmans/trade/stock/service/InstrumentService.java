@@ -18,6 +18,4 @@ public interface InstrumentService {
 	public Optional<MstInstrument> findOne(Long code);
 
 	public MstInstrument operation(MstInstrument scale, OperationMode mode) throws TradeException;
-
-//	public MstInstrument findOneEager(Long code);
 }

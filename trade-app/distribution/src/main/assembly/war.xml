@@ -40,25 +40,5 @@
 			<directory>../cashing/src/main/webapp</directory>
 			<outputDirectory>.</outputDirectory>
 		</fileSet>
-<!-- 		<fileSet>
-			<directory>src/main/resources</directory>
-			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../core/src/main/resources</directory>
-			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../stock/src/main/resources</directory>
-			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../fx/src/main/resources</directory>
-			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../cashing/src/main/resources</directory>
-			<outputDirectory>WEB-INF/classes</outputDirectory>
-		</fileSet> -->
 	</fileSets>
 </assembly>

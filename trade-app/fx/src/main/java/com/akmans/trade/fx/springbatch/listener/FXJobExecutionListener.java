@@ -49,25 +49,7 @@ public class FXJobExecutionListener implements JobExecutionListener {
 		body = body + "Elapsed time is " + diffHours + " hours, " + diffMinutes + " minutes and " + diffSeconds
 				+ " seconds \n";
 		body = body + "------\n";
-/*		if (FXJob.IMPORT_FX_TICK_JOB.getValue().equals(jobId)) {
-			int processedRows = jobExecution.getExecutionContext().getInt(Constants.PROCESSED_ROWS);
-			int skippedRows = jobExecution.getExecutionContext().getInt(Constants.SKIPPED_ROWS);
-			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
-			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
-			body = body + "Processed Rows: " + processedRows + "\n";
-			body = body + "Skipped Rows: " + skippedRows + "\n";
-			body = body + "Inserted Rows: " + insertedRows + "\n";
-			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else if (FXJob.GENERATE_FX_HOUR_JOB.getValue().equals(jobId)
-				|| FXJob.GENERATE_FX_6HOUR_JOB.getValue().equals(jobId)
-				|| FXJob.GENERATE_FX_DAY_JOB.getValue().equals(jobId)
-				|| FXJob.GENERATE_FX_WEEK_JOB.getValue().equals(jobId)
-				|| FXJob.GENERATE_FX_MONTH_JOB.getValue().equals(jobId)) {
-			int insertedRows = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS);
-			int updatedRows = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS);
-			body = body + "Inserted Rows: " + insertedRows + "\n";
-			body = body + "Updated Rows: " + updatedRows + "\n";
-		} else*/ if (FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue().equals(jobId)) {
+		if (FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue().equals(jobId)) {
 			int insertedRowsHour = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "Hour");
 			int updatedRowsHour = jobExecution.getExecutionContext().getInt(Constants.UPDATED_ROWS + "Hour");
 			int insertedRows6Hour = jobExecution.getExecutionContext().getInt(Constants.INSERTED_ROWS + "6Hour");

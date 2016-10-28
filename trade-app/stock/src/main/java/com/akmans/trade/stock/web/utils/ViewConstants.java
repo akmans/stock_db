@@ -27,8 +27,6 @@ public class ViewConstants {
 
 	public final static String VIEW_INSTRUMENT_LIST = "stock/instrument/list";
 
-//	public final static String VIEW_INSTRUMENT_LIST_CONTENT_FRAGEMENT = "instrument/list :: content";
-
 	public final static String VIEW_INSTRUMENT_FORM_FRAGEMENT = "stock/instrument/entry-form :: form";
 
 	public final static String VIEW_JAPAN_STOCK_LOG_LIST = "stock/japanstocklog/list";

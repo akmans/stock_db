@@ -103,7 +103,8 @@ public class TrueFXRunner {
 
 		// Check sessionId.
 		if (sessionId == null || sessionId.equals("not authorized")) {
-			throw new TradeException(messageService.getMessage("fx.springbatch.truefx.created.session.failed", sessionId));
+			throw new TradeException(
+					messageService.getMessage("fx.springbatch.truefx.created.session.failed", sessionId));
 		}
 
 		// return sessionId.
@@ -132,15 +133,24 @@ public class TrueFXRunner {
 		}
 
 		ArrayList<Integer> indexes = new ArrayList<Integer>();
-		if (indexUSDJPY >= 0) indexes.add(indexUSDJPY);
-		if (indexEURJPY >= 0) indexes.add(indexEURJPY);
-		if (indexAUDJPY >= 0) indexes.add(indexAUDJPY);
-		if (indexGBPJPY >= 0) indexes.add(indexGBPJPY);
-		if (indexCHFJPY >= 0) indexes.add(indexCHFJPY);
-		if (indexEURUSD >= 0) indexes.add(indexEURUSD);
-		if (indexGBPUSD >= 0) indexes.add(indexGBPUSD);
-		if (indexAUDUSD >= 0) indexes.add(indexAUDUSD);
-		if (indexUSDCHF >= 0) indexes.add(indexUSDCHF);
+		if (indexUSDJPY >= 0)
+			indexes.add(indexUSDJPY);
+		if (indexEURJPY >= 0)
+			indexes.add(indexEURJPY);
+		if (indexAUDJPY >= 0)
+			indexes.add(indexAUDJPY);
+		if (indexGBPJPY >= 0)
+			indexes.add(indexGBPJPY);
+		if (indexCHFJPY >= 0)
+			indexes.add(indexCHFJPY);
+		if (indexEURUSD >= 0)
+			indexes.add(indexEURUSD);
+		if (indexGBPUSD >= 0)
+			indexes.add(indexGBPUSD);
+		if (indexAUDUSD >= 0)
+			indexes.add(indexAUDUSD);
+		if (indexUSDCHF >= 0)
+			indexes.add(indexUSDCHF);
 		// Sort the indexes.
 		Collections.sort(indexes);
 
@@ -249,7 +259,7 @@ public class TrueFXRunner {
 
 		System.out.println("Here!");
 		// Keep running.
-		while(retryCnt < 100 && keepRunning()) {
+		while (retryCnt < 100 && keepRunning()) {
 			try {
 				// Make request URL.
 				StringBuffer sb = new StringBuffer(env.getRequiredProperty("truefx.url"));
@@ -272,7 +282,6 @@ public class TrueFXRunner {
 					}
 					in.close();
 
-//					System.out.println("Here2!" + response.toString());
 					// None content, skip to next loop.
 					if (response.toString().length() == 0) {
 						retryCnt++;
@@ -286,7 +295,7 @@ public class TrueFXRunner {
 					List<String> ticks = parseResponse(response.toString());
 					// result.Ex.USD/JPY,1472849100026,103.,992,104.,000,103.837,104.091,103.945
 					for (String strTick : ticks) {
-//						logger.info("{}", parseQuote(strTick));
+						logger.debug("{}", parseQuote(strTick));
 						FXTick tick = parseQuote(strTick);
 						// Get previous tick.
 						FXTick previous = previousMap.get(tick.getCurrencyPair());
@@ -316,8 +325,8 @@ public class TrueFXRunner {
 		closeSession(sessionId);
 	}
 
-//	@Scheduled(fixedDelay = 3600000)
-//	@Scheduled(cron = "0 0 8 * * TUE")
+	// @Scheduled(fixedDelay = 3600000)
+	// @Scheduled(cron = "0 0 8 * * TUE")
 	public void run() {
 		logger.info("TrueFXRunner start!!!");
 		try {

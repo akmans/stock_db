@@ -22,14 +22,11 @@ import com.pretty_tools.dde.DDEMLException;
 import com.pretty_tools.dde.client.DDEClientConversation;
 
 @Component
-//@StepScope
 public class FXDDEUtil {
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXDDEUtil.class);
 
 	private FXTickService fxTickService;
-
-//	private StepExecution stepExecution;
 
 	private MessageService messageService;
 
@@ -38,14 +35,7 @@ public class FXDDEUtil {
 		this.fxTickService = fxTickService;
 		this.messageService = messageService;
 	}
-/*
-	public void beforeStep(StepExecution stepExecution) {
-		this.stepExecution = stepExecution;
-		// Initialize inserted rows as 0.
-		stepExecution.getJobExecution().getExecutionContext().putLong(Constants.INSERTED_ROWS, 0);
-	}*/
 
-//	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 	public void execute() throws Exception {
 		logger.info("Start !");
 		int counter = 0;
@@ -57,92 +47,88 @@ public class FXDDEUtil {
 
 		while (counter < 100 && "RUNNING".equals(stopFlag)) {
 			try {
-//				while ("RUNNING".equals(stopFlag)) {
-					// DDE client
-					final DDEClientConversation conversation = new DDEClientConversation();
-					conversation.setTimeout(3000);
-					conversation.connect("Excel", "Sheet1");
+				// DDE client
+				final DDEClientConversation conversation = new DDEClientConversation();
+				conversation.setTimeout(3000);
+				conversation.connect("Excel", "Sheet1");
 
-					try {
-						// Requesting A1 value
-						String currentUSDJPY = conversation.request("R3C3").trim();
-						String currentEURJPY = conversation.request("R4C3").trim();
-						String currentAUDJPY = conversation.request("R5C3").trim();
-						String currentGBPJPY = conversation.request("R6C3").trim();
-						String currentCHFJPY = conversation.request("R7C3").trim();
-						String currentEURUSD = conversation.request("R8C3").trim();
-						String currentGBPUSD = conversation.request("R9C3").trim();
-						String currentAUDUSD = conversation.request("R10C3").trim();
-						String currentUSDCHF = conversation.request("R11C3").trim();
-						stopFlag = conversation.request("R13C3").trim();
-						// Previous Value.
-						String previousUSDJPY = previousMap.put(CurrencyPair.USDJPY.getValue(), currentUSDJPY);
-						String previousEURJPY = previousMap.put(CurrencyPair.EURJPY.getValue(), currentEURJPY);
-						String previousAUDJPY = previousMap.put(CurrencyPair.AUDJPY.getValue(), currentAUDJPY);
-						String previousGBPJPY = previousMap.put(CurrencyPair.GBPJPY.getValue(), currentGBPJPY);
-						String previousCHFJPY = previousMap.put(CurrencyPair.CHFJPY.getValue(), currentCHFJPY);
-						String previousEURUSD = previousMap.put(CurrencyPair.EURUSD.getValue(), currentEURUSD);
-						String previousGBPUSD = previousMap.put(CurrencyPair.GBPUSD.getValue(), currentGBPUSD);
-						String previousAUDUSD = previousMap.put(CurrencyPair.AUDUSD.getValue(), currentAUDUSD);
-						String previousUSDCHF = previousMap.put(CurrencyPair.USDCHF.getValue(), currentUSDCHF);
-						// Reset counter.
-						counter = 0;
-						logger.debug("STOP FLAG:" + stopFlag);
-						if (currentUSDJPY != null && !currentUSDJPY.equals(previousUSDJPY)) {
-							logger.debug(CurrencyPair.USDJPY.getLabel() + " : " + currentUSDJPY);
-							previousMap.put(CurrencyPair.USDJPY.getValue(), currentUSDJPY);
-							process(CurrencyPair.USDJPY, currentUSDJPY);
-						}
-						if (currentEURJPY != null && !currentEURJPY.equals(previousEURJPY)) {
-							logger.debug(CurrencyPair.EURJPY.getLabel() + " : " + currentEURJPY);
-							previousMap.put(CurrencyPair.EURJPY.getValue(), currentEURJPY);
-							process(CurrencyPair.EURJPY, currentEURJPY);
-						}
-						if (currentAUDJPY != null && !currentAUDJPY.equals(previousAUDJPY)) {
-							logger.debug(CurrencyPair.AUDJPY.getLabel() + " : " + currentAUDJPY);
-							previousMap.put(CurrencyPair.AUDJPY.getValue(), currentAUDJPY);
-							process(CurrencyPair.AUDJPY, currentAUDJPY);
-						}
-						if (currentGBPJPY != null && !currentGBPJPY.equals(previousGBPJPY)) {
-							logger.debug("currentGBPJPY:[" + currentGBPJPY +"]");
-							logger.debug("previousGBPJPY:[" + previousGBPJPY + "]");
-							logger.debug("Previous Map : {}", previousMap);
-							previousMap.put(CurrencyPair.GBPJPY.getValue(), currentGBPJPY);
-							process(CurrencyPair.GBPJPY, currentGBPJPY);
-						}
-						if (currentCHFJPY != null && !currentCHFJPY.equals(previousCHFJPY)) {
-							logger.debug(CurrencyPair.CHFJPY.getLabel() + " : " + currentCHFJPY);
-							previousMap.put(CurrencyPair.CHFJPY.getValue(), currentCHFJPY);
-							process(CurrencyPair.CHFJPY, currentCHFJPY);
-						}
-						if (currentEURUSD != null && !currentEURUSD.equals(previousEURUSD)) {
-							logger.debug(CurrencyPair.EURUSD.getLabel() + " : " + currentEURUSD);
-							previousMap.put(CurrencyPair.EURUSD.getValue(), currentEURUSD);
-							process(CurrencyPair.EURUSD, currentEURUSD);
-						}
-						if (currentGBPUSD != null && !currentGBPUSD.equals(previousGBPUSD)) {
-							logger.debug(CurrencyPair.GBPUSD.getLabel() + " : " + currentGBPUSD);
-							previousMap.put(CurrencyPair.GBPUSD.getValue(), currentGBPUSD);
-							process(CurrencyPair.GBPUSD, currentGBPUSD);
-						}
-						if (currentAUDUSD != null && !currentAUDUSD.equals(previousAUDUSD)) {
-							logger.debug(CurrencyPair.AUDUSD.getLabel() + " : " + currentAUDUSD);
-							previousMap.put(CurrencyPair.AUDUSD.getValue(), currentAUDUSD);
-							process(CurrencyPair.AUDUSD, currentAUDUSD);
-						}
-						if (currentUSDCHF != null && !currentUSDCHF.equals(previousUSDCHF)) {
-							logger.debug(CurrencyPair.USDCHF.getLabel() + " : " + currentUSDCHF);
-							previousMap.put(CurrencyPair.USDCHF.getValue(), currentUSDCHF);
-							process(CurrencyPair.USDCHF, currentUSDCHF);
-						}
-					} finally {
-						conversation.disconnect();
+				try {
+					// Requesting A1 value
+					String currentUSDJPY = conversation.request("R3C3").trim();
+					String currentEURJPY = conversation.request("R4C3").trim();
+					String currentAUDJPY = conversation.request("R5C3").trim();
+					String currentGBPJPY = conversation.request("R6C3").trim();
+					String currentCHFJPY = conversation.request("R7C3").trim();
+					String currentEURUSD = conversation.request("R8C3").trim();
+					String currentGBPUSD = conversation.request("R9C3").trim();
+					String currentAUDUSD = conversation.request("R10C3").trim();
+					String currentUSDCHF = conversation.request("R11C3").trim();
+					stopFlag = conversation.request("R13C3").trim();
+					// Previous Value.
+					String previousUSDJPY = previousMap.put(CurrencyPair.USDJPY.getValue(), currentUSDJPY);
+					String previousEURJPY = previousMap.put(CurrencyPair.EURJPY.getValue(), currentEURJPY);
+					String previousAUDJPY = previousMap.put(CurrencyPair.AUDJPY.getValue(), currentAUDJPY);
+					String previousGBPJPY = previousMap.put(CurrencyPair.GBPJPY.getValue(), currentGBPJPY);
+					String previousCHFJPY = previousMap.put(CurrencyPair.CHFJPY.getValue(), currentCHFJPY);
+					String previousEURUSD = previousMap.put(CurrencyPair.EURUSD.getValue(), currentEURUSD);
+					String previousGBPUSD = previousMap.put(CurrencyPair.GBPUSD.getValue(), currentGBPUSD);
+					String previousAUDUSD = previousMap.put(CurrencyPair.AUDUSD.getValue(), currentAUDUSD);
+					String previousUSDCHF = previousMap.put(CurrencyPair.USDCHF.getValue(), currentUSDCHF);
+					// Reset counter.
+					counter = 0;
+					logger.debug("STOP FLAG:" + stopFlag);
+					if (currentUSDJPY != null && !currentUSDJPY.equals(previousUSDJPY)) {
+						logger.debug(CurrencyPair.USDJPY.getLabel() + " : " + currentUSDJPY);
+						previousMap.put(CurrencyPair.USDJPY.getValue(), currentUSDJPY);
+						process(CurrencyPair.USDJPY, currentUSDJPY);
 					}
-//				}
+					if (currentEURJPY != null && !currentEURJPY.equals(previousEURJPY)) {
+						logger.debug(CurrencyPair.EURJPY.getLabel() + " : " + currentEURJPY);
+						previousMap.put(CurrencyPair.EURJPY.getValue(), currentEURJPY);
+						process(CurrencyPair.EURJPY, currentEURJPY);
+					}
+					if (currentAUDJPY != null && !currentAUDJPY.equals(previousAUDJPY)) {
+						logger.debug(CurrencyPair.AUDJPY.getLabel() + " : " + currentAUDJPY);
+						previousMap.put(CurrencyPair.AUDJPY.getValue(), currentAUDJPY);
+						process(CurrencyPair.AUDJPY, currentAUDJPY);
+					}
+					if (currentGBPJPY != null && !currentGBPJPY.equals(previousGBPJPY)) {
+						logger.debug(CurrencyPair.GBPJPY.getLabel() + " : " + currentGBPJPY);
+						previousMap.put(CurrencyPair.GBPJPY.getValue(), currentGBPJPY);
+						process(CurrencyPair.GBPJPY, currentGBPJPY);
+					}
+					if (currentCHFJPY != null && !currentCHFJPY.equals(previousCHFJPY)) {
+						logger.debug(CurrencyPair.CHFJPY.getLabel() + " : " + currentCHFJPY);
+						previousMap.put(CurrencyPair.CHFJPY.getValue(), currentCHFJPY);
+						process(CurrencyPair.CHFJPY, currentCHFJPY);
+					}
+					if (currentEURUSD != null && !currentEURUSD.equals(previousEURUSD)) {
+						logger.debug(CurrencyPair.EURUSD.getLabel() + " : " + currentEURUSD);
+						previousMap.put(CurrencyPair.EURUSD.getValue(), currentEURUSD);
+						process(CurrencyPair.EURUSD, currentEURUSD);
+					}
+					if (currentGBPUSD != null && !currentGBPUSD.equals(previousGBPUSD)) {
+						logger.debug(CurrencyPair.GBPUSD.getLabel() + " : " + currentGBPUSD);
+						previousMap.put(CurrencyPair.GBPUSD.getValue(), currentGBPUSD);
+						process(CurrencyPair.GBPUSD, currentGBPUSD);
+					}
+					if (currentAUDUSD != null && !currentAUDUSD.equals(previousAUDUSD)) {
+						logger.debug(CurrencyPair.AUDUSD.getLabel() + " : " + currentAUDUSD);
+						previousMap.put(CurrencyPair.AUDUSD.getValue(), currentAUDUSD);
+						process(CurrencyPair.AUDUSD, currentAUDUSD);
+					}
+					if (currentUSDCHF != null && !currentUSDCHF.equals(previousUSDCHF)) {
+						logger.debug(CurrencyPair.USDCHF.getLabel() + " : " + currentUSDCHF);
+						previousMap.put(CurrencyPair.USDCHF.getValue(), currentUSDCHF);
+						process(CurrencyPair.USDCHF, currentUSDCHF);
+					}
+				} finally {
+					conversation.disconnect();
+				}
 			} catch (DDEMLException e) {
 				if (counter < 100) {
-					logger.error(counter + " DDEMLException: 0x" + Integer.toHexString(e.getErrorCode()) + " " + e.getMessage(),
-							e);
+					logger.error(counter + " DDEMLException: 0x" + Integer.toHexString(e.getErrorCode()) + " "
+							+ e.getMessage(), e);
 					counter++;
 				} else {
 					throw new Exception(
@@ -158,7 +144,6 @@ public class FXDDEUtil {
 			}
 		}
 		logger.info("End !");
-//		return RepeatStatus.FINISHED;
 	}
 
 	private void process(CurrencyPair currencyPair, String rateData) throws TradeException {
@@ -190,13 +175,5 @@ public class FXDDEUtil {
 		TrnFXTick fxTick = new TrnFXTick();
 		BeanUtils.copyProperties(tick, fxTick);
 		fxTickService.operation(fxTick, OperationMode.NEW);
-
-		// Save inserted rows counter into job execution context.
-//		countInsertedRows(1);
 	}
-/*
-	private void countInsertedRows(int cnt) {
-		stepExecution.getJobExecution().getExecutionContext().putLong(Constants.INSERTED_ROWS,
-				stepExecution.getJobExecution().getExecutionContext().getLong(Constants.INSERTED_ROWS, 0) + cnt);
-	}*/
 }

@@ -132,8 +132,6 @@ public class FXTickServiceImplTest {
 		tick2.setMidPrice(300);
 		finishTicks.add(tick2);
 		// Mockito expectations
-//		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
-//				any(LocalDateTime.class))).thenReturn(ticks);
 		when(trnFXTickRepository.countFXTickInPeriod(any(String.class), any(LocalDateTime.class),
 				any(LocalDateTime.class))).thenReturn(1);
 		when(trnFXTickRepository.findFirstFXTickInPeriod(any(String.class), any(LocalDateTime.class),
@@ -199,11 +197,6 @@ public class FXTickServiceImplTest {
 		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
 		// Validation
 		assertNull(entity);
-//		when(trnFXTickRepository.findFXTickInPeriod(any(String.class), any(LocalDateTime.class),
-//				any(LocalDateTime.class))).thenReturn(new ArrayList<TrnFXTick>());
-//		entity = fxTickService.generateFXPeriodData(FXType.WEEK, "usdjpy", LocalDateTime.now());
-//		// Validation
-//		assertNull(entity);
 	}
 
 	@Test

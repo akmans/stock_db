@@ -122,7 +122,6 @@ public class JapanStockLogEntryController extends AbstractController {
 				}
 				Optional<TrnJapanStockLog> optional = japanStockLogService.findOne(japanStockLogKey);
 				if (optional.isPresent()) {
-//					japanStockLog = japanStockLogService.findOne(japanStockLogKey);
 					if (ExitStatus.COMPLETED.getExitCode().equals(optional.get().getStatus())) {
 						// get message.
 						message = messageSource.getMessage("controller.japanstocklog.job.already.completed",
@@ -166,8 +165,8 @@ public class JapanStockLogEntryController extends AbstractController {
 		logger.info("Job Restartable ? : " + job.isRestartable());
 
 		// Build job parameters.
-		JobParameters params = new JobParametersBuilder().addString("jobId", jobId)
-				.addDate("processDate", processDate).toJobParameters();
+		JobParameters params = new JobParametersBuilder().addString("jobId", jobId).addDate("processDate", processDate)
+				.toJobParameters();
 		// Run the job.
 		JobExecution execution = jobLauncher.run(job, params);
 		logger.info("Exit Status : " + execution.getStatus());

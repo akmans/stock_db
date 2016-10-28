@@ -21,7 +21,7 @@
 	</dependencySets>
 	<fileSets>
 		<fileSet>
-			<directory>src/main/bin</directory>
+			<directory>${project.basedir}/src/main/bin</directory>
 			<outputDirectory>console/bin</outputDirectory>
 		</fileSet>
 		<fileSet>
@@ -31,25 +31,5 @@
 				<include>*.dll</include>
 			</includes>
 		</fileSet>
-<!-- 		<fileSet>
-			<directory>src/main/resources</directory>
-			<outputDirectory>console/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../core/src/main/resources</directory>
-			<outputDirectory>console/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../stock/src/main/resources</directory>
-			<outputDirectory>console/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../fx/src/main/resources</directory>
-			<outputDirectory>console/classes</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>../cashing/src/main/resources</directory>
-			<outputDirectory>console/classes</outputDirectory>
-		</fileSet> -->
 	</fileSets>
 </assembly>

@@ -2,8 +2,6 @@ package com.akmans.trade.cashing.service.impl;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,7 @@ import com.akmans.trade.cashing.service.SpecialItemService;
 import com.akmans.trade.cashing.springdata.jpa.entities.TrnSpecialDetail;
 import com.akmans.trade.cashing.springdata.jpa.entities.TrnSpecialItem;
 import com.akmans.trade.core.config.TestConfig;
-import com.akmans.trade.core.dto.CalendarQueryDto;
 import com.akmans.trade.core.enums.OperationMode;
-import com.akmans.trade.core.springdata.jpa.entities.MstCalendar;
 import com.akmans.trade.core.utils.DateUtil;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;

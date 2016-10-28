@@ -111,11 +111,13 @@ public class JapanStockMonthlyGenerateExecution extends StepExecutionListenerSup
 
 	private void countInsertedRows(int cnt) {
 		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Month",
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Month", 0) + cnt);
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Month", 0)
+						+ cnt);
 	}
 
 	private void countUpdatedRows(int cnt) {
 		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.UPDATED_ROWS + "Month",
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month", 0) + cnt);
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month", 0)
+						+ cnt);
 	}
 }

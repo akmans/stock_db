@@ -1,15 +1,11 @@
 package com.akmans.trade.stock.web.form;
 
 import java.io.Serializable;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.akmans.trade.core.enums.JapanHoliday;
 import com.akmans.trade.core.web.form.AbstractSimpleForm;
 
 public class InstrumentEntryForm extends AbstractSimpleForm implements Serializable {
