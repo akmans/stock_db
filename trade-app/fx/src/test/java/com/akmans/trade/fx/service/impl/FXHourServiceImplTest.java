@@ -30,6 +30,8 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.fx.service.FXHourService;
+import com.akmans.trade.fx.service.FXTickBulkService;
+import com.akmans.trade.fx.service.FXTickService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
@@ -56,9 +58,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testFindOneWithMock() {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -86,9 +90,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testFindPreviousWithMock() {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test when FXTickKey is null */
 		// Execute the method being tested
 		Optional<TrnFXHour> fxHour = fxHourService.findPrevious(null);
@@ -179,9 +185,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testGenerateFXPeriodDataWithMock() throws Exception {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test FXType is HOUR */
 		AbstractFXEntity entity = fxHourService.generateFXPeriodData(FXType.HOUR, "usdjpy", LocalDateTime.now());
 		// Validation
@@ -316,9 +324,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testOperation4InsertWithMock() throws Exception {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test insert success */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -368,9 +378,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testOperation4UpdateWithMock() throws Exception {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test updated data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -435,9 +447,11 @@ public class FXHourServiceImplTest {
 
 	@Test
 	public void testOperation4DeleteWithMock() throws Exception {
+		FXTickService fxTickService = Mockito.mock(FXTickService.class);
+		FXTickBulkService fxTickBulkService = Mockito.mock(FXTickBulkService.class);
 		TrnFXHourRepository trnFXHourRepository = Mockito.mock(TrnFXHourRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXHourService fxHourService = new FXHourServiceImpl(trnFXHourRepository, messageService);
+		FXHourService fxHourService = new FXHourServiceImpl(fxTickService, fxTickBulkService, trnFXHourRepository, messageService);
 		/** 1. Test deleted data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

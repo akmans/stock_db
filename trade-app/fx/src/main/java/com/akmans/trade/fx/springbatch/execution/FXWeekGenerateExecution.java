@@ -2,7 +2,6 @@ package com.akmans.trade.fx.springbatch.execution;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameters;
@@ -13,16 +12,12 @@ import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.akmans.trade.core.Constants;
-import com.akmans.trade.core.enums.FXType;
-import com.akmans.trade.core.enums.OperationMode;
-import com.akmans.trade.fx.service.FXDayService;
+import com.akmans.trade.core.enums.OperationResult;
 import com.akmans.trade.fx.service.FXWeekService;
-import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 
 @Component
 @StepScope
@@ -30,15 +25,12 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 
 	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(FXWeekGenerateExecution.class);
 
-	private FXDayService fxDayService;
-
 	private FXWeekService fxWeekService;
 
 	private StepExecution stepExecution;
 
 	@Autowired
-	FXWeekGenerateExecution(FXDayService fxDayService, FXWeekService fxWeekService) {
-		this.fxDayService = fxDayService;
+	FXWeekGenerateExecution(FXWeekService fxWeekService) {
 		this.fxWeekService = fxWeekService;
 	}
 
@@ -72,54 +64,14 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 		int updatedCnt = 0;
 		// Loop all instruments.
 		while (currentDatetime.compareTo(endDay) < 0) {
-			// Retrieve weekly data.
-			TrnFXWeek fxWeek = (TrnFXWeek)fxDayService
-					.generateFXPeriodData(FXType.WEEK, currencyPair, currentDatetime);
-			// Continue to next instrument if no weekly data found.
-			if (fxWeek != null) {
-				// Retrieve previous FX Week data from DB by current key.
-				Optional<TrnFXWeek> prevOption = fxWeekService.findPrevious(fxWeek.getTickKey());
-				// If exists.
-				if (prevOption.isPresent()) {
-					TrnFXWeek previous = prevOption.get();
-					fxWeek.setAvOpeningPrice((previous.getAvOpeningPrice() + previous.getAvFinishPrice()) / 2);
-					fxWeek.setAvFinishPrice((fxWeek.getOpeningPrice() + fxWeek.getHighPrice() + fxWeek.getLowPrice()
-							+ fxWeek.getFinishPrice()) / 4);
-				} else {
-					fxWeek.setAvOpeningPrice(fxWeek.getOpeningPrice());
-					fxWeek.setAvFinishPrice(fxWeek.getFinishPrice());
-				}
-				// Retrieve FX Week data from DB by key.
-				Optional<TrnFXWeek> option = fxWeekService.findOne(fxWeek.getTickKey());
-				// Do delete & insert if exist, or else do insert.
-				if (option.isPresent()) {
-					// Get the current data.
-					TrnFXWeek current = option.get();
-					// Adapt all prices data.
-					current.setOpeningPrice(fxWeek.getOpeningPrice());
-					current.setHighPrice(fxWeek.getHighPrice());
-					current.setLowPrice(fxWeek.getLowPrice());
-					current.setFinishPrice(fxWeek.getFinishPrice());
-					current.setAvOpeningPrice(fxWeek.getAvOpeningPrice());
-					current.setAvFinishPrice(fxWeek.getAvFinishPrice());
-					// Copy all data.
-					BeanUtils.copyProperties(current, fxWeek);
-					logger.debug("The updated data is {}", fxWeek);
-					// Delete the current weekly data.
-					fxWeekService.operation(current, OperationMode.DELETE);
-					// Insert a new weekly data.
-					fxWeekService.operation(fxWeek, OperationMode.NEW);
-					// Count up the updated rows counter.
-					updatedCnt++;
-				} else {
-					logger.debug("The inserted data is {}", fxWeek);
-					// Insert a new weekly data.
-					fxWeekService.operation(fxWeek, OperationMode.NEW);
-					// Count up the inserted rows counter.
-					insertedCnt++;
-				}
-			} else {
-				logger.info("No FX Week generated at {}", currentDatetime);
+			// Do save process.
+			OperationResult or = fxWeekService.refresh(currencyPair, currentDatetime);
+			if (or == OperationResult.INSERTED) {
+				// Count up the inserted rows counter.
+				insertedCnt++;
+			} else if (or == OperationResult.UPDATED) {
+				// Count up the updated rows counter.
+				updatedCnt++;
 			}
 			// Increment with 1 day.
 			currentDatetime = currentDatetime.plusWeeks(1);
@@ -133,7 +85,8 @@ public class FXWeekGenerateExecution extends StepExecutionListenerSupport implem
 
 	private void countInsertedRows(int cnt) {
 		stepExecution.getJobExecution().getExecutionContext().putInt(Constants.INSERTED_ROWS + "Week",
-				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week", 0) + cnt);
+				stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week", 0)
+						+ cnt);
 	}
 
 	private void countUpdatedRows(int cnt) {

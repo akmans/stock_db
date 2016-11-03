@@ -28,10 +28,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXJob;
-import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FX6HourService;
-import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFX6Hour;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -60,9 +58,8 @@ public class FX6HourGenerateExecutionTest {
 	/** Test no data. */
 	@Test
 	public void testStepExecutionWithMock() throws Exception {
-		FXHourService mockHourService = Mockito.mock(FXHourService.class);
 		FX6HourService mock6HourService = Mockito.mock(FX6HourService.class);
-		FX6HourGenerateExecution execution = new FX6HourGenerateExecution(mockHourService, mock6HourService);
+		FX6HourGenerateExecution execution = new FX6HourGenerateExecution(mock6HourService);
 		// New job parameters.
 		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "200905").toJobParameters();
@@ -76,8 +73,7 @@ public class FX6HourGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "6Hour"));
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "6Hour"));
 		// Verify
-		verify(mockHourService, times(4 * 31)).generateFXPeriodData(eq(FXType.SIXHOUR), eq("usdjpy"),
-				any(LocalDateTime.class));
+		verify(mock6HourService, times(4 * 31)).refresh(eq("usdjpy"), any(LocalDateTime.class));
 		verify(mock6HourService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mock6HourService, times(0)).findOne(any(FXTickKey.class));
 		verify(mock6HourService, times(0)).operation(any(TrnFX6Hour.class), eq(OperationMode.DELETE));

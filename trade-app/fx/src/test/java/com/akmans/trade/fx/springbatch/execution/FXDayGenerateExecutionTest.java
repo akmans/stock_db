@@ -28,10 +28,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXJob;
-import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXDayService;
-import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -60,9 +58,8 @@ public class FXDayGenerateExecutionTest {
 	/** Test no data. */
 	@Test
 	public void testStepExecutionWithMock() throws Exception {
-		FXHourService mockHourService = Mockito.mock(FXHourService.class);
 		FXDayService mockDayService = Mockito.mock(FXDayService.class);
-		FXDayGenerateExecution execution = new FXDayGenerateExecution(mockHourService, mockDayService);
+		FXDayGenerateExecution execution = new FXDayGenerateExecution(mockDayService);
 		// New job parameters.
 		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "200905").toJobParameters();
@@ -76,8 +73,7 @@ public class FXDayGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Day"));
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Day"));
 		// Verify
-		verify(mockHourService, times(1 * 31)).generateFXPeriodData(eq(FXType.DAY), eq("usdjpy"),
-				any(LocalDateTime.class));
+		verify(mockDayService, times(1 * 31)).refresh(eq("usdjpy"), any(LocalDateTime.class));
 		verify(mockDayService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mockDayService, times(0)).findOne(any(FXTickKey.class));
 		verify(mockDayService, times(0)).operation(any(TrnFXDay.class), eq(OperationMode.DELETE));

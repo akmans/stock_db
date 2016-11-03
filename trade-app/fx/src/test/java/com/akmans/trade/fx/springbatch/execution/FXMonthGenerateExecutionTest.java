@@ -28,10 +28,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXJob;
-import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXMonthService;
-import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -60,9 +58,8 @@ public class FXMonthGenerateExecutionTest {
 	/** Test no data. */
 	@Test
 	public void testStepExecutionWithMock() throws Exception {
-		FXDayService mockDayService = Mockito.mock(FXDayService.class);
 		FXMonthService mockMonthService = Mockito.mock(FXMonthService.class);
-		FXMonthGenerateExecution execution = new FXMonthGenerateExecution(mockDayService, mockMonthService);
+		FXMonthGenerateExecution execution = new FXMonthGenerateExecution(mockMonthService);
 		// New job parameters.
 		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "200905").toJobParameters();
@@ -76,8 +73,7 @@ public class FXMonthGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Month"));
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Month"));
 		// Verify
-		verify(mockDayService, times(1)).generateFXPeriodData(eq(FXType.MONTH), eq("usdjpy"),
-				any(LocalDateTime.class));
+		verify(mockMonthService, times(1)).refresh(eq("usdjpy"), any(LocalDateTime.class));
 		verify(mockMonthService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mockMonthService, times(0)).findOne(any(FXTickKey.class));
 		verify(mockMonthService, times(0)).operation(any(TrnFXMonth.class), eq(OperationMode.DELETE));

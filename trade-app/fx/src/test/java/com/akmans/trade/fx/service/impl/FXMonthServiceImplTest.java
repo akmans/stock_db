@@ -26,6 +26,7 @@ import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MessageService;
+import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.service.FXMonthService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
@@ -48,9 +49,10 @@ public class FXMonthServiceImplTest {
 
 	@Test
 	public void testFindOneWithMock() {
+		FXDayService fxDayService = Mockito.mock(FXDayService.class);
 		TrnFXMonthRepository trnFXMonthRepository = Mockito.mock(TrnFXMonthRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXMonthService fxMonthService = new FXMonthServiceImpl(trnFXMonthRepository, messageService);
+		FXMonthService fxMonthService = new FXMonthServiceImpl(fxDayService, trnFXMonthRepository, messageService);
 		/** 1. Test found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -78,9 +80,10 @@ public class FXMonthServiceImplTest {
 
 	@Test
 	public void testFindPreviousWithMock() {
+		FXDayService fxDayService = Mockito.mock(FXDayService.class);
 		TrnFXMonthRepository trnFXMonthRepository = Mockito.mock(TrnFXMonthRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXMonthService fxMonthService = new FXMonthServiceImpl(trnFXMonthRepository, messageService);
+		FXMonthService fxMonthService = new FXMonthServiceImpl(fxDayService, trnFXMonthRepository, messageService);
 		/** 1. Test when FXTickKey is null */
 		// Execute the method being tested
 		Optional<TrnFXMonth> fxMonth = fxMonthService.findPrevious(null);
@@ -171,9 +174,10 @@ public class FXMonthServiceImplTest {
 
 	@Test
 	public void testOperation4InsertWithMock() throws Exception {
+		FXDayService fxDayService = Mockito.mock(FXDayService.class);
 		TrnFXMonthRepository trnFXMonthRepository = Mockito.mock(TrnFXMonthRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXMonthService fxMonthService = new FXMonthServiceImpl(trnFXMonthRepository, messageService);
+		FXMonthService fxMonthService = new FXMonthServiceImpl(fxDayService, trnFXMonthRepository, messageService);
 		/** 1. Test insert success */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -223,9 +227,10 @@ public class FXMonthServiceImplTest {
 
 	@Test
 	public void testOperation4UpdateWithMock() throws Exception {
+		FXDayService fxDayService = Mockito.mock(FXDayService.class);
 		TrnFXMonthRepository trnFXMonthRepository = Mockito.mock(TrnFXMonthRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXMonthService fxMonthService = new FXMonthServiceImpl(trnFXMonthRepository, messageService);
+		FXMonthService fxMonthService = new FXMonthServiceImpl(fxDayService, trnFXMonthRepository, messageService);
 		/** 1. Test updated data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -290,9 +295,10 @@ public class FXMonthServiceImplTest {
 
 	@Test
 	public void testOperation4DeleteWithMock() throws Exception {
+		FXDayService fxDayService = Mockito.mock(FXDayService.class);
 		TrnFXMonthRepository trnFXMonthRepository = Mockito.mock(TrnFXMonthRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXMonthService fxMonthService = new FXMonthServiceImpl(trnFXMonthRepository, messageService);
+		FXMonthService fxMonthService = new FXMonthServiceImpl(fxDayService, trnFXMonthRepository, messageService);
 		/** 1. Test deleted data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

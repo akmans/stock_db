@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
+import com.akmans.trade.core.enums.OperationResult;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
@@ -18,4 +19,6 @@ public interface FXDayService {
 	public Optional<TrnFXDay> findPrevious(FXTickKey key);
 
 	public AbstractFXEntity generateFXPeriodData(FXType type, String currencyPair, LocalDateTime dateTimeFrom);
+
+	public OperationResult refresh(String currencyPair, LocalDateTime currentDatetime) throws TradeException;
 }

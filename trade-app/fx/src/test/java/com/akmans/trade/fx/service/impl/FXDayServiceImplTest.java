@@ -30,6 +30,7 @@ import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.core.exception.TradeException;
 import com.akmans.trade.core.service.MessageService;
 import com.akmans.trade.fx.service.FXDayService;
+import com.akmans.trade.fx.service.FXHourService;
 import com.akmans.trade.fx.springdata.jpa.entities.AbstractFXEntity;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXDay;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXMonth;
@@ -54,9 +55,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testFindOneWithMock() {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -84,9 +86,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testFindPreviousWithMock() {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test when FXTickKey is null */
 		// Execute the method being tested
 		Optional<TrnFXDay> fxDay = fxDayService.findPrevious(null);
@@ -176,9 +179,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testGenerateFXPeriodDataWithMock() throws Exception {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test FXType is HOUR */
 		AbstractFXEntity entity = fxDayService.generateFXPeriodData(FXType.HOUR, "usdjpy", LocalDateTime.now());
 		// Validation
@@ -292,9 +296,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testOperation4InsertWithMock() throws Exception {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test insert success */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -344,9 +349,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testOperation4UpdateWithMock() throws Exception {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test updated data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();
@@ -411,9 +417,10 @@ public class FXDayServiceImplTest {
 
 	@Test
 	public void testOperation4DeleteWithMock() throws Exception {
+		FXHourService fxHourService = Mockito.mock(FXHourService.class);
 		TrnFXDayRepository trnFXDayRepository = Mockito.mock(TrnFXDayRepository.class);
 		MessageService messageService = Mockito.mock(MessageService.class);
-		FXDayService fxDayService = new FXDayServiceImpl(trnFXDayRepository, messageService);
+		FXDayService fxDayService = new FXDayServiceImpl(fxHourService, trnFXDayRepository, messageService);
 		/** 1. Test deleted data not found */
 		// New FXTickKey
 		FXTickKey key = new FXTickKey();

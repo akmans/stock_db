@@ -28,10 +28,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.akmans.trade.core.Constants;
 import com.akmans.trade.core.config.TestConfig;
 import com.akmans.trade.core.enums.FXJob;
-import com.akmans.trade.core.enums.FXType;
 import com.akmans.trade.core.enums.OperationMode;
 import com.akmans.trade.fx.service.FXWeekService;
-import com.akmans.trade.fx.service.FXDayService;
 import com.akmans.trade.fx.springdata.jpa.entities.TrnFXWeek;
 import com.akmans.trade.fx.springdata.jpa.keys.FXTickKey;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -60,9 +58,8 @@ public class FXWeekGenerateExecutionTest {
 	/** Test no data. */
 	@Test
 	public void testStepExecutionWithMock() throws Exception {
-		FXDayService mockDayService = Mockito.mock(FXDayService.class);
 		FXWeekService mockWeekService = Mockito.mock(FXWeekService.class);
-		FXWeekGenerateExecution execution = new FXWeekGenerateExecution(mockDayService, mockWeekService);
+		FXWeekGenerateExecution execution = new FXWeekGenerateExecution(mockWeekService);
 		// New job parameters.
 		JobParameters params = new JobParametersBuilder().addString("jobId", FXJob.GENERATE_FX_CANDLESTICK_DATA_JOB.getValue())
 				.addString("currencyPair", "usdjpy").addString("processedMonth", "200905").toJobParameters();
@@ -76,8 +73,7 @@ public class FXWeekGenerateExecutionTest {
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.INSERTED_ROWS + "Week"));
 		assertEquals(0, stepExecution.getJobExecution().getExecutionContext().getInt(Constants.UPDATED_ROWS + "Week"));
 		// Verify
-		verify(mockDayService, times(6)).generateFXPeriodData(eq(FXType.WEEK), eq("usdjpy"),
-				any(LocalDateTime.class));
+		verify(mockWeekService, times(6)).refresh(eq("usdjpy"), any(LocalDateTime.class));
 		verify(mockWeekService, times(0)).findPrevious(any(FXTickKey.class));
 		verify(mockWeekService, times(0)).findOne(any(FXTickKey.class));
 		verify(mockWeekService, times(0)).operation(any(TrnFXWeek.class), eq(OperationMode.DELETE));
